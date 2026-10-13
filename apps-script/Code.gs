@@ -3,6 +3,9 @@
  * Setup: see SUBMISSIONS_SETUP.md. Each student submission is appended as one row
  * of the "Submissions" sheet; each feedback form becomes one row of the "Feedback"
  * sheet. Rows with a wrong class code go to "Rejected".
+ * Certificate requests go to the "Certificates" sheet. A certificate becomes
+ * available to the student only after the faculty ticks "Approved" (in the sheet,
+ * or on the lab's Faculty page using the FACULTY_KEY script property).
  */
 var COLUMNS = [
   ['received', 'Received (server time)'], ['reportId', 'Report ID'], ['process', 'Process'],
@@ -28,6 +31,13 @@ var FB_COLUMNS = [
   ['confusing', 'What was confusing'], ['suggest', 'Suggestion'], ['version', 'Lab version'], ['clientTime', 'Student clock']
 ];
 var MAX_TEXT = 5000;
+var CERT_COLUMNS = [
+  ['certId', 'Certificate ID'], ['requested', 'Requested'], ['name', 'Name'], ['usn', 'USN'],
+  ['section', 'Sem / section'], ['process', 'Process'], ['processName', 'Process name'],
+  ['postScore', 'Post-test score'], ['reportId', 'Report ID'], ['approved', 'Approved'],
+  ['approvedOn', 'Approved on'], ['token', 'Access token (do not edit)']
+];
+var TZ = 'Asia/Kolkata';
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -36,6 +46,7 @@ function doPost(e) {
     var d;
     try { d = JSON.parse(e.postData.contents); } catch (err) { return reply_({ ok: false, error: 'bad request' }); }
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (d.action === 'approve' || d.action === 'revoke') return facultySet_(ss, d);
     var code = PropertiesService.getScriptProperties().getProperty('CLASS_CODE');
     if (code && norm_(d.classCode) !== norm_(code)) {
       var rj = ss.getSheetByName('Rejected') || ss.insertSheet('Rejected');
@@ -44,6 +55,7 @@ function doPost(e) {
       return reply_({ ok: false, error: 'class code' });
     }
     if (!d.usn || !d.name) return reply_({ ok: false, error: 'name and USN required' });
+    if (d.type === 'certreq') return certRequest_(ss, d);
     var isFb = d.type === 'feedback';
     var cols = isFb ? FB_COLUMNS : COLUMNS;
     var name = isFb ? 'Feedback' : 'Submissions';
@@ -60,7 +72,100 @@ function doPost(e) {
   }
 }
 
-function doGet() { return reply_({ ok: true, service: 'NTM Virtual Lab submissions' }); }
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (p.action === 'status') return certStatus_(ss, p);
+  if (p.action === 'verify') return certVerify_(ss, p);
+  if (p.action === 'list') return certList_(ss, p);
+  return reply_({ ok: true, service: 'NTM Virtual Lab submissions' });
+}
+
+// ---------- certificates ----------
+function certSheet_(ss) {
+  var sh = ss.getSheetByName('Certificates') || ss.insertSheet('Certificates');
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(CERT_COLUMNS.map(function (c) { return c[1]; }));
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, CERT_COLUMNS.length).setFontWeight('bold');
+  }
+  return sh;
+}
+function col_(key) { for (var i = 0; i < CERT_COLUMNS.length; i++) if (CERT_COLUMNS[i][0] === key) return i; return -1; }
+function certRows_(sh) { var n = sh.getLastRow(); return n < 2 ? [] : sh.getRange(2, 1, n - 1, CERT_COLUMNS.length).getValues(); }
+function findCert_(rows, usn, process) {
+  for (var i = 0; i < rows.length; i++) if (norm_(rows[i][col_('usn')]) === norm_(usn) && norm_(rows[i][col_('process')]) === norm_(process)) return i;
+  return -1;
+}
+function fmtDate_(v) { return v instanceof Date ? Utilities.formatDate(v, TZ, 'dd MMM yyyy') : String(v || ''); }
+function certPublic_(r) {
+  return { certId: r[col_('certId')], name: r[col_('name')], usn: r[col_('usn')], section: r[col_('section')], process: r[col_('process')],
+    processName: r[col_('processName')], postScore: r[col_('postScore')], approvedOn: fmtDate_(r[col_('approvedOn')]) };
+}
+function certRequest_(ss, d) {
+  if (!d.process || !d.token) return reply_({ ok: false, error: 'bad request' });
+  var sh = certSheet_(ss), rows = certRows_(sh), i = findCert_(rows, d.usn, d.process);
+  if (i >= 0) {
+    var row = i + 2;
+    ['name', 'section', 'processName', 'postScore', 'reportId', 'token'].forEach(function (k) { sh.getRange(row, col_(k) + 1).setValue(clean_(d[k])); });
+    sh.getRange(row, col_('requested') + 1).setValue(new Date());
+    var ok = rows[i][col_('approved')] === true;
+    return reply_({ ok: true, certId: rows[i][col_('certId')], status: ok ? 'approved' : 'pending' });
+  }
+  var id = 'NTM-' + String(d.process).replace(/[^A-Za-z0-9]/g, '').toUpperCase() + '-' + Utilities.getUuid().slice(0, 6).toUpperCase();
+  sh.appendRow(CERT_COLUMNS.map(function (c) {
+    if (c[0] === 'certId') return id;
+    if (c[0] === 'requested') return new Date();
+    if (c[0] === 'approved') return false;
+    if (c[0] === 'approvedOn') return '';
+    if (c[0] === 'usn') return norm_(d.usn);
+    return clean_(d[c[0]]);
+  }));
+  sh.getRange(sh.getLastRow(), col_('approved') + 1).insertCheckboxes();
+  return reply_({ ok: true, certId: id, status: 'pending' });
+}
+function certStatus_(ss, p) {
+  var sh = ss.getSheetByName('Certificates'); if (!sh) return reply_({ ok: true, status: 'none' });
+  var rows = certRows_(sh), i = findCert_(rows, p.usn, p.process);
+  if (i < 0) return reply_({ ok: true, status: 'none' });
+  if (String(rows[i][col_('token')]) !== String(p.token || '')) return reply_({ ok: false, error: 'token' });
+  if (rows[i][col_('approved')] !== true) return reply_({ ok: true, status: 'pending', certId: rows[i][col_('certId')] });
+  return reply_({ ok: true, status: 'approved', cert: certPublic_(rows[i]) });
+}
+function certVerify_(ss, p) {
+  var sh = ss.getSheetByName('Certificates'); var rows = sh ? certRows_(sh) : [];
+  for (var i = 0; i < rows.length; i++) if (norm_(rows[i][col_('certId')]) === norm_(p.id))
+    return reply_(rows[i][col_('approved')] === true ? { ok: true, valid: true, cert: certPublic_(rows[i]) } : { ok: true, valid: false, reason: 'not approved' });
+  return reply_({ ok: true, valid: false, reason: 'not found' });
+}
+function facultyOk_(key) {
+  var k = PropertiesService.getScriptProperties().getProperty('FACULTY_KEY');
+  return !!k && String(key || '') === k;
+}
+function certList_(ss, p) {
+  if (!facultyOk_(p.key)) return reply_({ ok: false, error: 'faculty key' });
+  var sh = ss.getSheetByName('Certificates'); var rows = sh ? certRows_(sh) : [];
+  return reply_({ ok: true, rows: rows.map(function (r) {
+    var o = certPublic_(r); o.requested = fmtDate_(r[col_('requested')]); o.reportId = r[col_('reportId')]; o.approved = r[col_('approved')] === true; return o; }) });
+}
+function facultySet_(ss, d) {
+  if (!facultyOk_(d.key)) return reply_({ ok: false, error: 'faculty key' });
+  var sh = ss.getSheetByName('Certificates'); var rows = sh ? certRows_(sh) : [];
+  var ids = [].concat(d.certIds || d.certId || []).map(norm_), n = 0;
+  for (var i = 0; i < rows.length; i++) if (ids.indexOf(norm_(rows[i][col_('certId')])) >= 0) {
+    var on = d.action === 'approve';
+    sh.getRange(i + 2, col_('approved') + 1).setValue(on);
+    sh.getRange(i + 2, col_('approvedOn') + 1).setValue(on ? new Date() : '');
+    n++;
+  }
+  return reply_({ ok: true, changed: n });
+}
+// Ticking or unticking "Approved" directly in the sheet records the approval date.
+function onEdit(e) {
+  var sh = e.range.getSheet();
+  if (sh.getName() !== 'Certificates' || e.range.getRow() < 2 || e.range.getColumn() !== col_('approved') + 1) return;
+  sh.getRange(e.range.getRow(), col_('approvedOn') + 1).setValue(e.range.getValue() === true ? new Date() : '');
+}
 
 function norm_(s) { return String(s == null ? '' : s).trim().toUpperCase(); }
 // Truncate long text and stop spreadsheet formula injection (=, +, -, @ at the start).

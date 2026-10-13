@@ -56,3 +56,22 @@ Version 4.3 adds the *Feedback* sheet. Paste the new `Code.gs` over the old one,
 ## Feedback without the sheet
 
 If `config.js` has no `submitUrl`, the feedback form is still required, but the answers stay only in the student's browser. Set up the sheet to collect them.
+
+## Certificates (version 4.4)
+
+Students who have completed the post-test (60 % or more by default), given feedback and submitted their report can press **Request certificate** on the Report tab. The request appears in a **Certificates** tab of your sheet. The student can download the certificate only after you approve it.
+
+**One-time setup**
+1. Paste the new `Code.gs` over the old one and save.
+2. **Project Settings → Script properties → Add script property**: `FACULTY_KEY` = a password only you know (not the class code).
+3. **Deploy → Manage deployments → pencil → Version: New version → Deploy.** The URL stays the same.
+
+**Approving**
+* In the sheet: tick **Approved** in the Certificates tab. The approval date fills in automatically. Untick to withdraw.
+* Or on the website: open the **Faculty** link at the bottom of any page (`…/NTM-Virtual-Lab/#faculty`), enter your faculty key, then **Approve** one request or **Approve all shown**. **Preview** shows the certificate before approving.
+
+**Downloading as faculty**: on the Faculty page, **PDF** downloads one certificate; **Download … certificates (one PDF)** gives every approved certificate shown, one per page.
+
+**Verification**: every certificate carries an ID and the link `…/NTM-Virtual-Lab/#verify-<ID>`. Anyone opening it sees whether the certificate is valid and approved. Withdrawn approvals show as not valid.
+
+**Changing the wording**: the pass mark, faculty name, institution and department can be set in `config.js` (see the commented lines there).

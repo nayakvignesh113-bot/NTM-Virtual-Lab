@@ -411,4 +411,16 @@ table.lib td,table.lib th{white-space:normal;text-align:left}
 .hint{border-left:3px solid var(--warn);background:color-mix(in srgb,var(--warn) 8%,var(--panel));padding:6px 10px;font-size:14.5px;border-radius:0 6px 6px 0}
 @media print{.xcard{display:none}}
 @media (prefers-reduced-motion: reduce){.xstage.dim canvas{transition:none}}
+
+/* v4.4 certificates */
+.certcard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg);display:grid;gap:8px}
+.certcard h4{margin:0;font-size:17px}
+.certlist{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:14px;color:var(--muted)}
+.certlist li.ok{color:var(--ok)}
+.certprev{width:100%;max-width:880px;height:auto;aspect-ratio:1754/1240;border:1px solid var(--line);border-radius:6px;background:#fff;display:block;margin:6px 0}
+.facform{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;max-width:640px}
+.facform input{padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:220px}
+.facbar{flex-wrap:wrap;gap:10px;margin:16px 0 8px}
+.facbar input{padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+@media print{.certcard{display:none}}
 </style>
