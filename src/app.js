@@ -1,5 +1,5 @@
 // ---------- app ----------
-const VERSION='4.2', VDATE='12 Oct 2026';
+const VERSION='4.3', VDATE='12 Oct 2026';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const byId=Object.fromEntries(PROCESSES.map(p=>[p.id,p]));
@@ -127,6 +127,7 @@ function renderAbout(){
   <section class="sec"><h2>How to cite</h2><div class="eq"><div class="f" style="white-space:normal;font-size:13.5px" id="cite">Ullal, V. N. (2026). NTM Virtual Lab: an open virtual laboratory for non-traditional machining processes (Version ${VERSION}). Department of Mechanical Engineering, MITE Moodbidri. https://nayakvignesh113-bot.github.io/NTM-Virtual-Lab/</div></div>
   <button class="iconbtn" id="copycite" type="button">Copy citation</button> <span class="foot" id="citemsg" aria-live="polite"></span></section>
   <section class="sec"><h2>Version history</h2><ul class="ticks">
+  <li><b>4.3</b> (13 Oct 2026): Narrated explainers with embedded concept checks for EDM, USM, ECM, LBM, EBM, CHM, AFM, MRF, CMP and IBM; a wrong answer replays the scene, and results go into the report. Listen button on every Theory tab reads the principle and the effect of parameters aloud (neural narration, Kokoro TTS). 40 new numerical problem types (three per process) with graded hints; hint use is noted in the report. A short feedback form is required before a report can be printed, downloaded or submitted; responses go to the faculty's Google Sheet.</li>
   <li><b>4.2</b> (13 Oct 2026): Students can submit report summaries (scores, conclusions, discussion answers, Report ID) to the faculty's Google Sheet with a class code. Source code released under CC BY-NC-SA 4.0 with citation metadata.</li>
   <li><b>4.1</b> (13 Oct 2026): Tabs reordered to the Virtual Labs sequence: Theory, Pre-test, Operate, Experiment, Numericals, Post-test, Validation, Report. Processes open on Theory. Validation tab explains what validation means.</li>
   <li><b>4.0</b> (${VDATE}): Alternative removal-rate models with a model selector and a compare-all-models overlay (AJM, CHM, ECM, EDM, LBM, EBM, PAM, CMP). Safety briefing with acknowledgement before operating each machine. Tool and consumable libraries. Comprehensive watermarked lab report with report ID, uncertainty budget, error sources, discussion questions, normalised learning gain and signatures; downloadable as HTML.</li>

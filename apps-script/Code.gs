@@ -1,7 +1,8 @@
 /**
  * NTM Virtual Lab — submission receiver (Google Apps Script, bound to a Google Sheet).
  * Setup: see SUBMISSIONS_SETUP.md. Each student submission is appended as one row
- * of the "Submissions" sheet. Rows with a wrong class code go to "Rejected".
+ * of the "Submissions" sheet; each feedback form becomes one row of the "Feedback"
+ * sheet. Rows with a wrong class code go to "Rejected".
  */
 var COLUMNS = [
   ['received', 'Received (server time)'], ['reportId', 'Report ID'], ['process', 'Process'],
@@ -14,7 +15,17 @@ var COLUMNS = [
   ['numSolved', 'Numericals solved'], ['numAttempted', 'Numericals attempted'],
   ['observations', 'Observations recorded'], ['model', 'Simulator model'],
   ['conclusion', 'Conclusions'], ['disc1', 'Discussion 1'], ['disc2', 'Discussion 2'], ['disc3', 'Discussion 3'],
-  ['version', 'Lab version'], ['clientTime', 'Student clock']
+  ['numWithHints', 'Numericals solved with hints'], ['explRight', 'Explainer checks right (first try)'], ['explN', 'Explainer checks'], ['explReplays', 'Explainer scene replays'],
+  ['feedbackAt', 'Feedback given'], ['version', 'Lab version'], ['clientTime', 'Student clock']
+];
+var FB_COLUMNS = [
+  ['received', 'Received (server time)'], ['reportId', 'Report ID'], ['process', 'Process'],
+  ['name', 'Name'], ['usn', 'USN'], ['section', 'Sem / section'], ['batch', 'Batch'], ['institution', 'Institution'],
+  ['q1', 'Theory helped understanding (1-5)'], ['q2', 'Operating the machine helped (1-5)'],
+  ['q3', 'Experiment and plots helped (1-5)'], ['q4', 'Tests at right difficulty (1-5)'],
+  ['q5', 'Easy to use on device (1-5)'], ['q6', 'Would recommend (1-5)'],
+  ['time', 'Time spent'], ['device', 'Device'], ['helped', 'What helped most'],
+  ['confusing', 'What was confusing'], ['suggest', 'Suggestion'], ['version', 'Lab version'], ['clientTime', 'Student clock']
 ];
 var MAX_TEXT = 5000;
 
@@ -33,13 +44,16 @@ function doPost(e) {
       return reply_({ ok: false, error: 'class code' });
     }
     if (!d.usn || !d.name) return reply_({ ok: false, error: 'name and USN required' });
-    var sh = ss.getSheetByName('Submissions') || ss.insertSheet('Submissions');
+    var isFb = d.type === 'feedback';
+    var cols = isFb ? FB_COLUMNS : COLUMNS;
+    var name = isFb ? 'Feedback' : 'Submissions';
+    var sh = ss.getSheetByName(name) || ss.insertSheet(name);
     if (sh.getLastRow() === 0) {
-      sh.appendRow(COLUMNS.map(function (c) { return c[1]; }));
+      sh.appendRow(cols.map(function (c) { return c[1]; }));
       sh.setFrozenRows(1);
-      sh.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold');
+      sh.getRange(1, 1, 1, cols.length).setFontWeight('bold');
     }
-    sh.appendRow(COLUMNS.map(function (c) { return c[0] === 'received' ? new Date() : clean_(d[c[0]]); }));
+    sh.appendRow(cols.map(function (c) { return c[0] === 'received' ? new Date() : clean_(d[c[0]]); }));
     return reply_({ ok: true });
   } finally {
     lock.releaseLock();

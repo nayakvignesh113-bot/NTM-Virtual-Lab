@@ -1,6 +1,6 @@
 # Setting up report submissions (about 10 minutes, once)
 
-Students press **Submit to faculty** on the Report tab. Each submission becomes one row in a Google Sheet that you own: server time, Report ID, process, name, USN, section, safety acknowledgement time, pre- and post-test scores (first attempt and current), normalised gain, machine-run calculations, numericals, conclusions and the three discussion answers.
+Students press **Submit to faculty** on the Report tab, and must complete a short **feedback form** before they can print, download or submit. Each submission becomes one row of the *Submissions* sheet and each feedback form one row of the *Feedback* sheet, in a Google Sheet that you own. A submission row holds server time, Report ID, process, name, USN, section, safety acknowledgement time, pre- and post-test scores (first attempt and current), normalised gain, machine-run calculations, numericals, conclusions and the three discussion answers.
 
 ## 1. Create the sheet and script
 
@@ -48,3 +48,11 @@ Students press **Submit to faculty** on the Report tab. Each submission becomes 
 * This is not tamper-proof. A determined student with browser developer tools could send made-up scores. Treat the sheet as a record of work, and spot-check by asking a student to repeat a calculation.
 * Data stays in your Google account. Tell students that submitting sends their name, USN, scores and written answers to you.
 * Capacity: Google allows about 30 submissions to be processed at the same moment. A class of 60 pressing Submit together will be fine; the script queues them.
+
+## Already set this up before version 4.3?
+
+Version 4.3 adds the *Feedback* sheet. Paste the new `Code.gs` over the old one, save, then **Deploy → Manage deployments → pencil → Version: New version → Deploy**. The URL stays the same. Until you do this, feedback rows land in the *Submissions* sheet with mostly empty columns.
+
+## Feedback without the sheet
+
+If `config.js` has no `submitUrl`, the feedback form is still required, but the answers stay only in the student's browser. Set up the sheet to collect them.

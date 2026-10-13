@@ -345,6 +345,75 @@ table.lib td,table.lib th{white-space:normal;text-align:left}
   .sig{break-inside:avoid}
   .sh-img{break-inside:avoid}
 }
+
+/* v4.3 listen + feedback */
+.listen{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 12px;margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.listen .btn{padding:7px 14px}
+.listen .lsr{font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.listen select{font:inherit;font-size:13px;padding:3px 4px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.listen .foot{margin:0}
+.prose p.reading,.prose li.reading{background:color-mix(in srgb,var(--accent) 13%,transparent);box-shadow:-6px 0 0 color-mix(in srgb,var(--accent) 13%,transparent),6px 0 0 color-mix(in srgb,var(--accent) 13%,transparent);border-radius:3px;transition:background .3s}
+.fbform{border:2px solid var(--accent);border-radius:10px;padding:14px 16px;margin:0;display:grid;gap:12px;min-width:0}
+.fbform legend{font-weight:700;padding:0 6px;font-size:16px}
+.liktable{display:grid;gap:4px;min-width:0}
+.likhead,.likrow{display:grid;grid-template-columns:minmax(0,1fr) repeat(5,72px);gap:4px;align-items:center}
+.likhead span{font-family:var(--f-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.2}
+.likrow{padding:6px 0;border-top:1px solid var(--line)}
+.likq{font-size:14.5px;line-height:1.35}
+.likopt{display:flex;justify-content:center;cursor:pointer;padding:6px 0}
+.likopt input{width:18px;height:18px;accent-color:var(--accent);margin:0}
+.likl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.fbgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fbform select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.fbdone{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--ok);border-radius:8px;padding:10px 14px}
+.printlock{display:none}
+@media (max-width:640px){
+  .likhead{display:none}
+  .likrow{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .likq{grid-column:1/-1}
+  .likopt{flex-direction:column;align-items:center;gap:2px}
+  .likl{position:static;width:auto;height:auto;clip:auto;font-size:10px;color:var(--muted);text-align:center;line-height:1.1}
+}
+@media print{.sheet.fblocked{display:none!important}.printlock{display:block!important;font-size:16px;padding:40px 0}.listen{display:none}}
+
+/* v4.3 explainer + hints */
+.xcard{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 16px;margin:0 0 16px;display:grid;gap:10px}
+.xhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.xhead h3{margin:2px 0 0}
+.xstat{font-family:var(--f-mono);font-size:12px;color:var(--ok)}
+.xstage{position:relative;aspect-ratio:16/10;max-width:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.xstage.custom{aspect-ratio:16/9;background:#0C1416;border-color:#0C1416}
+.xstage canvas{display:block;width:100%;height:100%}
+.xstage.dim canvas{opacity:.35;transition:opacity .3s}
+.xread{display:flex;flex-wrap:wrap;gap:6px;min-height:30px;align-items:center}
+.xread div{background:var(--bg);border:1px solid var(--accent);border-radius:6px;padding:3px 9px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.xread span{color:var(--muted);margin-right:6px}
+.xread b{font-family:var(--f-mono)}
+.xcap{min-height:4.4em;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:16.5px;line-height:1.45}
+.xcap .who{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.xctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.xctl select{font:inherit;font-size:13px;padding:2px 4px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.xchaps{display:flex;flex-wrap:wrap;gap:6px}
+.xchap{all:unset;cursor:pointer;font-size:12.5px;border-top:3px solid var(--line);padding:4px 2px 0;color:var(--muted)}
+.xchap b{font-family:var(--f-mono)}
+.xchap.done{border-color:var(--ok);color:var(--ink)}
+.xchap.on{border-color:var(--accent);color:var(--ink)}
+.xchap .q{color:var(--warn);font-family:var(--f-mono);font-size:11px}
+.xchap:focus-visible{outline:2px solid var(--accent)}
+.qcard{background:var(--bg);border:2px solid var(--accent);border-radius:10px;padding:14px;display:grid;gap:10px}
+.qcard h4{margin:0;font-size:16.5px;line-height:1.35}
+.qcard .tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.qcard .opts{display:grid;gap:7px}
+.qcard .opt{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:7px;padding:9px 12px;background:var(--panel);font-size:15px}
+.qcard .opt:hover{border-color:var(--accent)}
+.qcard .opt:focus-visible{outline:2px solid var(--accent)}
+.qcard .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--panel))}
+.qcard .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--panel))}
+.qcard .fb{font-size:15px}
+.hints{display:grid;gap:6px;margin:6px 0}
+.hint{border-left:3px solid var(--warn);background:color-mix(in srgb,var(--warn) 8%,var(--panel));padding:6px 10px;font-size:14.5px;border-radius:0 6px 6px 0}
+@media print{.xcard{display:none}}
+@media (prefers-reduced-motion: reduce){.xstage.dim canvas{transition:none}}
 </style>
 <script src="config.js"></script></head><body>
 <header class="top"><div class="top-in"><a class="brand" href="#home"><b>NTM Virtual Lab</b><span>Non-traditional machining</span></a>
@@ -2367,6 +2436,218 @@ mrf:[['d'+v_('h')+'/d'+v_('t'),'Material removal rate (depth per unit time)','m/
 cmp:[['MRR','Material removal rate','m/s (nm/min)'],[v_('C')+'<sub>p</sub>','Preston coefficient of the film–slurry pair','m²/N'],[v_('P'),'Down pressure on the wafer','Pa (kPa; 1 psi = 6.895 kPa)'],[v_('v'),'Relative velocity between pad and wafer','m/s'],[v_('t')+'<sub>clear</sub>','Time to remove the film','s'],[v_('h'),'Film thickness to be removed','nm'],[v_('P')+'<sub>th</sub>','Threshold pressure below which no removal occurs (Zhao & Shi)','Pa (kPa)'],[v_('K'),'Removal coefficient of the Zhao & Shi model','m^(4/3)/N^(2/3)']],
 ibm:[[v_('v'),'Removal (erosion) velocity','m/s (nm/min)'],[v_('J'),'Ion current density','A/m² (mA/cm²)'],[v_('Y'),'Sputter yield','atoms/ion'],[v_('M'),'Molar mass of the target','kg/mol'],[v_('e'),'Elementary charge (1.602 × 10⁻¹⁹)','C'],[v_('N')+'<sub>A</sub>','Avogadro constant (6.022 × 10²³)','mol⁻¹'],['ρ','Density of the target','kg/m³'],[v_('E'),'Ion energy','eV'],[v_('Y')+'<sub>600</sub>','Sputter yield at 600 eV, normal incidence','atoms/ion'],['θ','Angle of incidence from the surface normal','°']],
 };
+// ================= v4.3: more numerical problems, each with graded hints =================
+// NUMX[id] = extra problem generators. Each returns {q, unit, ans, sol, hints:[...]}.
+// HINT0[id] = hints for the original generator in NUM[id]. NUM[id] then draws from all types without repeating the last one.
+const _f=(x,n=2)=>(+x).toFixed(n);
+const HINT0={
+ usm:['Shaw\'s model gives MRR ∝ A₀^(3/4) when only the amplitude changes.','Form the ratio MRR₂/MRR₁ = (A₂/A₁)^0.75 so every other constant cancels.'],
+ ajm:['The jet spreads as a cone: each side widens by SOD·tan α.','Kerf width w = d_n + 2·SOD·tan α. For two readings, subtract them to eliminate d_n.'],
+ wjm:['Find the theoretical jet velocity from Bernoulli: v = √(2p/ρ). Use p in Pa.','Flow Q = C_d·A·v; hydraulic power P = p·Q. Convert W to kW at the end.'],
+ awjm:['Momentum is shared between the water and the abrasive, so the abrasive leaves slower than the water.','vₐ = η·v_w/(1 + R), where R = ṁₐ/ṁ_w is the loading ratio.'],
+ chm:['Etch rate follows the Arrhenius law: r ∝ exp(−E_a/RT).','Use absolute temperatures (K) and E_a in J/mol: r₂ = r₁·exp[−(E_a/R)(1/T₂ − 1/T₁)].'],
+ ecm:['Faraday\'s law: mass removed per second = η·I·M/(z·F).','Divide by density for volume; 1 cm³/s = 60 000 mm³/min.'],
+ edm:['Sparks occur only during tₒₙ, so the duty factor is D = tₒₙ/(tₒₙ + tₒff).','Average power = discharge voltage × peak current × duty factor.'],
+ wedm:['Wire EDM machines are rated by area cut per minute (mm²/min).','Linear cutting speed = area rate ÷ workpiece thickness.'],
+ lbm:['The focused spot of a real beam is M² times larger than a perfect Gaussian beam.','d₀ = 4M²λF/(πD). Keep λ in µm and F, D in mm so the answer comes out in µm.'],
+ ebm:['The penetration depth grows with the square of the accelerating voltage.','Put V in volts and ρ in g/cm³; the formula gives cm, then multiply by 10⁴ for µm.'],
+ pam:['Arc power is P = V·I. Only a fraction η of it reaches the kerf.','Heat per mm of cut = ηP / u, with u in mm/s (divide mm/min by 60).'],
+ ecg:['Find the electrolytic removal with Faraday\'s law first.','If electrolysis is 90 % of the total, total MRR = electrolytic MRR ÷ 0.9.'],
+ ecdm:['Substitute the given values straight into the depth law.','Compute r₀t/h₀ first, add 1, take the natural log, then multiply by h₀.'],
+ rum:['A core drill removes only an annulus (ring), not a full circle.','Inner diameter = D − 2 × wall. MRR = feed × π/4 × (D² − dᵢ²).'],
+ lam:['Find the reduced specific cutting energy u at the given homologous temperature first.','Force = u × chip area, with chip area = feed × depth of cut. 1 J/mm³ = 1000 N/mm².'],
+ afm:['Ra decays exponentially towards a minimum value with the number of cycles.','Ra = Ra_min + (Ra₀ − Ra_min)·e^(−n/n₀).'],
+ maf:['Magnetic pressure comes from the energy density of the field, B²/(2μ₀).','Multiply by (1 − 1/μ_r) and convert Pa to kPa.'],
+ mrf:['Preston\'s law: removal rate = C_p × pressure × velocity.','Put pressure in Pa. The result is in m/s; convert to µm/min (× 6×10⁷).'],
+ cmp:['Convert psi to kPa (1 psi = 6.895 kPa) and use Preston\'s law for the rate.','Time = thickness to remove ÷ removal rate. Watch nm vs m and minutes vs seconds.'],
+ ibm:['Each ion knocks out Y atoms. Ion flux = J/e.','Atoms removed per m² per second = (J/e)·Y. Convert to volume with M/(N_A·ρ).'],
+};
+const NUMX={
+ usm:[
+  ()=>{const m=rr(60,200,5),f1=pick([18,20,22]),f2=pick([25,30,35,40]);const ans=m*f2/f1;
+   return {q:`A USM machine removes ${m} mm³/min of glass at ${f1} kHz. In Shaw's model MRR is directly proportional to frequency. Estimate MRR at ${f2} kHz with the same amplitude, grit and force.`,unit:'mm³/min',ans,
+   hints:['Every impact removes the same volume, so more impacts per second means proportionally more removal.','MRR₂ = MRR₁ × f₂/f₁.'],
+   sol:`MRR₂ = ${m} × ${f2}/${f1} = ${_f(ans,1)} mm³/min.`};},
+  ()=>{const D=rr(4,12,1),h=rr(2,8,0.5),m=rr(20,90,5);const V=Math.PI/4*D*D*h;const ans=V/m;
+   return {q:`A ${D} mm diameter solid tool sinks a blind hole ${_f(h,1)} mm deep into alumina by USM at an MRR of ${m} mm³/min. Ignoring overcut, how long does the hole take?`,unit:'min',ans,
+   hints:['Find the volume of the hole first: it is a cylinder.','Time = volume ÷ MRR, with V = π/4·D²·h.'],
+   sol:`V = π/4 × ${D}² × ${_f(h,1)} = ${_f(V,1)} mm³. t = ${_f(V,1)}/${m} = ${_f(ans,2)} min.`};}],
+ ajm:[
+  ()=>{const d=pick([25,27,30,40,50]),v=rr(150,300,10),rho=pick([[3.95,'aluminium oxide'],[3.21,'silicon carbide']]);const mp=rho[0]*1000*Math.PI/6*Math.pow(d*1e-6,3);const ans=0.5*mp*v*v*1e9;
+   return {q:`An ${rho[1]} particle (ρ = ${rho[0]} g/cm³, spherical, d = ${d} µm) hits the work at ${v} m/s in AJM. Find its kinetic energy.`,unit:'nJ',ans,
+   hints:['Particle mass m = ρ·πd³/6. Use SI units: ρ in kg/m³ and d in m.','KE = ½mv². 1 J = 10⁹ nJ.'],
+   sol:`m = ${rho[0]*1000} × π/6 × (${d}×10⁻⁶)³ = ${mp.toExponential(3)} kg. KE = ½ × ${mp.toExponential(3)} × ${v}² = ${_f(ans,1)} nJ.`};},
+  ()=>{const ma=rr(2,15,1),d=pick([25,30,50]),rho=3.95;const mp=rho*1000*Math.PI/6*Math.pow(d*1e-6,3);const ans=ma/1000/60/mp/1e6;
+   return {q:`An AJM unit feeds ${ma} g/min of aluminium oxide grit (ρ = 3.95 g/cm³, d = ${d} µm, assume spheres). How many particles leave the nozzle per second? Give the answer in millions.`,unit:'million/s',ans,
+   hints:['Mass of one particle: m = ρ·πd³/6.','Particles per second = (mass flow in kg/s) ÷ (mass of one particle).'],
+   sol:`m = 3950 × π/6 × (${d}×10⁻⁶)³ = ${mp.toExponential(3)} kg. ṁ = ${ma}/1000/60 = ${(ma/60000).toExponential(3)} kg/s. N = ${(ma/60000).toExponential(3)}/${mp.toExponential(3)} = ${_f(ans,2)} million/s.`};}],
+ wjm:[
+  ()=>{const p=rr(150,400,10),cv=pick([0.92,0.95,0.98]);const ans=cv*Math.sqrt(2*p*1e6/1000);
+   return {q:`Water at ${p} MPa leaves a sapphire orifice with velocity coefficient C_v = ${cv}. Find the actual jet velocity (ρ = 1000 kg/m³).`,unit:'m/s',ans,
+   hints:['All pressure energy becomes kinetic energy in the ideal case: ½ρv² = p.','v = C_v·√(2p/ρ), with p in Pa.'],
+   sol:`v = ${cv} × √(2 × ${p}×10⁶/1000) = ${cv} × ${_f(Math.sqrt(2*p*1e3),1)} = ${_f(ans,0)} m/s.`};},
+  ()=>{const p=rr(200,400,10),d=pick([0.15,0.2,0.25,0.3,0.35]);const v=Math.sqrt(2*p*1e6/1000),A=Math.PI/4*Math.pow(d*1e-3,2),Q=0.7*A*v;const ans=1000*Q*0.95*v;
+   return {q:`A ${d} mm orifice at ${p} MPa (C_d = 0.70, C_v = 0.95) sends a water jet straight down. Find the reaction force on the cutting head.`,unit:'N',ans,
+   hints:['Force = rate of change of momentum = ṁ × v_jet.','ṁ = ρ·C_d·A·√(2p/ρ); jet velocity = C_v·√(2p/ρ).'],
+   sol:`v_th = ${_f(v,0)} m/s. ṁ = 1000 × 0.70 × ${A.toExponential(3)} × ${_f(v,0)} = ${_f(1000*Q,4)} kg/s. F = ṁ × 0.95 × v_th = ${_f(ans,1)} N.`};}],
+ awjm:[
+  ()=>{const ma=rr(0.2,0.8,0.05),va=rr(250,500,10);const ans=0.5*ma/60*va*va/1000;
+   return {q:`Garnet flows at ${_f(ma,2)} kg/min and leaves the focusing tube at ${va} m/s. What kinetic power does the abrasive stream carry?`,unit:'kW',ans,
+   hints:['Kinetic power = ½·ṁ·v².','Convert kg/min to kg/s first; the result is in W.'],
+   sol:`ṁ = ${_f(ma,2)}/60 = ${_f(ma/60,5)} kg/s. P = ½ × ${_f(ma/60,5)} × ${va}² = ${_f(ans*1000,0)} W = ${_f(ans,3)} kW.`};},
+  ()=>{const p=rr(250,400,10),d=pick([0.25,0.3,0.33,0.36]),R=pick([0.15,0.2,0.25]);const v=Math.sqrt(2*p*1e6/1000),mw=1000*0.7*Math.PI/4*Math.pow(d*1e-3,2)*v*60;const ans=R*mw;
+   return {q:`An AWJ head has a ${d} mm orifice at ${p} MPa (C_d = 0.70). What garnet flow (kg/min) gives an abrasive loading ratio R = ṁₐ/ṁ_w of ${R}?`,unit:'kg/min',ans,
+   hints:['Find the water mass flow first: ṁ_w = ρ·C_d·A·√(2p/ρ).','Then ṁₐ = R·ṁ_w. Convert kg/s to kg/min.'],
+   sol:`v = ${_f(v,0)} m/s. ṁ_w = 1000 × 0.7 × π/4 × (${d}×10⁻³)² × ${_f(v,0)} × 60 = ${_f(mw,3)} kg/min. ṁₐ = ${R} × ${_f(mw,3)} = ${_f(ans,3)} kg/min.`};}],
+ chm:[
+  ()=>{const w0=rr(0.5,3,0.1),d=rr(0.1,0.8,0.05),EF=pick([1.5,2,2.5,3]);const ans=w0+2*d/EF;
+   return {q:`A chemical-milling mask has a ${_f(w0,1)} mm wide opening. A groove is etched ${_f(d,2)} mm deep with an etch factor of ${EF}. Find the groove width at the surface.`,unit:'mm',ans,
+   hints:['Etch factor = depth ÷ undercut, so undercut = depth ÷ EF on each side.','Width = mask opening + 2 × undercut.'],
+   sol:`u = ${_f(d,2)}/${EF} = ${_f(d/EF,3)} mm. w = ${_f(w0,1)} + 2 × ${_f(d/EF,3)} = ${_f(ans,3)} mm.`};},
+  ()=>{const t=rr(0.2,1.5,0.05),r=rr(0.015,0.05,0.001);const ans=t/(2*r);
+   return {q:`A ${_f(t,2)} mm thick sheet is chemically blanked by etching from both sides at ${_f(r,3)} mm/min per side. How long until the part separates?`,unit:'min',ans,
+   hints:['Both faces are etched at the same time, so each side only needs to go half-way.','t = (thickness/2) ÷ rate.'],
+   sol:`t = (${_f(t,2)}/2)/${_f(r,3)} = ${_f(ans,1)} min.`};}],
+ ecm:[
+  ()=>{const k=rr(10,20,1),dV=rr(6,14,1),f=rr(0.5,3,0.1);const E=55.85e-3/2,fs=f/1000/60;const ans=k*dV*E/(7860*96485*fs)*1000;
+   return {q:`Iron (M = 55.85 g/mol, z = 2, ρ = 7860 kg/m³) is machined by ECM with electrolyte conductivity κ = ${k} S/m, effective gap voltage ${dV} V and tool feed ${_f(f,1)} mm/min. Assume 100 % efficiency. Find the equilibrium gap.`,unit:'mm',ans,
+   hints:['At equilibrium the dissolution rate equals the feed rate, so the gap stops changing.','y_e = κ·(V − ΔV)·(M/z) / (ρ·F·f), all in SI units (f in m/s).'],
+   sol:`M/z = ${E.toExponential(4)} kg/mol. f = ${fs.toExponential(3)} m/s. y_e = ${k} × ${dV} × ${E.toExponential(4)} /(7860 × 96485 × ${fs.toExponential(3)}) = ${_f(ans,3)} mm.`};},
+  ()=>{const A=rr(2,15,0.5),f=rr(0.5,3,0.1),eta=pick([0.85,0.9,1]);const vr=A*1e-4*f/1000/60;const ans=vr*7860*2*96485/(55.85e-3*eta);
+   return {q:`An ECM tool with a frontal area of ${_f(A,1)} cm² feeds into iron at ${_f(f,1)} mm/min (M = 55.85 g/mol, z = 2, ρ = 7860 kg/m³, current efficiency ${eta*100} %). What current is needed?`,unit:'A',ans,
+   hints:['Volume removed per second = frontal area × feed rate.','Invert Faraday\'s law: I = (volume rate × ρ × z × F)/(M × η).'],
+   sol:`V̇ = ${_f(A,1)}×10⁻⁴ × ${_f(f,1)}×10⁻³/60 = ${vr.toExponential(3)} m³/s. I = ${vr.toExponential(3)} × 7860 × 2 × 96485/(0.05585 × ${eta}) = ${_f(ans,0)} A.`};}],
+ edm:[
+  ()=>{const C=pick([0.1,0.22,0.47,1,2.2]),V=rr(60,200,10);const ans=0.5*C*1e-6*V*V*1000;
+   return {q:`An RC relaxation generator has a ${C} µF capacitor that breaks down the gap at ${V} V. Find the energy of each spark.`,unit:'mJ',ans,
+   hints:['The spark releases the energy stored in the capacitor.','E = ½CV², with C in farads. 1 J = 1000 mJ.'],
+   sol:`E = ½ × ${C}×10⁻⁶ × ${V}² = ${_f(ans,3)} mJ.`};},
+  ()=>{const ton=rr(20,200,10),toff=rr(10,100,10),vc=rr(1,8,0.5);const fr=1e6/(ton+toff);const ans=vc*1e-4*fr*60;
+   return {q:`In EDM each spark leaves a crater of ${_f(vc,1)}×10⁻⁴ mm³ on the work. With tₒₙ = ${ton} µs and tₒff = ${toff} µs, and every pulse producing a spark, find the MRR.`,unit:'mm³/min',ans,
+   hints:['Spark frequency f = 1/(tₒₙ + tₒff). Convert µs to s.','MRR = crater volume × sparks per second × 60.'],
+   sol:`f = 1/(${ton+toff}×10⁻⁶) = ${_f(fr,0)} sparks/s. MRR = ${_f(vc,1)}×10⁻⁴ × ${_f(fr,0)} × 60 = ${_f(ans,1)} mm³/min.`};}],
+ wedm:[
+  ()=>{const d=pick([0.1,0.15,0.2,0.25,0.3]),g=rr(0.015,0.05,0.005);const ans=d+2*g;
+   return {q:`A ${d} mm brass wire cuts with a side spark gap of ${_f(g,3)} mm. What kerf width will the cut have?`,unit:'mm',ans,
+   hints:['The spark gap appears on both sides of the wire.','Kerf = wire diameter + 2 × spark gap.'],
+   sol:`Kerf = ${d} + 2 × ${_f(g,3)} = ${_f(ans,3)} mm.`};},
+  ()=>{const L=rr(100,600,10),u=rr(1,6,0.5),w=rr(4,12,1);const ans=w*L/u;
+   return {q:`A wire EDM job has a ${L} mm profile cut at ${_f(u,1)} mm/min. Fresh wire runs at ${w} m/min. How many metres of wire are used?`,unit:'m',ans,
+   hints:['Find the cutting time first: profile length ÷ cutting speed.','Wire used = wire speed × cutting time.'],
+   sol:`t = ${L}/${_f(u,1)} = ${_f(L/u,1)} min. Wire = ${w} × ${_f(L/u,1)} = ${_f(ans,0)} m.`};}],
+ lbm:[
+  ()=>{const P=rr(200,4000,100),d=rr(50,300,10);const ans=P/(Math.PI/4*Math.pow(d*1e-4,2))/1e6;
+   return {q:`A ${P} W laser is focused to a ${d} µm spot. Find the average power density in MW/cm².`,unit:'MW/cm²',ans,
+   hints:['Power density = power ÷ spot area, with area = πd²/4.','Convert the diameter to cm (1 µm = 10⁻⁴ cm). 1 MW = 10⁶ W.'],
+   sol:`A = π/4 × (${d}×10⁻⁴)² = ${(Math.PI/4*Math.pow(d*1e-4,2)).toExponential(3)} cm². I = ${P}/A = ${_f(ans,2)} MW/cm².`};},
+  ()=>{const P=rr(1000,4000,100),eta=pick([0.4,0.5,0.6]),t=rr(1,6,0.5),w=pick([0.15,0.2,0.25,0.3]);const e=7870*(500*1500+2.7e5);const ans=eta*P/(t*1e-3*w*1e-3*e)*60;
+   return {q:`Ideal melt-and-blow cutting of steel: ${P} W laser, ${eta*100} % absorbed into the kerf, sheet ${_f(t,1)} mm thick, kerf ${w} mm. Steel: ρ = 7870 kg/m³, c = 500 J/kg·K, ΔT = 1500 K, L = 270 kJ/kg. Find the cutting speed.`,unit:'m/min',ans,
+   hints:['Energy to melt one cubic metre: ρ(cΔT + L).','Absorbed power = (speed × thickness × kerf) × melt energy per m³; solve for speed and convert m/s to m/min.'],
+   sol:`e = 7870 × (500 × 1500 + 270000) = ${e.toExponential(3)} J/m³. u = ${eta} × ${P}/(${_f(t,1)}×10⁻³ × ${w}×10⁻³ × ${e.toExponential(3)}) × 60 = ${_f(ans,2)} m/min.`};}],
+ ebm:[
+  ()=>{const V=rr(60,150,5),I=rr(1,30,1),d=rr(20,200,10);const P=V*1000*I/1000;const ans=P/(Math.PI/4*Math.pow(d*1e-4,2))/1e6;
+   return {q:`An electron beam at ${V} kV and ${I} mA is focused to a ${d} µm spot. Find the power density in MW/cm².`,unit:'MW/cm²',ans,
+   hints:['Beam power P = V × I (convert kV and mA).','Divide by the spot area π d²/4 in cm².'],
+   sol:`P = ${V*1000} × ${I}×10⁻³ = ${_f(P,0)} W. A = ${(Math.PI/4*Math.pow(d*1e-4,2)).toExponential(3)} cm². Power density = ${_f(ans,2)} MW/cm².`};},
+  ()=>{const h=rr(0.5,5,0.1),dp=rr(10,60,5),f=pick([10,25,50,100]);const n=Math.ceil(h*1000/dp);const ans=n/f;
+   return {q:`EBM drills a ${_f(h,1)} mm deep hole, removing ${dp} µm per pulse at ${f} pulses per second. How long does the hole take?`,unit:'s',ans,
+   hints:['Number of pulses = depth ÷ depth per pulse. Round up to a whole pulse.','Time = pulses ÷ pulse frequency.'],
+   sol:`n = ⌈${_f(h*1000,0)}/${dp}⌉ = ${n} pulses. t = ${n}/${f} = ${_f(ans,2)} s.`};}],
+ pam:[
+  ()=>{const u=rr(500,4000,50),t=rr(3,25,1),w=rr(1.5,4,0.1);const ans=u*t*w/1000;
+   return {q:`Plasma cuts ${t} mm plate at ${u} mm/min with a kerf of ${_f(w,1)} mm. Find the volumetric removal rate in cm³/min.`,unit:'cm³/min',ans,
+   hints:['The removed metal is a slot: length per minute × thickness × kerf width.','MRR = u·t·w in mm³/min; 1 cm³ = 1000 mm³.'],
+   sol:`MRR = ${u} × ${t} × ${_f(w,1)} = ${_f(u*t*w,0)} mm³/min = ${_f(ans,1)} cm³/min.`};},
+  ()=>{const V=rr(120,160,5),I=rr(60,200,10),u=rr(800,3000,50),t=rr(6,20,1),w=rr(2,3.5,0.1);const e=7870*(500*1500+2.7e5);const Pk=u/60/1000*t*1e-3*w*1e-3*e;const ans=Pk/(V*I)*100;
+   return {q:`A plasma torch at ${V} V and ${I} A cuts ${t} mm steel at ${u} mm/min with a ${_f(w,1)} mm kerf. Melting steel needs ρ(cΔT + L) = 8.03×10⁹ J/m³. What percentage of the arc power goes into melting the kerf?`,unit:'%',ans,
+   hints:['Power used for melting = volume melted per second × 8.03×10⁹ J/m³.','Efficiency = melting power ÷ (V × I) × 100.'],
+   sol:`V̇ = ${_f(u/60,2)}×10⁻³ × ${t}×10⁻³ × ${_f(w,1)}×10⁻³ m³/s; melting power = ${_f(Pk,0)} W. η = ${_f(Pk,0)}/${V*I} × 100 = ${_f(ans,1)} %.`};}],
+ ecg:[
+  ()=>{const D=pick([150,175,200,250]),N=rr(1500,3500,100);const ans=Math.PI*D*N/60000;
+   return {q:`An ECG wheel of ${D} mm diameter runs at ${N} rpm. Find its peripheral speed.`,unit:'m/s',ans,
+   hints:['Peripheral speed = circumference × revolutions per second.','v = πDN/60 with D in m.'],
+   sol:`v = π × ${D/1000} × ${N}/60 = ${_f(ans,1)} m/s.`};},
+  ()=>{const I=rr(200,1200,50),sh=rr(5,20,1);const e=0.9*I*55.85/(2*96485*7.86)*60000;const T=Math.round(e/(1-sh/100));const ans=(T-e)/T*100;
+   return {q:`ECG of tool steel (Fe, M = 55.85, z = 2, ρ = 7.86 g/cm³) at ${I} A and 90 % current efficiency removes ${_f(T,0)} mm³/min in total. What percentage is removed mechanically by the wheel?`,unit:'%',ans,
+   hints:['Electrolytic MRR from Faraday\'s law: η·I·M/(zFρ), converted to mm³/min.','Mechanical share = (total − electrolytic) ÷ total × 100.'],
+   sol:`MRR_e = 0.9 × ${I} × 55.85/(2 × 96485 × 7.86) × 60000 = ${_f(e,1)} mm³/min. Mechanical = ${_f(T,0)} − ${_f(e,1)} = ${_f(T-e,1)} mm³/min, i.e. ${_f(ans,2)} %.`};}],
+ ecdm:[
+  ()=>{const r0=rr(4,12,0.5),h0=rr(150,350,10),h=rr(200,700,10);const ans=h0/r0*(Math.exp(h/h0)-1);
+   return {q:`In ECDM drilling of glass, depth follows h = h₀·ln(1 + r₀t/h₀) with r₀ = ${_f(r0,1)} µm/s and h₀ = ${h0} µm. How long does it take to reach ${h} µm?`,unit:'s',ans,
+   hints:['Rearrange the depth law for t: divide by h₀ and take the exponential of both sides.','t = (h₀/r₀)·(e^(h/h₀) − 1).'],
+   sol:`t = (${h0}/${_f(r0,1)}) × (e^(${h}/${h0}) − 1) = ${_f(h0/r0,2)} × ${_f(Math.exp(h/h0)-1,3)} = ${_f(ans,1)} s.`};},
+  ()=>{const V=rr(30,50,1),I=rr(0.2,1.2,0.05),t=rr(10,120,5);const ans=V*I*t;
+   return {q:`An ECDM hole is drilled in ${t} s at ${V} V with a mean current of ${_f(I,2)} A. What electrical energy does one hole take?`,unit:'J',ans,
+   hints:['Energy = power × time.','P = V × I.'],
+   sol:`E = ${V} × ${_f(I,2)} × ${t} = ${_f(ans,0)} J.`};}],
+ rum:[
+  ()=>{const D=rr(6,20,1),N=rr(1000,5000,100);const ans=Math.PI*D*N/60000;
+   return {q:`A ${D} mm RUM core drill rotates at ${N} rpm. Find the cutting speed at its outer edge.`,unit:'m/s',ans,
+   hints:['Cutting speed = π × diameter × revolutions per second.','v = πDN/60 with D in m.'],
+   sol:`v = π × ${D/1000} × ${N}/60 = ${_f(ans,2)} m/s.`};},
+  ()=>{const T=rr(5,25,1),f=rr(0.5,4,0.1);const ans=T/f;
+   return {q:`A RUM core drill feeds at ${_f(f,1)} mm/min through a ${T} mm thick ceramic plate. How long does one hole take?`,unit:'min',ans,
+   hints:['The drill must travel the full plate thickness.','Time = thickness ÷ feed rate.'],
+   sol:`t = ${T}/${_f(f,1)} = ${_f(ans,2)} min.`};}],
+ lam:[
+  ()=>{const F=rr(200,1500,50),v=rr(30,150,5);const ans=F*v/60;
+   return {q:`In laser-assisted turning the cutting force is ${F} N at a cutting speed of ${v} m/min. Find the cutting power.`,unit:'W',ans,
+   hints:['Power = force × velocity.','Convert m/min to m/s first.'],
+   sol:`P = ${F} × ${v}/60 = ${_f(ans,0)} W.`};},
+  ()=>{const u0=pick([4,4.5,5]),Ts=rr(0.2,0.5,0.05),m=pick([0.8,1,1.3]);const ans=Math.pow(Ts,m)*100;
+   return {q:`Specific cutting energy softens as u = u₀(1 − T*^m) with u₀ = ${u0} J/mm³ and m = ${m}. By what percentage does laser heating to T* = ${_f(Ts,2)} reduce the cutting energy?`,unit:'%',ans,
+   hints:['Reduction = (u₀ − u)/u₀.','This simplifies to T*^m, independent of u₀.'],
+   sol:`Reduction = T*^m = ${_f(Ts,2)}^${m} = ${_f(ans/100,4)}, i.e. ${_f(ans,1)} %.`};}],
+ afm:[
+  ()=>{const Dp=rr(30,80,5),s=rr(20,80,5);const ans=Math.PI/4*Dp*Dp*s/1000;
+   return {q:`An AFM machine has media cylinders of ${Dp} mm bore and a ${s} mm piston stroke. What volume of media passes through the part in one stroke?`,unit:'cm³',ans,
+   hints:['Volume displaced = piston area × stroke.','Area = πD²/4. 1 cm³ = 1000 mm³.'],
+   sol:`V = π/4 × ${Dp}² × ${s} = ${_f(ans*1000,0)} mm³ = ${_f(ans,1)} cm³.`};},
+  ()=>{const R0=rr(1,4,0.1),Rm=rr(0.1,0.3,0.05),n0=rr(10,40,1);const Rt=+(Rm+(R0-Rm)*rr(0.15,0.5,0.05)).toFixed(3);const ans=n0*Math.log((R0-Rm)/(Rt-Rm));
+   return {q:`AFM finishing follows Ra = Ra_min + (Ra₀ − Ra_min)·e^(−n/n₀) with Ra₀ = ${_f(R0,1)} µm, Ra_min = ${_f(Rm,2)} µm and n₀ = ${n0}. How many cycles are needed to reach Ra = ${_f(Rt,3)} µm?`,unit:'cycles',ans,
+   hints:['Rearrange for e^(−n/n₀), then take the natural log.','n = n₀·ln[(Ra₀ − Ra_min)/(Ra − Ra_min)].'],
+   sol:`n = ${n0} × ln[(${_f(R0,1)} − ${_f(Rm,2)})/(${_f(Rt,3)} − ${_f(Rm,2)})] = ${n0} × ${_f(Math.log((R0-Rm)/(Rt-Rm)),4)} = ${_f(ans,1)} cycles.`};}],
+ maf:[
+  ()=>{const P=rr(20,200,5),mu=rr(2,5,0.5);const ans=Math.sqrt(2*MU0*P*1000/(1-1/mu));
+   return {q:`MAF needs a finishing pressure of ${P} kPa with a brush of relative permeability ${_f(mu,1)}. What flux density is required in the gap?`,unit:'T',ans,
+   hints:['Start from P = B²/(2μ₀)·(1 − 1/μ_r) and solve for B.','B = √[2μ₀P/(1 − 1/μ_r)], with P in Pa and μ₀ = 4π×10⁻⁷.'],
+   sol:`B = √[2 × 4π×10⁻⁷ × ${P*1000}/${_f(1-1/mu,3)}] = ${_f(ans,3)} T.`};},
+  ()=>{const D=rr(20,60,5),N=rr(200,1200,50);const ans=Math.PI*D*N/60000;
+   return {q:`A ${D} mm cylindrical workpiece rotates at ${N} rpm inside a MAF brush. Find the surface speed of the workpiece.`,unit:'m/s',ans,
+   hints:['Surface speed = circumference × revolutions per second.','v = πDN/60 with D in m.'],
+   sol:`v = π × ${D/1000} × ${N}/60 = ${_f(ans,3)} m/s.`};}],
+ mrf:[
+  ()=>{const Cp=pick([2,2.5,5]),P=rr(10,40,1),v=rr(0.5,3,0.1),h=rr(0.1,2,0.1);const rate=Cp*1e-13*P*1000*v*60*1e6;const ans=h/rate*60;
+   return {q:`MRF must remove ${_f(h,1)} µm from a spot. Preston coefficient ${Cp}×10⁻¹³ m²/N, pressure ${P} kPa, velocity ${_f(v,1)} m/s. Find the dwell time.`,unit:'s',ans,
+   hints:['Find the removal rate from Preston\'s law first.','Dwell time = depth ÷ rate. Convert minutes to seconds.'],
+   sol:`Rate = ${Cp}×10⁻¹³ × ${P*1000} × ${_f(v,1)} m/s = ${_f(rate,3)} µm/min. t = ${_f(h,1)}/${_f(rate,3)} min = ${_f(ans,1)} s.`};},
+  ()=>{const rate=rr(1,6,0.5),a=rr(3,12,1),b=rr(2,6,1);const ans=rate*1e-3*a*b;
+   return {q:`An MRF polishing spot is ${a} mm × ${b} mm and removes ${_f(rate,1)} µm/min at its average depth. Find the volumetric removal rate.`,unit:'mm³/min',ans,
+   hints:['Volume rate = removal depth rate × spot area.','Convert µm to mm (÷ 1000).'],
+   sol:`V̇ = ${_f(rate,1)}×10⁻³ × ${a} × ${b} = ${_f(ans,4)} mm³/min.`};}],
+ cmp:[
+  ()=>{const r=rr(50,200,10),N=rr(30,120,5);const ans=2*Math.PI*r/1000*N/60;
+   return {q:`In CMP the wafer centre sits ${r} mm from the platen centre and the platen turns at ${N} rpm. With head and platen at the same speed, every point sees the same relative velocity. Find it.`,unit:'m/s',ans,
+   hints:['With equal rotation speeds, the relative velocity equals ω × (distance between the two centres).','ω = 2πN/60 rad/s; distance in m.'],
+   sol:`v = 2π × ${N}/60 × ${r/1000} = ${_f(ans,3)} m/s.`};},
+  ()=>{const m0=rr(400,900,10);const xs=[0,1,2,3,4].map(()=>m0+rr(-40,40,1));const mean=xs.reduce((a,b)=>a+b,0)/5;const sd=Math.sqrt(xs.reduce((a,b)=>a+(b-mean)**2,0)/4);const ans=sd/mean*100;
+   return {q:`After CMP, film thickness at five points on a wafer is ${xs.join(', ')} nm. Find the within-wafer non-uniformity (1σ, %).`,unit:'%',ans,
+   hints:['Non-uniformity = standard deviation ÷ mean × 100.','Use the sample standard deviation (divide by n − 1 = 4).'],
+   sol:`Mean = ${_f(mean,1)} nm; σ = ${_f(sd,2)} nm. NU = ${_f(sd,2)}/${_f(mean,1)} × 100 = ${_f(ans,2)} %.`};}],
+ ibm:[
+  ()=>{const m=pick([['copper',63.55,8.96],['silicon',28.09,2.33],['gold',196.97,19.3]]),J=rr(0.2,2,0.1),Y0=rr(0.5,3,0.1);const v=Math.max(1,Math.round(J*10*Y0*(m[1]/1000)/(1.602e-19*6.022e23*m[2]*1000)*60e9));const ans=v/60/1e9*1.602e-19*6.022e23*m[2]*1000/(J*10*m[1]/1000);
+   return {q:`Ion milling of ${m[0]} (M = ${m[1]} g/mol, ρ = ${m[2]} g/cm³) at ${_f(J,1)} mA/cm² removes ${v} nm/min. Find the sputter yield.`,unit:'atoms/ion',ans,
+   hints:['Start from v = J·Y·M/(e·N_A·ρ) and solve for Y.','Use SI units: J in A/m² (1 mA/cm² = 10 A/m²), v in m/s, M in kg/mol, ρ in kg/m³.'],
+   sol:`Y = v·e·N_A·ρ/(J·M) = ${(v/6e10).toExponential(3)} × 1.602×10⁻¹⁹ × 6.022×10²³ × ${m[2]*1000}/(${_f(J*10,0)} × ${m[1]/1000}) = ${_f(ans,3)} atoms/ion.`};},
+  ()=>{const d=rr(100,2000,50),v=rr(5,60,1);const ans=d/v;
+   return {q:`An ion-beam mill removes ${v} nm/min. How long does it take to mill a ${d} nm deep feature?`,unit:'min',ans,
+   hints:['Ion milling removes material layer by layer at a constant rate.','Time = depth ÷ rate.'],
+   sol:`t = ${d}/${v} = ${_f(ans,1)} min.`};}],
+};
+// Combine: original generator (with its hints) + extra ones; never serve the same type twice in a row.
+const NUM_TYPES={},_numLast={};
+for(const id in NUM){const base=NUM[id];NUM_TYPES[id]=[()=>({...base(),hints:HINT0[id]||[]}),...(NUMX[id]||[])];
+  NUM[id]=()=>{const T=NUM_TYPES[id];let k=Math.floor(Math.random()*T.length);if(T.length>1&&k===_numLast[id])k=(k+1)%T.length;_numLast[id]=k;const p=T[k]();p.type=k;return p;};}
 // ---------- safety briefings, tool & consumable libraries, error sources, discussion, references ----------
 // SAFETY[id] = {haz:[hazards], ppe:[PPE], rules:[safe practice], emerg:[emergency actions]}
 const PPE_EYE='Safety glasses with side shields', PPE_SHOE='Safety shoes', PPE_COAT='Lab coat or overall, sleeves buttoned';
@@ -2465,7 +2746,7 @@ ibm:['Define sputter yield and how it depends on ion energy and angle.','Why is 
 
 const REFS_COMMON=['V.K. Jain, Advanced Machining Processes, Allied Publishers.','A. Ghosh and A.K. Mallik, Manufacturing Science, East-West Press.','P.C. Pandey and H.S. Shan, Modern Machining Processes, Tata McGraw-Hill.','G.F. Benedict, Nontraditional Manufacturing Processes, Marcel Dekker.'];
 // ---------- app ----------
-const VERSION='4.2', VDATE='12 Oct 2026';
+const VERSION='4.3', VDATE='12 Oct 2026';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const byId=Object.fromEntries(PROCESSES.map(p=>[p.id,p]));
@@ -2593,6 +2874,7 @@ function renderAbout(){
   <section class="sec"><h2>How to cite</h2><div class="eq"><div class="f" style="white-space:normal;font-size:13.5px" id="cite">Ullal, V. N. (2026). NTM Virtual Lab: an open virtual laboratory for non-traditional machining processes (Version ${VERSION}). Department of Mechanical Engineering, MITE Moodbidri. https://nayakvignesh113-bot.github.io/NTM-Virtual-Lab/</div></div>
   <button class="iconbtn" id="copycite" type="button">Copy citation</button> <span class="foot" id="citemsg" aria-live="polite"></span></section>
   <section class="sec"><h2>Version history</h2><ul class="ticks">
+  <li><b>4.3</b> (13 Oct 2026): Narrated explainers with embedded concept checks for EDM, USM, ECM, LBM, EBM, CHM, AFM, MRF, CMP and IBM; a wrong answer replays the scene, and results go into the report. Listen button on every Theory tab reads the principle and the effect of parameters aloud (neural narration, Kokoro TTS). 40 new numerical problem types (three per process) with graded hints; hint use is noted in the report. A short feedback form is required before a report can be printed, downloaded or submitted; responses go to the faculty's Google Sheet.</li>
   <li><b>4.2</b> (13 Oct 2026): Students can submit report summaries (scores, conclusions, discussion answers, Report ID) to the faculty's Google Sheet with a class code. Source code released under CC BY-NC-SA 4.0 with citation metadata.</li>
   <li><b>4.1</b> (13 Oct 2026): Tabs reordered to the Virtual Labs sequence: Theory, Pre-test, Operate, Experiment, Numericals, Post-test, Validation, Report. Processes open on Theory. Validation tab explains what validation means.</li>
   <li><b>4.0</b> (${VDATE}): Alternative removal-rate models with a model selector and a compare-all-models overlay (AJM, CHM, ECM, EDM, LBM, EBM, PAM, CMP). Safety briefing with acknowledgement before operating each machine. Tool and consumable libraries. Comprehensive watermarked lab report with report ID, uncertainty budget, error sources, discussion questions, normalised learning gain and signatures; downloadable as HTML.</li>
@@ -3241,6 +3523,611 @@ function bindSubmit(P){const k=$('#rk');if(k)k.oninput=e=>{report.code=e.target.
     else if(res&&res.error==='class code')m.innerHTML='<span class="bad">Class code not accepted.</span> Check it with your faculty.';
     else if(res&&res.unconfirmed)m.innerHTML='Sent, but the server reply could not be read (network or browser restriction). Ask your faculty to confirm it arrived before submitting again.';
     else m.innerHTML='<span class="bad">Submission failed.</span> '+esc(res&&res.error||'Try again later.');};}
+// Generated by tools/narration/make_narr.py. Clip count, number of principle paragraphs and clip durations (s) per process.
+const NARR={"usm":{"n":8,"np":3,"dur":[20.1,20.8,9.6,9.0,4.9,7.3,5.3,6.8]},"ajm":{"n":8,"np":3,"dur":[16.8,21.7,10.9,6.3,6.1,8.7,3.9,3.4]},"wjm":{"n":7,"np":3,"dur":[21.4,13.6,12.6,8.2,7.1,3.2,3.6]},"awjm":{"n":7,"np":3,"dur":[21.8,15.0,11.7,6.5,7.3,3.5,12.2]},"chm":{"n":7,"np":3,"dur":[17.0,12.6,9.3,20.1,5.3,3.7,2.7]},"ecm":{"n":7,"np":3,"dur":[23.3,12.6,11.5,8.0,4.4,5.0,3.5]},"edm":{"n":8,"np":3,"dur":[24.7,14.6,16.7,4.7,4.2,5.0,3.9,4.5]},"wedm":{"n":7,"np":3,"dur":[20.5,16.9,8.6,6.3,2.8,5.3,2.6]},"lbm":{"n":7,"np":3,"dur":[25.5,15.0,15.3,20.1,4.0,4.9,2.6]},"ebm":{"n":7,"np":3,"dur":[18.0,13.1,18.0,7.3,3.2,3.4,4.9]},"pam":{"n":7,"np":3,"dur":[22.8,13.2,12.1,5.9,4.0,7.4,5.1]}};
+// ================= v4.3: Listen button on Theory, feedback form gating the report =================
+// ---- Listen: plays pre-recorded narration of the Principle and Effect-of-parameters text ----
+const AUDIO_BASE='audio/';
+const LSN={pid:null,i:0,on:false,rate:1,els:[]};
+const lsnAudio=new Audio();lsnAudio.preload='auto';if('preservesPitch' in lsnAudio)lsnAudio.preservesPitch=true;
+function lsnStop(){LSN.on=false;try{lsnAudio.pause();}catch(e){}LSN.els.forEach(e=>e&&e.classList.remove('reading'));const b=$('#lsn');if(b){b.textContent='▶ Listen';b.setAttribute('aria-pressed','false');}}
+function lsnPlay(){const N=NARR[LSN.pid];if(!N||LSN.i>=N.n){lsnStop();LSN.i=0;const m=$('#lsnmsg');if(m)m.textContent='Finished. Press Listen to hear it again.';return;}
+  const el=LSN.els[LSN.i];if(el&&!el.isConnected){lsnStop();return;}
+  LSN.els.forEach(e=>e&&e.classList.remove('reading'));if(el){el.classList.add('reading');try{el.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});}catch(e){}}
+  lsnAudio.src=`${AUDIO_BASE}${LSN.pid}/${LSN.i}.mp3`;lsnAudio.playbackRate=LSN.rate;
+  lsnAudio.play().catch(err=>{if(err&&err.name==='NotAllowedError'){lsnStop();const m=$('#lsnmsg');if(m)m.textContent='Your browser blocked the audio. Press Listen again.';}});}
+lsnAudio.onended=()=>{if(!LSN.on)return;LSN.i++;setTimeout(()=>{if(LSN.on)lsnPlay();},250);};
+lsnAudio.onerror=()=>{if(!LSN.on)return;lsnStop();const m=$('#lsnmsg');if(m)m.textContent='Narration is not available in this copy of the lab. It plays on the website.';};
+function lsnTargets(){const pr=$('#pane .theory .prose');if(!pr)return[];const N=NARR[current.id];if(!N)return[];
+  const ps=[...pr.querySelectorAll(':scope > p')].slice(0,N.np);
+  const h=[...pr.querySelectorAll(':scope > h3')].find(x=>/Effect of parameters/i.test(x.textContent));
+  const lis=h&&h.nextElementSibling?[...h.nextElementSibling.querySelectorAll('li')]:[];
+  return [...ps,...lis].slice(0,N.n);}
+const fmtDur=s=>{s=Math.round(s);return s<60?`${s} s`:`${Math.floor(s/60)} min ${String(s%60).padStart(2,'0')} s`;};
+const _renderTheory5=renderTheory;
+renderTheory=function(P){lsnStop();_renderTheory5(P);const N=NARR[P.id];const pr=$('#pane .theory .prose');if(!N||!pr)return;
+  pr.insertAdjacentHTML('afterbegin',`<div class="listen" role="group" aria-label="Listen to this page"><button class="btn" type="button" id="lsn" aria-pressed="false">▶ Listen</button><button class="iconbtn" type="button" id="lstop">Stop</button>
+    <label class="lsr" for="lrate">Speed <select id="lrate"><option value="0.85">Slow</option><option value="1" selected>Normal</option><option value="1.2">Fast</option></select></label>
+    <span class="foot" id="lsnmsg" aria-live="polite">Hear the principle and the effect of parameters read aloud · ${fmtDur(N.dur.reduce((a,b)=>a+b,0))}</span></div>`);
+  $('#lrate').value=String(LSN.rate);
+  $('#lsn').onclick=()=>{if(LSN.on){LSN.on=false;lsnAudio.pause();$('#lsn').textContent='▶ Resume';$('#lsn').setAttribute('aria-pressed','false');return;}
+    if(LSN.pid!==P.id){LSN.pid=P.id;LSN.i=0;}LSN.els=lsnTargets();LSN.on=true;$('#lsn').textContent='❚❚ Pause';$('#lsn').setAttribute('aria-pressed','true');$('#lsnmsg').textContent='Reading…';
+    if(lsnAudio.src&&lsnAudio.src.includes(`/${P.id}/${LSN.i}.mp3`)&&lsnAudio.currentTime>0&&!lsnAudio.ended){LSN.els[LSN.i]&&LSN.els[LSN.i].classList.add('reading');lsnAudio.play().catch(()=>lsnStop());}else lsnPlay();};
+  $('#lstop').onclick=()=>{lsnStop();LSN.i=0;lsnAudio.removeAttribute('src');$('#lsnmsg').textContent='Stopped.';};
+  $('#lrate').onchange=e=>{LSN.rate=+e.target.value;lsnAudio.playbackRate=LSN.rate;};
+  LSN.pid=P.id;LSN.i=0;};
+const _renderPane5=renderPane;renderPane=function(P){if(tabOf[P.id]!=='th')lsnStop();_renderPane5(P);};
+window.addEventListener('hashchange',()=>lsnStop());
+
+// ---- Feedback form: required before the report can be printed, downloaded or submitted ----
+report.fb=report.fb||{};
+const FBQ=[['q1','The theory (and narration) helped me understand how the process works.'],
+ ['q2','Setting up and operating the virtual machine helped me understand the real set-up and its safety steps.'],
+ ['q3','The experiment and plots helped me see how the process parameters affect the results.'],
+ ['q4','The tests and numericals were at the right level of difficulty.'],
+ ['q5','The lab was easy to use on my device.'],
+ ['q6','I would recommend this virtual lab to other students.']];
+const LIK=['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+function fbDraft(pid){return report.fbd&&report.fbd[pid]||(report.fbd=report.fbd||{},report.fbd[pid]={});}
+function fbHTML(P){const F=report.fb[P.id];
+  if(F)return `<div class="ctrl wide fbdone" id="fbbox"><div><b class="ok">✓ Feedback recorded</b> <span class="foot">${new Date(F.t).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}${F.sent===true?' · sent to your faculty':F.sent===false?' · saved on this device':''}. Thank you. Print, download and submit are unlocked.</span></div><button class="iconbtn" type="button" id="fbedit">Change my feedback</button></div>`;
+  const D=fbDraft(P.id);
+  return `<fieldset class="ctrl wide fbform" id="fbbox"><legend>Feedback on this experiment <span class="foot">(required to print, download or submit the report)</span></legend>
+   <p class="foot" style="margin:0 0 6px">Your honest answers help improve the lab. They are sent to your faculty with your name and USN.</p>
+   <div class="liktable" role="table" aria-label="Rate each statement">
+   <div class="likhead" role="row"><span role="columnheader"></span>${LIK.map(l=>`<span role="columnheader">${l}</span>`).join('')}</div>
+   ${FBQ.map(([k,q],qi)=>`<div class="likrow" role="radiogroup" aria-labelledby="fbl-${k}"><span class="likq" id="fbl-${k}">${qi+1}. ${q}</span>${LIK.map((l,i)=>`<label class="likopt"><input type="radio" name="fb-${k}" value="${i+1}"${D[k]==i+1?' checked':''}><span class="likl">${l}</span></label>`).join('')}</div>`).join('')}
+   </div>
+   <div class="fbgrid">
+    <div class="ctrl"><label for="fb-time">Time spent on this experiment</label><select id="fb-time"><option value="">Choose…</option>${['Under 30 min','30–60 min','1–2 hours','Over 2 hours'].map(o=>`<option${D.time===o?' selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="ctrl"><label for="fb-dev">Device used</label><select id="fb-dev"><option value="">Choose…</option>${['Phone','Tablet','Laptop / desktop','College lab computer'].map(o=>`<option${D.device===o?' selected':''}>${o}</option>`).join('')}</select></div>
+   </div>
+   <div class="ctrl"><label for="fb-help">What helped you understand the process most? <span class="foot">(required)</span></label><textarea id="fb-help" rows="2">${esc(D.helped||'')}</textarea></div>
+   <div class="ctrl"><label for="fb-conf">What was confusing or did not work? <span class="foot">(optional)</span></label><textarea id="fb-conf" rows="2">${esc(D.confusing||'')}</textarea></div>
+   <div class="ctrl"><label for="fb-sug">One suggestion to improve this experiment <span class="foot">(optional)</span></label><textarea id="fb-sug" rows="2">${esc(D.suggest||'')}</textarea></div>
+   <div class="btnrow"><button class="btn" type="button" id="fbsend">Submit feedback</button><span class="foot" id="fbmsg" aria-live="polite"></span></div></fieldset>`;}
+function fbPayload(P,F){return {type:'feedback',version:VERSION,reportId:reportId(P),process:P.abbr,name:report.name.trim(),usn:report.usn.trim().toUpperCase(),section:report.sec,batch:report.batch,institution:report.inst,classCode:(report.code||'').trim(),
+  q1:F.q1,q2:F.q2,q3:F.q3,q4:F.q4,q5:F.q5,q6:F.q6,time:F.time,device:F.device,helped:F.helped,confusing:F.confusing,suggest:F.suggest,clientTime:F.t};}
+function fbBind(P){const box=$('#fbbox');if(!box)return;
+  const ed=$('#fbedit');if(ed){ed.onclick=()=>{report.fbd=report.fbd||{};report.fbd[P.id]={...report.fb[P.id]};delete report.fb[P.id];save();renderReport(P);setTimeout(()=>{const b=$('#fbbox');b&&b.scrollIntoView({block:'start'});},0);};return;}
+  const D=fbDraft(P.id);
+  box.addEventListener('change',e=>{const t=e.target;if(t.name&&t.name.startsWith('fb-'))D[t.name.slice(3)]=+t.value;if(t.id==='fb-time')D.time=t.value;if(t.id==='fb-dev')D.device=t.value;save();});
+  [['fb-help','helped'],['fb-conf','confusing'],['fb-sug','suggest']].forEach(([id,k])=>$('#'+id).oninput=e=>{D[k]=e.target.value;save();});
+  $('#fbsend').onclick=async()=>{const m=$('#fbmsg');const miss=FBQ.filter(([k])=>!D[k]).map((x,i)=>FBQ.indexOf(x)+1);
+    if(!report.name.trim()||!report.usn.trim()){m.innerHTML='<span class="bad">Enter your name and USN at the top of the form first.</span>';return;}
+    if(miss.length){m.innerHTML=`<span class="bad">Rate every statement. Missing: ${miss.join(', ')}.</span>`;return;}
+    if(!D.time||!D.device){m.innerHTML='<span class="bad">Choose the time spent and the device used.</span>';return;}
+    if(!(D.helped||'').trim()||D.helped.trim().length<5){m.innerHTML='<span class="bad">Tell us briefly what helped you most.</span>';return;}
+    const F={...D,t:new Date().toISOString(),sent:null};
+    if(CFG.submitUrl){$('#fbsend').disabled=true;m.textContent='Sending…';let r=null;
+      try{const x=await fetch(CFG.submitUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(fbPayload(P,F))});r=await x.json();}catch(e){r={unconfirmed:true};}
+      $('#fbsend').disabled=false;
+      if(r&&r.error==='class code'){m.innerHTML='<span class="bad">Class code not accepted.</span> Enter the class code your faculty gave you (below), then submit again.';return;}
+      F.sent=!!(r&&(r.ok||r.unconfirmed));}
+    else F.sent=false;
+    report.fb[P.id]=F;delete report.fbd[P.id];save();renderReport(P);};}
+function fbGate(P){const ok=!!report.fb[P.id];['rprint','rdl','rsub'].forEach(id=>{const b=$('#'+id);if(!b)return;if(!ok){b.disabled=true;b.title='Complete the feedback form first';}else if(id!=='rsub'||CFG.submitUrl){b.disabled=false;b.title='';}});
+  const sh=$('#sheet');if(sh)sh.classList.toggle('fblocked',!ok);
+  if(!ok){const r=$('#rmsg');if(r)r.textContent='Complete the feedback form above to unlock printing and download.';}}
+const _renderReport5=renderReport;
+renderReport=function(P){lsnStop();_renderReport5(P);const anchor=$('#rform .subbox')||$('#rform .btnrow.wide');if(anchor)anchor.insertAdjacentHTML('beforebegin',fbHTML(P));
+  fbBind(P);fbGate(P);
+  if(!report.fb[P.id]&&!$('#printlock'))$('#sheet').insertAdjacentHTML('beforebegin','<p class="printlock" id="printlock">This report cannot be printed until the feedback form is complete.</p>');};
+const _sheetHTML5=sheetHTML;
+sheetHTML=function(P){const F=report.fb[P.id];let h=_sheetHTML5(P);
+  return h.replace('Simulation record for teaching.',F?`Student feedback recorded ${new Date(F.t).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}. Simulation record for teaching.`:'Simulation record for teaching.');};
+const _submitPayload5=submitPayload;
+submitPayload=function(P){const d=_submitPayload5(P);const F=report.fb[P.id];d.feedbackAt=F?F.t:'';return d;};
+// ================= v4.3: numericals with graded hints =================
+renderNum=function(P){
+  const S=numS[P.id]||(numS[P.id]={cur:NUM[P.id](),done:false,tried:0,solved:0,attempted:0,hintN:0,withHints:0,hintsTotal:0});
+  if(S.hintN==null){S.hintN=0;S.withHints=S.withHints||0;S.hintsTotal=S.hintsTotal||0;}
+  const c=S.cur,H=c.hints||[];
+  $('#pane').innerHTML=`<div class="quiz"><p class="aim"><b>Numerical problems.</b> ${NUM_TYPES[P.id].length} problem types, each with fresh random values. Answers within ±2 % are accepted. Stuck? Open a hint; hints used are noted in your report.</p>
+  <div class="score"><span>This session: ${S.solved} solved of ${S.attempted} attempted${S.withHints?` · ${S.withHints} with hints`:''}</span></div>
+  <div class="card numcard"><p class="numq">${c.q}</p>
+  <div class="hints" id="nhints">${H.slice(0,S.hintN).map((h,i)=>`<div class="hint"><b>Hint ${i+1}.</b> ${h}</div>`).join('')}</div>
+  <form id="nform" class="numrow" onsubmit="return false"><label for="nans" class="sr">Your answer in ${c.unit}</label><input id="nans" inputmode="decimal" autocomplete="off" placeholder="Your answer" ${S.done?'disabled':''}><span class="mono">${c.unit}</span>
+  <button class="btn" type="submit" ${S.done?'disabled':''}>Check</button>
+  ${!S.done&&S.hintN<H.length?`<button class="btn ghost" type="button" id="nhint">Hint ${S.hintN+1} of ${H.length}</button>`:''}
+  <button class="btn ghost" type="button" id="nshow">${S.done?'New problem':'Show solution'}</button></form>
+  <div id="nfb" aria-live="polite">${S.done?S.fb:''}</div></div></div>`;
+  const sol=`<div class="why"><b>Solution.</b> ${c.sol}</div>`;
+  const hb=$('#nhint');if(hb)hb.onclick=()=>{S.hintN++;S.hintsTotal++;const v=$('#nans').value;renderNum(P);$('#nans').value=v;$('#nans').focus();};
+  $('#nform').onsubmit=()=>{const v=parseFloat($('#nans').value.replace(/,/g,''));if(!isFinite(v)){$('#nfb').innerHTML='<div class="why">Enter a number.</div>';return false;}
+    S.tried++;const ok=c.ans===0?Math.abs(v)<1e-9:Math.abs(v/c.ans-1)<=0.02;
+    if(ok){S.solved++;S.attempted++;if(S.hintN)S.withHints++;S.done=true;S.fb=`<div class="why"><b class="ok">Correct${S.hintN?` (with ${S.hintN} hint${S.hintN>1?'s':''})`:''}.</b> Exact answer ${fmt(c.ans)} ${c.unit}.</div>`+sol;renderNum(P);}
+    else{$('#nfb').innerHTML=`<div class="why"><b class="bad">Not yet.</b> Your answer is ${((v/c.ans-1)*100).toFixed(0)} % ${v>c.ans?'high':'low'}. Check units${S.hintN<H.length?', or open a hint':''}.</div>`;}
+    return false;};
+  $('#nshow').onclick=()=>{if(S.done){numS[P.id]={cur:NUM[P.id](),done:false,tried:0,solved:S.solved,attempted:S.attempted,hintN:0,withHints:S.withHints,hintsTotal:S.hintsTotal};renderNum(P);return;}
+    S.attempted++;S.done=true;S.fb=`<div class="why">Answer: <b>${fmt(c.ans)} ${c.unit}</b>.</div>`+sol;renderNum(P);};
+};
+// report + submission: note hint use
+const _sheetHTML6=sheetHTML;
+sheetHTML=function(P){const N=numS[P.id];let h=_sheetHTML6(P);
+  if(N&&N.withHints)h=h.replace(`${N.solved} solved of ${N.attempted}`,`${N.solved} solved of ${N.attempted} (${N.withHints} with hints)`);return h;};
+const _submitPayload6=submitPayload;
+submitPayload=function(P){const d=_submitPayload6(P);const N=numS[P.id];d.numWithHints=N?N.withHints||0:0;return d;};
+// ================= v4.3: narrated explainers with concept checks =================
+// EXPL[id].scenes = [{title, lines:[[narration, cue]], q:{q,o,a,why}}]
+// Cues act on the process schematic (640×400 coordinates): box:[x,y,w,h] or ring:[x,y,r] spotlight,
+// set:{param:value} animates the simulator, show:[output keys] puts live readouts on screen.
+// EDM uses its own close-up animation (custom:true). Checks were written to differ from every pre-test and post-test question.
+const EXPL={
+ edm:{custom:true,scenes:[
+  {title:'The set-up',lines:[
+   ['EDM removes metal with electric sparks, not with cutting force. The tool never touches the workpiece.','intro'],
+   ['The tool electrode, usually copper or graphite, and the workpiece sit in a bath of dielectric fluid, an oil that does not normally conduct electricity.','parts'],
+   ['A servo motor holds a tiny gap between them, typically ten to fifty micrometres, much thinner than a human hair.','gap'],
+   ['A spark needs current to flow through both the tool and the work. So the workpiece must conduct electricity. Glass or ordinary ceramic simply cannot be machined this way.','glass']],
+   q:{q:'Why does EDM need a servo to control the tool position?',o:['To press the tool firmly against the workpiece','To keep the spark gap constant as metal is removed','To vibrate the tool at ultrasonic frequency','To rotate the tool and spread the wear'],a:1,
+    why:'As sparks erode the work, the gap would grow and sparking would stop. The servo advances the tool to hold the gap at a few tens of micrometres. If the gap closed completely the tool would short-circuit against the work.'}},
+  {title:'A spark forms',lines:[
+   ['Let us zoom in to the gap, about a thousand times. Both surfaces are rough at this scale. The generator now applies a voltage, typically eighty to three hundred volts.','volt'],
+   ['The dielectric resists at first. The electric field is strongest where the two surfaces come closest, here.','closest'],
+   ['When the field is strong enough, the fluid breaks down at that point. A spark jumps across, the voltage drops and current starts to flow.','break'],
+   ['The spark becomes a thin channel of plasma, hotter than eight thousand degrees Celsius.','plasma']],
+   q:{q:'Where in the gap does the spark strike?',o:['Always at the centre of the tool','At the point where the gap is smallest','At a random point far from the tool','Only at the edge of the workpiece'],a:1,
+    why:'The electric field is strongest where the gap is smallest, so the dielectric breaks down there first. That is why EDM removes the high spots first and spreads sparks evenly over the surface.'}},
+  {title:'Melting and flushing',lines:[
+   ['The plasma melts and vaporises a tiny pool of metal on the workpiece, and a smaller one on the tool.','melt'],
+   ['Vaporised fluid forms a bubble around the channel.','bubble'],
+   ['Then the pulse switches off. The plasma collapses, the bubble implodes and the molten metal is blown out, leaving a small crater.','off'],
+   ['During the off time the fluid flushes the debris away and becomes insulating again. The next spark then finds the new closest point, and the cycle repeats thousands of times a second.','repeat']],
+   q:{q:'At what moment is most of the molten metal thrown out of the crater?',o:['As soon as the voltage is applied','While the plasma channel is at its hottest','When the pulse ends and the plasma and bubble collapse','Only when the servo retracts the tool'],a:2,
+    why:'During the pulse the metal melts but is held in place by the pressure of the plasma. When the current stops, the pressure drops suddenly, the bubble implodes and the molten pool is blown out as debris.'}},
+  {title:'Current and finish',lines:[
+   ['Each spark is one pulse. You set its peak current, I p, its on-time, t on, and its off-time, t off.','wave'],
+   ['The energy of one spark is roughly voltage times current times on-time. More energy melts a bigger crater.','energy'],
+   ['Low current gives many small, shallow craters: slow removal but a fine finish. High current gives large, deep craters: fast removal but a rough surface.','compare'],
+   ['So moulds are made in two stages: high current for roughing, then low current for finishing.','stages']],
+   q:{q:'A mould cavity must be made quickly and end with a very fine finish. What is the best plan?',o:['Use low current throughout','Use high current throughout and polish by hand','Rough at high current, then finish at low current','Use high current with a very long off-time'],a:2,
+    why:'High current removes the bulk quickly but leaves deep craters. A final pass at low current removes that rough layer with small craters, giving the fine finish without spending hours at low current.'}},
+  {title:'Copying the shape',lines:[
+   ['The tool also erodes, a little. Electrode material and polarity are chosen so that the workpiece erodes much faster than the tool.','wear'],
+   ['As sparks remove metal, the servo feeds the tool down to keep the gap constant.','feed'],
+   ['The result is a cavity that is a mirror image of the tool, slightly larger than the tool by the spark gap. This is called the overcut.','cavity'],
+   ['Spark, melt, flush, repeat. That is how EDM shapes hardened steel and carbide that no cutting tool could touch.','end']],q:null}]},
+
+ usm:{scenes:[
+  {title:'The vibrating tool',lines:[
+   ['Ultrasonic machining makes a tool vibrate up and down about twenty thousand times a second.',{box:[245,20,150,80]}],
+   ['A piezoelectric stack turns the electrical signal into vibration. The tapered horn then magnifies it, so the tool tip moves through twenty to fifty micrometres.',{box:[255,92,132,170]}],
+   ['The tool is a tough, soft metal such as mild steel. It never cuts by itself; it only hammers.',{ring:[320,276,38]}]],
+   q:{q:'What does the tapered horn between the transducer and the tool do?',o:['Converts electrical energy into vibration','Magnifies the vibration amplitude and carries it to the tool','Supplies the abrasive slurry to the tool','Cools the transducer'],a:1,
+    why:'The transducer makes the vibration; the horn narrows towards the tool so that the amplitude at the tip is several times larger. The tool is brazed or screwed to the end of the horn.'}},
+  {title:'Hammering the grains',lines:[
+   ['A slurry of hard abrasive grains, such as boron carbide in water, flows into the gap under the tool.',{box:[110,185,180,90]}],
+   ['Each down-stroke hammers grains into the brittle work. A tiny chip breaks off at every impact, millions of times a minute.',{ring:[320,290,40]}],
+   ['Fresh slurry must keep flowing, to carry the chips away and bring sharp grains in.',{box:[150,258,340,16]}]],
+   q:{q:'What would happen if the slurry supply stopped in the middle of a cut?',o:['The tool would start cutting the work directly, faster','Removal would almost stop, because the grains do the cutting and must be renewed','The work would begin to melt','The vibration amplitude would increase'],a:1,
+    why:'The tool only delivers the blows; the abrasive grains chip the work. Without fresh slurry the grains in the gap crush and blunt, the chips are not carried away, and removal practically stops.'}},
+  {title:'Changing the settings',lines:[
+   ['Watch the removal rate as the amplitude rises from twenty-five to fifty micrometres.',{set:{A0:50},show:['mrr','Ra']}],
+   ['Coarser grit also cuts faster, but notice the surface roughness more than doubles.',{set:{d:120},show:['mrr','Ra']}],
+   ['Too much static force crushes the grains under the tool, so for each job there is a best force.',{box:[400,20,140,70],show:['mrr']}]],
+   q:{q:'Why does coarser grit give a rougher surface in USM?',o:['The tool vibrates harder with coarse grit','Each impact breaks off a larger chip, leaving deeper pits','Coarse grit makes the slurry hotter','There are more grains under the tool'],a:1,
+    why:'A larger grain is driven deeper into the work at each blow, so the fracture crater it leaves is larger. Fine grit is used for finishing passes for the same reason.'}}]},
+
+ ecm:{scenes:[
+  {title:'The electrochemical cell',lines:[
+   ['In electrochemical machining, the workpiece is the anode and the shaped tool is the cathode of a low-voltage, high-current DC supply.',{box:[25,38,95,50]}],
+   ['A salt solution, the electrolyte, is pumped through the gap between them at high speed.',{box:[75,175,500,35]}],
+   ['The gap is only a few tenths of a millimetre, and the tool never touches the work.',{ring:[320,185,42],show:['ge']}]],
+   q:{q:'Why must the electrolyte flow through the gap at high speed?',o:['To keep the DC supply cool','To push the tool away from the work','To carry away heat, hydrogen gas and sludge so the gap stays uniform','To bring metal ions to the tool surface'],a:2,
+    why:'The current heats the electrolyte, hydrogen bubbles form at the tool and dissolved metal forms sludge. All three change the conductivity in the gap. A fast flow sweeps them out so machining stays even.'}},
+  {title:'Metal dissolves',lines:[
+   ['Current flows through the electrolyte. Metal atoms on the work surface give up electrons and dissolve as ions.',{ring:[270,198,48]}],
+   ['The dissolved metal leaves the gap as a hydroxide sludge, carried away by the flow.',{box:[440,175,150,25]}],
+   ['Where the gap is narrowest, the current density is highest, so those high spots dissolve fastest. The work slowly takes the shape of the tool.',{ring:[330,182,40]}]],
+   q:{q:'Why does the workpiece end up as a copy of the tool shape?',o:['The tool presses its shape into the softened work','Narrow parts of the gap carry more current and dissolve faster until the gap evens out','The electrolyte deposits metal where the gap is wide','The tool wears until it matches the work'],a:1,
+    why:'Current density is inversely related to gap size. High spots on the work see a smaller gap, carry more current and dissolve faster, so every point settles at the same equilibrium gap and the work mirrors the tool.'}},
+  {title:'Feed and current',lines:[
+   ['Now triple the feed rate, from one to three millimetres per minute. Watch the gap close and the current rise to keep up.',{set:{f:3},show:['ge','I']}],
+   ['The removal rate depends only on the current, not on how hard the metal is. That is why ECM shapes superalloys as easily as mild steel.',{show:['mrr','I']}]],
+   q:{q:'The tool feed rate is tripled at the same voltage. What happens to the equilibrium gap?',o:['It triples','It stays the same','It shrinks to about one third','The tool touches the work at once'],a:2,
+    why:'At equilibrium the dissolution rate must equal the feed rate. A faster feed is matched only by a higher current density, which needs a smaller gap: the equilibrium gap is inversely proportional to feed rate.'}}]},
+
+ lbm:{scenes:[
+  {title:'Making a hot spot',lines:[
+   ['A laser produces a beam of light of a single wavelength. A fiber laser emits at about one micrometre.',{box:[28,36,226,54]}],
+   ['A mirror turns the beam down, and a lens focuses it to a spot about a tenth of a millimetre across.',{ring:[422,132,34]}],
+   ['Focusing concentrates the power to millions of watts per square centimetre, enough to melt steel in milliseconds.',{ring:[422,236,26],show:['I']}]],
+   q:{q:'Why is the beam focused to a small spot instead of being used as a wide beam?',o:['So that the beam travels further','To change the wavelength of the light','To concentrate the power so the intensity is high enough to melt metal','To keep the lens cool'],a:2,
+    why:'The total power stays the same, but squeezing it into a tiny area raises the intensity by thousands of times. Only then does the surface heat faster than conduction can carry the heat away.'}},
+  {title:'Cutting the sheet',lines:[
+   ['The spot melts a narrow column right through the sheet.',{ring:[422,246,28]}],
+   ['Gas from the nozzle blows the melt out of the bottom of the cut as a shower of molten droplets.',{box:[396,146,56,80]}],
+   ['As the sheet moves, the cut becomes a narrow kerf, only a few tenths of a millimetre wide.',{box:[320,232,200,30],show:['kerf']}]],
+   q:{q:'In melt-and-blow laser cutting, what is the main job of the gas jet?',o:['To cool the laser source','To focus the beam onto the sheet','To blow the molten metal out of the kerf','To clean the turning mirror'],a:2,
+    why:'The laser only melts the metal. The gas jet carries the melt out through the bottom of the kerf; without it, the melt would refreeze in the cut.'}},
+  {title:'Power and thickness',lines:[
+   ['Watch the cutting speed as power doubles from two to four kilowatts.',{set:{P:4000},show:['u','haz']}],
+   ['Now make the sheet three times thicker, from three to nine millimetres, at the same power.',{set:{t:9},show:['u','haz']}],
+   ['The speed falls to about a third, and the slower cut lets more heat soak into the edges.',{show:['u','haz']}]],
+   q:{q:'At the same power, a laser cuts 3 mm steel at about 3.8 m/min. Roughly how fast will it cut 9 mm steel?',o:['About 3.8 m/min','About 1.3 m/min','About 7.6 m/min','It cannot cut 9 mm at all'],a:1,
+    why:'Three times the thickness means three times the metal to melt per millimetre of cut, so speed falls to about a third, and a little more because more heat is lost in a thicker sheet.'}}]},
+
+ ebm:{scenes:[
+  {title:'The electron gun',lines:[
+   ['In electron beam machining, a hot tungsten filament releases a cloud of electrons.',{ring:[310,25,28]}],
+   ['A voltage of up to a hundred and fifty kilovolts accelerates them to more than half the speed of light.',{box:[250,52,140,30]}],
+   ['Magnetic lenses focus the beam to a fine spot, and deflection coils steer it, all inside a vacuum.',{box:[240,105,160,112]}]],
+   q:{q:'How can EBM drill holes at different points on a part without moving the part?',o:['Mirrors tilt to aim the beam','Deflection coils bend the beam magnetically','The filament is rotated','The anode is moved sideways'],a:1,
+    why:'Electrons are charged, so a magnetic field bends their path. Deflection coils steer the beam across the part in microseconds, which is how thousands of holes can be drilled quickly.'}},
+  {title:'Drilling by pulses',lines:[
+   ['When the electrons hit the work, their kinetic energy turns into heat within a few micrometres of the surface.',{ring:[320,292,30],show:['del']}],
+   ['The metal vaporises in microseconds, so each pulse drills a little deeper.',{ring:[320,312,32],show:['n']}],
+   ['Pulsing the beam keeps the heat local, so the zone affected by heat around each hole stays very small.',{ring:[320,310,48]}]],
+   q:{q:'Why is the beam pulsed rather than left on continuously when drilling?',o:['To save the filament','So heat has no time to spread, keeping the hole clean and the heat-affected zone small','To stop X-rays completely','Because the vacuum pump needs breaks'],a:1,
+    why:'Each short, intense pulse vaporises metal before the heat can conduct into the surrounding material. A continuous beam would melt a wide area and leave a poor, heat-damaged hole.'}},
+  {title:'Current and thickness',lines:[
+   ['Watch the drilling time as the beam current doubles.',{set:{I:20},show:['th','n']}],
+   ['A plate three times thicker needs many more pulses.',{set:{t:3},show:['th','n']}],
+   ['That is why EBM suits thousands of fine holes in thin parts, such as turbine cooling holes and filters.',{ring:[320,310,60]}]],
+   q:{q:'Which job is EBM best suited to?',o:['A 50 mm deep blind cavity in a forging die','Thousands of 0.1 mm holes in a thin combustor liner','Cutting 20 mm steel plate','Polishing a glass lens'],a:1,
+    why:'EBM drills small, high aspect-ratio holes in thin sections very fast with little heat damage. Large volumes or thick plate would take too many pulses, and it cannot polish.'}}]},
+
+ chm:{scenes:[
+  {title:'Mask and bath',lines:[
+   ['Chemical machining dissolves metal in a tank of etchant. There is no tool and no cutting force.',{box:[44,42,180,28]}],
+   ['First the part is coated with a maskant, and the coating is cut away wherever metal must be removed.',{box:[68,156,98,22]}],
+   ['Then the whole part goes into the etchant, here hot sodium hydroxide for aluminium.',{box:[150,160,340,36],show:['r']}]],
+   q:{q:'Why can chemical machining thin a large aircraft skin panel without distorting it?',o:['The etchant hardens the metal','No cutting force or heat is applied, so no stresses are put into the part','The maskant holds the panel flat','The panel is frozen during etching'],a:1,
+    why:'Conventional milling clamps the part and pushes on it with a cutter, which distorts thin panels. Etching removes metal uniformly with no force, so even very thin, large parts stay flat.'}},
+  {title:'Depth and undercut',lines:[
+   ['The etchant attacks every exposed surface at the same rate, so the floor sinks evenly.',{ring:[320,182,40],show:['d']}],
+   ['But it also eats sideways, under the edge of the mask. This is the undercut.',{ring:[160,180,22],show:['u']}],
+   ['Leave the part in three times longer and both the depth and the undercut grow.',{set:{time:90},show:['d','u']}]],
+   q:{q:'Why does the etched groove end up wider than the opening cut in the mask?',o:['The maskant shrinks in the hot bath','The etchant also attacks sideways, under the edge of the mask','The metal expands while it is hot','The bubbles push the mask aside'],a:1,
+    why:'Etching proceeds in all directions from every exposed surface. As the groove deepens, its walls also move outwards beneath the mask, so the groove is wider than the mask opening by twice the undercut.'}},
+  {title:'Temperature and agitation',lines:[
+   ['Watch the etch rate as the bath is heated from fifty to seventy degrees.',{set:{T:70},show:['r']}],
+   ['Spraying the etchant brings fresh chemical to the surface and speeds it up further.',{set:{ag:'spray'},show:['r']}],
+   ['Because the rate is so sensitive, bath temperature must be held within a degree or two, or depths will vary from part to part.',{box:[44,42,180,28],show:['r']}]],
+   q:{q:'A batch of parts came out with different etch depths. What is the most likely cause?',o:['The bath temperature drifted during etching','The maskant was the wrong colour','The parts were too hard','The etchant was agitated too evenly'],a:0,
+    why:'Etch rate rises roughly exponentially with temperature, so a drift of a few degrees changes the depth noticeably. Hardness has almost no effect on chemical attack.'}}]},
+
+ afm:{scenes:[
+  {title:'The flowing tool',lines:[
+   ['Abrasive flow machining polishes internal passages that no rigid tool can reach.',{box:[298,172,36,155]}],
+   ['A putty-like media, loaded with abrasive grit, fills two cylinders on either side of the part.',{box:[240,20,160,142]}],
+   ['Pistons push the media through the passage and back again. Each round trip is one cycle.',{box:[240,335,160,45],show:['Ra']}]],
+   q:{q:'Why is AFM chosen for finishing internal passages instead of grinding?',o:['It is faster than grinding on flat surfaces','The flexible media takes the shape of the passage and reaches where a rigid tool cannot','It needs no abrasive','It works only on soft metals'],a:1,
+    why:'The media behaves like a stiff putty: it flows into any passage shape, including bends and cross-holes, and abrades the walls as it is forced through.'}},
+  {title:'Where it cuts',lines:[
+   ['As the media squeezes into the narrow passage, it stiffens and presses the grit hard against the walls.',{box:[298,172,36,155]}],
+   ['The grit scrapes off peaks and burrs, so roughness falls quickly at first.',{show:['Ra']}],
+   ['Later cycles remove less and less, because the peaks are already gone.',{set:{n:80},show:['Ra']}]],
+   q:{q:'Why does AFM remove the most material where the passage narrows?',o:['The media is hottest there','The media is squeezed hardest there, so the grit presses and scrapes harder','The grit only sticks to narrow walls','The pistons slow down there'],a:1,
+    why:'Forcing the media through a restriction raises its pressure and shear. The grit is pressed harder against the walls there, so restrictions, sharp edges and burrs are finished first.'}},
+  {title:'Pressure and grit',lines:[
+   ['Watch the roughness after twenty cycles as the extrusion pressure rises from six to ten megapascals.',{set:{p:10},show:['Ra']}],
+   ['Adding more abrasive to the media also cuts faster.',{set:{C:60},show:['Ra']}],
+   ['Finer grit gives a smoother final surface, but it needs more cycles to get there.',{show:['Ra']}]],
+   q:{q:'You need a smoother final finish and can accept a longer cycle time. What should you change?',o:['Use finer grit','Use fewer cycles','Raise the pressure only','Remove the abrasive from the media'],a:0,
+    why:'Finer grit makes shallower scratches, so the lowest roughness it can reach is lower. It removes material more slowly, which is why more cycles are needed.'}}]},
+
+ mrf:{scenes:[
+  {title:'A fluid that stiffens',lines:[
+   ['Magnetorheological finishing uses a fluid full of tiny iron particles mixed with fine polishing abrasive.',{ring:[137,178,26]}],
+   ['The fluid is pumped onto a rotating wheel, forming a thin ribbon over its rim.',{box:[220,148,200,42]}],
+   ['Under the top of the wheel sits an electromagnet.',{box:[278,346,84,52],show:['P']}]],
+   q:{q:'Why is the MR fluid stiff at the polishing spot but runny everywhere else in its circuit?',o:['It cools down at the polishing spot','The magnetic field is applied only near the polishing zone','The abrasive settles at the top of the wheel','The optic presses it solid'],a:1,
+    why:'The electromagnet sets up a strong field only at the top of the wheel. There the iron particles chain together and the ribbon stiffens; elsewhere the fluid flows freely, so it can be pumped and recirculated.'}},
+  {title:'Polishing the optic',lines:[
+   ['In the field, the iron particles line up in chains, and the ribbon becomes a firm but flexible tool.',{ring:[320,152,34]}],
+   ['The lens is lowered into the ribbon. Abrasive grains are dragged across the glass and wear it away very gently.',{ring:[320,138,44],show:['rr']}],
+   ['Leaving the field, the fluid turns runny again and is sucked off the wheel to be reused.',{ring:[502,178,26]}]],
+   q:{q:'Why does MRF leave almost no scratches or subsurface damage, unlike polishing with a hard lap?',o:['The abrasive used is softer than glass','The stiffened fluid is compliant, so the force on each grain stays very low','The lens is rotated very slowly','The fluid dissolves the glass chemically'],a:1,
+    why:'The ribbon is stiff but not rigid. It conforms to the surface and limits the load each abrasive grain can apply, so grains shear material away without cracking the glass beneath.'}},
+  {title:'Field and dwell time',lines:[
+   ['Watch the removal rate as the field strength rises.',{set:{B:0.7},show:['rr','P']}],
+   ['Removal also rises with wheel speed.',{set:{v:3},show:['rr']}],
+   ['A computer varies how long the spot dwells at each point, removing more where the surface is high. This corrects lens shapes to a few nanometres.',{ring:[320,140,60]}]],
+   q:{q:'How does MRF correct a shape error of a few tenths of a micrometre across a lens?',o:['By changing the lens material','By varying how long the polishing spot dwells at each point','By switching the magnet on and off rapidly','By using a larger wheel'],a:1,
+    why:'The polishing spot removes a known depth per second. Measuring the surface error and then moving the spot slowly over high areas and quickly over low ones removes exactly the excess material.'}}]},
+
+ cmp:{scenes:[
+  {title:'The polisher',lines:[
+   ['Chemical mechanical planarisation flattens each layer of a microchip on a silicon wafer.',{ring:[418,240,62]}],
+   ['The wafer is held face-down in a carrier and pressed onto a polishing pad on a rotating platen.',{box:[340,208,160,64]}],
+   ['A slurry of chemicals and nanometre-sized abrasive is dripped onto the pad.',{ring:[150,115,36]}],
+   ['A diamond conditioner keeps roughening the pad, so it holds slurry and polishes at a steady rate.',{ring:[115,252,32]}]],
+   q:{q:'Why is the polishing pad continually roughened by the pad conditioner?',o:['To make the pad softer','To restore the pad texture that holds slurry, keeping the removal rate steady','To remove copper from the pad','To keep the pad cool'],a:1,
+    why:'Polishing glazes the pad and fills its pores with debris, so it carries less slurry and the rate falls. The diamond conditioner reopens the surface texture.'}},
+  {title:'Chemistry plus abrasion',lines:[
+   ['The chemistry softens the top few nanometres of the film; the abrasive then wipes the softened layer away.',{ring:[418,245,40],show:['rr']}],
+   ['High points on the wafer press harder against the pad, so they are removed faster. The surface becomes flat.',{ring:[418,240,62]}],
+   ['The gauge shows the film thinning.',{box:[30,25,165,42],show:['tclr']}]],
+   q:{q:'Why does CMP flatten the surface, rather than just thinning it evenly?',o:['The slurry collects in the low areas','Raised areas carry more pressure against the pad, so they wear faster','The carrier tilts the wafer','The low areas are harder'],a:1,
+    why:'The pad touches the high points first and hardest. Removal rate rises with local pressure, so steps are removed faster than the flat areas around them until the surface is level.'}},
+  {title:'Pressure and chemistry',lines:[
+   ['Watch the removal rate as the down-force rises.',{set:{P:50},show:['rr']}],
+   ['Now switch from an oxide film to copper, with its own slurry chemistry.',{set:{mat:'cu'},show:['rr']}],
+   ['Timing matters: polish too long and wide copper lines are scooped out.',{show:['rr','tclr']}]],
+   q:{q:'Changing only the film and its slurry changed the removal rate about six-fold. What does this show?',o:['Pressure has no effect in CMP','Chemistry, not just pressure and speed, controls the removal rate','The pad was replaced','The wafer became hotter'],a:1,
+    why:'The Preston coefficient depends strongly on the slurry chemistry and the film it reacts with. That is why each film, such as oxide, copper or tungsten, has its own slurry.'}}]},
+
+ ibm:{scenes:[
+  {title:'The ion source',lines:[
+   ['Ion beam machining removes material atom by atom, inside a vacuum chamber.',{box:[22,62,250,30]}],
+   ['Argon gas is ionised in the source, and charged grids accelerate the ions to about a thousand electron-volts.',{box:[48,146,116,108]}],
+   ['A neutraliser adds electrons to the beam, so insulating targets do not charge up.',{ring:[240,292,30]}]],
+   q:{q:'Why is argon, an inert gas, used for the ion beam?',o:['It is the lightest gas available','It is heavy enough to sputter well and does not react chemically with the target','It conducts electricity in the chamber','It cools the target'],a:1,
+    why:'Argon atoms are heavy enough to transfer plenty of momentum to target atoms, and being inert they remove material purely physically without contaminating it chemically.'}},
+  {title:'Sputtering',lines:[
+   ['Each argon ion strikes the target and sets off a cascade of collisions among its atoms.',{ring:[472,200,30]}],
+   ['A few surface atoms gain enough energy to fly off. This is sputtering.',{ring:[432,180,40],show:['Y']}],
+   ['Material comes away at only nanometres per minute, so IBM is used for final thinning and nanoscale patterns.',{show:['rr']}]],
+   q:{q:'Why is IBM unsuitable for removing a millimetre of material from a part?',o:['It cannot machine metals','It removes only nanometres per minute, so it would take far too long','It melts the part','The beam cannot be focused'],a:1,
+    why:'At about a hundred nanometres per minute, one millimetre would take around a week. IBM is for removing nanometres to micrometres with atomic-scale control.'}},
+  {title:'Energy and current',lines:[
+   ['Watch the removal rate as the ion energy rises from one thousand to eighteen hundred electron-volts.',{set:{E:1800},show:['rr','Y']}],
+   ['Doubling the current density sends twice as many ions per second.',{set:{J:2},show:['rr']}],
+   ['Materials sputter at very different rates. Gold comes off far faster than tungsten.',{set:{mat:'au'},show:['rr','Y']}]],
+   q:{q:'The ion current density is doubled at the same ion energy. What happens to the removal rate?',o:['It stays the same','It doubles','It halves','It rises four times'],a:1,
+    why:'Each ion removes, on average, the same number of atoms (the sputter yield). Twice as many ions per second therefore remove twice as many atoms per second.'}}]},
+};
+// EDM close-up animation (800×450), ported from the explainer sample
+const EDMX=(function(){
+// ---------------- canvas drawing ----------------
+let c=null;
+const W=800,H=450;const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const COL={ink:'#DDE7E5',muted:'#8FA3A0',fluid:'rgba(64,140,190,0.20)',fluidLine:'#3E86B4',steel:'#7D8B92',steelD:'#56636A',cu:'#C67A3E',cuD:'#8E5226',spark:'#FFF6C8',glow:'#FFB020',plasma:'#FF8A3D',melt:'#FF6A2F',meltT:'#FF9B6B',accent:'#4BB0CC',ok:'#6CC594',bad:'#F97066',grid:'rgba(221,231,229,0.08)'};
+function txt(s,x,y,o={}){c.font=`${o.w||400} ${o.s||13}px ${o.mono?'"JetBrains Mono",monospace':'"Atkinson Hyperlegible",sans-serif'}`;c.fillStyle=o.c||COL.ink;c.textAlign=o.a||'left';c.textBaseline=o.b||'alphabetic';c.fillText(s,x,y);}
+function arrow(x1,y1,x2,y2,col,w=1.5){c.strokeStyle=col;c.fillStyle=col;c.lineWidth=w;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();const a=Math.atan2(y2-y1,x2-x1);c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-8*Math.cos(a-.4),y2-8*Math.sin(a-.4));c.lineTo(x2-8*Math.cos(a+.4),y2-8*Math.sin(a+.4));c.closePath();c.fill();}
+function leader(x,y,tx,ty,label,col=COL.ink){c.strokeStyle=COL.muted;c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(tx,ty);c.stroke();c.fillStyle=COL.muted;c.beginPath();c.arc(x,y,2.5,0,7);c.fill();txt(label,tx+(tx>x?6:-6),ty+4,{a:tx>x?'left':'right',c:col,s:13.5,w:700});}
+function zigzag(x1,y1,x2,y2,amp,n){c.beginPath();c.moveTo(x1,y1);for(let i=1;i<n;i++){const f=i/n;c.lineTo(x1+(x2-x1)*f+(Math.random()-.5)*amp,y1+(y2-y1)*f);}c.lineTo(x2,y2);c.stroke();}
+function glowLine(fn,w,col,blur){c.save();c.shadowColor=COL.glow;c.shadowBlur=blur;c.strokeStyle=col;c.lineWidth=w;c.lineCap='round';fn();c.restore();}
+function bg(){c.fillStyle='#0C1416';c.fillRect(0,0,W,H);c.strokeStyle=COL.grid;c.lineWidth=1;for(let x=0;x<=W;x+=40){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}for(let y=0;y<=H;y+=40){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}}
+function badge(s){c.font='400 11px "JetBrains Mono",monospace';const w=c.measureText(s).width+14;c.fillStyle='rgba(12,20,22,0.8)';c.fillRect(W-w-8,H-28,w,20);txt(s,W-15,H-14,{a:'right',mono:true,s:11,c:COL.muted});}
+
+// --- full machine view
+function fullView(ph,t){
+  const tankX=250,tankY=190,tankW=440,tankH=225,lvl=225;
+  // generator
+  c.fillStyle='#16242A';c.strokeStyle=COL.muted;c.lineWidth=1.2;c.fillRect(30,150,150,92);c.strokeRect(30,150,150,92);
+  txt('Pulse',105,180,{a:'center',w:700,s:15});txt('generator',105,198,{a:'center',w:700,s:15});
+  const pulseOn=(t*6)%1<0.55;c.fillStyle=pulseOn?COL.glow:'#3a2a10';c.beginPath();c.arc(105,222,6,0,7);c.fill();
+  // tank + fluid
+  c.strokeStyle=COL.muted;c.lineWidth=2;c.beginPath();c.moveTo(tankX,tankY);c.lineTo(tankX,tankY+tankH);c.lineTo(tankX+tankW,tankY+tankH);c.lineTo(tankX+tankW,tankY);c.stroke();
+  c.fillStyle=COL.fluid;c.fillRect(tankX+1,lvl,tankW-2,tankY+tankH-lvl-1);
+  c.strokeStyle=COL.fluidLine;c.lineWidth=1.5;c.beginPath();for(let x=tankX;x<=tankX+tankW;x+=4)c.lineTo(x,lvl+Math.sin(x/18+t*2)*1.5);c.stroke();
+  // workpiece
+  const wx=345,wy=330,ww=250,wh=80;
+  c.fillStyle=COL.steel;c.fillRect(wx,wy,ww,wh);c.fillStyle=COL.steelD;c.fillRect(wx,wy+wh-8,ww,8);
+  // cavity (scene 5)
+  let cav=0;if(ph==='cavity'||ph==='end')cav=1;else if(ph==='feed')cav=Math.min(1,t/6)*0.8;
+  const toolW=80,tx=470-toolW/2;
+  const depth=46*cav,over=4;
+  if(cav>0){c.fillStyle='#0C1416';c.fillRect(tx-over,wy,toolW+2*over,depth);c.fillStyle=COL.fluid;c.fillRect(tx-over,wy,toolW+2*over,depth);
+    c.strokeStyle='#B9C4C9';c.lineWidth=1;c.strokeRect(tx-over,wy,toolW+2*over,depth);}
+  // tool + ram
+  const gapPx=6;const toolBottom=wy-gapPx+depth;
+  c.fillStyle='#2A3A40';c.fillRect(440,40,60,30);c.strokeStyle=COL.muted;c.strokeRect(440,40,60,30);txt('Servo',470,60,{a:'center',s:12,w:700});
+  c.fillStyle='#4A5A60';c.fillRect(460,70,20,toolBottom-70-90);
+  const ty0=toolBottom-90;c.fillStyle=COL.cu;
+  if(ph==='wear'||ph==='feed'||ph==='cavity'||ph==='end'){const r=ph==='wear'?Math.min(1,t/3)*7:7;c.beginPath();c.moveTo(tx,ty0);c.lineTo(tx+toolW,ty0);c.lineTo(tx+toolW,toolBottom-r);c.quadraticCurveTo(tx+toolW,toolBottom,tx+toolW-r,toolBottom);c.lineTo(tx+r,toolBottom);c.quadraticCurveTo(tx,toolBottom,tx,toolBottom-r);c.closePath();c.fill();}
+  else c.fillRect(tx,ty0,toolW,90);
+  c.fillStyle=COL.cuD;c.fillRect(tx,ty0,toolW,6);
+  // wires
+  c.strokeStyle=COL.muted;c.lineWidth=1.5;c.beginPath();c.moveTo(180,170);c.lineTo(400,170);c.lineTo(400,ty0+20);c.lineTo(tx,ty0+20);c.stroke();
+  c.beginPath();c.moveTo(180,225);c.lineTo(215,225);c.lineTo(215,395);c.lineTo(wx,395);c.stroke();
+  // sparks
+  if(ph!=='glass'&&pulseOn&&!RM||(RM&&ph!=='glass')){const sx=tx+8+((Math.floor(t*6)*37)%(toolW-16));glowLine(()=>zigzag(sx,toolBottom,sx,toolBottom+gapPx,4,3),1.6,COL.spark,10);}
+  // feed arrow
+  if(ph==='feed'){arrow(530,90,530,90+22+Math.sin(t*3)*3,COL.accent,2);txt('feed',540,108,{c:COL.accent,s:13,w:700});}
+  // labels
+  if(ph==='parts'){const k=Math.min(1,t/1.2);c.globalAlpha=k;leader(tx+toolW,ty0+40,640,150,'Tool electrode (Cu / graphite)',COL.cu);leader(wx+ww-30,wy+40,660,300,'Workpiece',COL.ink);leader(tankX+40,lvl+50,150,320,'Dielectric fluid',COL.accent);c.globalAlpha=1;}
+  if(ph==='intro'){txt('No contact. No cutting force.',W/2,130,{a:'center',s:17,w:700,c:COL.accent});}
+  if(ph==='gap'){// magnifier
+    const mx=640,my=150,R=70;c.strokeStyle=COL.accent;c.lineWidth=1.5;c.beginPath();c.moveTo(tx+toolW,toolBottom);c.lineTo(mx-R*0.7,my+R*0.7);c.stroke();
+    c.save();c.beginPath();c.arc(mx,my,R,0,7);c.clip();c.fillStyle='#0C1416';c.fillRect(mx-R,my-R,2*R,2*R);c.fillStyle=COL.fluid;c.fillRect(mx-R,my-R,2*R,2*R);
+    c.fillStyle=COL.cu;c.fillRect(mx-R,my-R,2*R,R-14);c.fillStyle=COL.steel;c.fillRect(mx-R,my+14,2*R,R);c.restore();
+    c.strokeStyle=COL.accent;c.lineWidth=2;c.beginPath();c.arc(mx,my,R,0,7);c.stroke();
+    arrow(mx+30,my-26,mx+30,my-14,COL.ink,1.2);arrow(mx+30,my+26,mx+30,my+14,COL.ink,1.2);txt('10–50 µm',mx-10,my+5,{a:'center',mono:true,s:12,w:600});
+    txt('gap',mx,my-R-8,{a:'center',s:13,w:700,c:COL.accent});}
+  if(ph==='glass'){const gx=70,gy=300;c.fillStyle='rgba(170,220,235,0.35)';c.strokeStyle='#BFE6F0';c.lineWidth=1.5;c.fillRect(gx,gy,120,50);c.strokeRect(gx,gy,120,50);txt('Glass',gx+60,gy+30,{a:'center',w:700});
+    const k=Math.min(1,t/1.5);c.strokeStyle=COL.bad;c.lineWidth=4;c.globalAlpha=k;c.beginPath();c.moveTo(gx-6,gy-6);c.lineTo(gx+126,gy+56);c.moveTo(gx+126,gy-6);c.lineTo(gx-6,gy+56);c.stroke();c.globalAlpha=1;
+    txt('No current, no spark',gx+60,gy+80,{a:'center',c:COL.bad,w:700});txt('Steel, carbide, titanium: OK',470,440,{a:'center',c:COL.ok,w:700,s:13});}
+  if(ph==='cavity'){c.strokeStyle=COL.accent;c.lineWidth=1.2;arrow(tx+toolW+over+76,wy+depth-8,tx+toolW+over+2,wy+depth-8,COL.accent,1.4);txt("overcut = spark gap",tx+toolW+over+82,wy+depth-4,{c:COL.accent,s:13,w:700});
+    txt('Cavity = mirror image of tool',470,445,{a:'center',w:700,s:14});}
+  if(ph==='wear'){txt('Tool wear ratio: usually a few %',470,180,{a:'center',c:COL.cu,w:700,s:14});}
+  if(ph==='end'){txt('Spark · melt · flush · repeat',W/2,140,{a:'center',s:22,w:700,c:COL.glow});}
+  badge('Full view · not to scale');
+}
+
+// --- zoomed gap view (scenes 2 and 3)
+const NPT=81;const tSurf=[],wSurf=[];
+(function(){seed=5;for(let i=0;i<NPT;i++){const x=i*10;tSurf.push(150+12*rnd()+6*Math.sin(i*.7));wSurf.push(300-12*rnd()-6*Math.sin(i*.9+1));}})();
+const SX=400;// narrowest point x
+function wPeak(x,eroded){return eroded?0:34*Math.exp(-(((x-SX)/22)**2));}
+function surfY(arr,x){const i=Math.max(0,Math.min(NPT-2,Math.floor(x/10)));const f=x/10-i;return arr[i]*(1-f)+arr[i+1]*f;}
+const CRATERS=[[400,26,14],[290,22,11],[515,24,12],[200,20,10],[610,22,11],[345,18,9],[460,20,10],[560,18,9],[250,18,9],[680,20,10]];
+function gapView(ph,t,sceneT){
+  const eroded=['off','repeat'].includes(ph);
+  // fluid
+  c.fillStyle=COL.fluid;c.fillRect(0,0,W,H);
+  // ions/fluid specks
+  c.fillStyle='rgba(140,200,230,0.35)';seed=99;for(let i=0;i<60;i++){const x=rnd()*W,y=170+rnd()*120;c.fillRect((x+t*8)%W,y+Math.sin(t+i)*2,2,2);}
+  // tool (top)
+  c.fillStyle=COL.cu;c.beginPath();c.moveTo(0,0);for(let x=0;x<=W;x+=10)c.lineTo(x,surfY(tSurf,x));c.lineTo(W,0);c.closePath();c.fill();
+  txt('Tool',20,40,{w:700,s:16,c:'#2b1606'});
+  // work (bottom)
+  c.fillStyle=COL.steel;c.beginPath();c.moveTo(0,H);for(let x=0;x<=W;x+=5)c.lineTo(x,surfY(wSurf,x)-wPeak(x,eroded));c.lineTo(W,H);c.closePath();c.fill();
+  txt('Workpiece',20,H-24,{w:700,s:16,c:'#1d2427'});
+  // craters
+  let nC=0;if(ph==='off')nC=t>1.2?1:0;if(ph==='repeat')nC=1+Math.min(CRATERS.length-1,Math.floor(t/0.8));
+  for(let k=0;k<nC;k++){const [x,rw,rd]=CRATERS[k];const y=surfY(wSurf,x);c.fillStyle='#16343F';c.beginPath();c.ellipse(x,y,rw,rd,0,0,Math.PI);c.fill();c.strokeStyle='#C5D0D4';c.lineWidth=1.5;c.beginPath();c.ellipse(x,y,rw,rd,0,0,Math.PI);c.stroke();
+    // small rim
+    c.fillStyle='#9AA7AD';c.beginPath();c.ellipse(x-rw,y,4,2.5,0,0,7);c.ellipse(x+rw,y,4,2.5,0,0,7);c.fill();}
+  const ty=surfY(tSurf,SX),wy=surfY(wSurf,SX)-wPeak(SX,eroded);
+  // field lines
+  if(ph==='volt'||ph==='closest'){const k=ph==='volt'?Math.min(1,t/3):1;c.setLineDash([4,6]);c.lineDashOffset=-t*20;for(let x=60;x<W;x+=50){const a=surfY(tSurf,x),b=surfY(wSurf,x)-wPeak(x,false);const d=b-a;c.strokeStyle=`rgba(75,176,204,${(0.15+0.6*k*Math.min(1,70/d))})`;c.lineWidth=x===SX?2.5:1.2;c.beginPath();c.moveTo(x,a+3);c.lineTo(x,b-3);c.stroke();}c.setLineDash([]);}
+  if(ph==='closest'){const p=0.5+0.5*Math.sin(t*5);c.strokeStyle=COL.glow;c.lineWidth=2;c.beginPath();c.arc(SX,(ty+wy)/2,26+p*6,0,7);c.stroke();leader(SX+30,(ty+wy)/2,560,215,'Smallest gap: strongest field',COL.glow);}
+  // spark & plasma
+  const showSpark=(ph==='break'&&t>0.8)||ph==='plasma'||ph==='melt'||ph==='bubble';
+  if(ph==='break'&&t<0.8){c.fillStyle=`rgba(255,240,180,${0.3*Math.random()})`;c.beginPath();c.arc(SX,(ty+wy)/2,8,0,7);c.fill();}
+  if(ph==='bubble'||(ph==='off'&&t<1.2)){const r=ph==='bubble'?20+Math.min(1,t/2)*45:Math.max(0,65*(1-t/0.6));if(r>0){c.fillStyle='rgba(220,240,255,0.10)';c.strokeStyle='rgba(220,240,255,0.55)';c.lineWidth=1.5;c.beginPath();c.ellipse(SX,(ty+wy)/2,r*0.9,Math.min(r,(wy-ty)/2+10),0,0,7);c.fill();c.stroke();}
+    if(ph==='bubble')leader(SX+55,(ty+wy)/2-20,600,170,'Vapour bubble',COL.ink);}
+  if(showSpark){const wch=ph==='break'?3:ph==='plasma'?3+Math.min(1,t/1.5)*9:12;
+    c.save();const g=c.createLinearGradient(SX-wch*2,0,SX+wch*2,0);g.addColorStop(0,'rgba(255,122,26,0)');g.addColorStop(.5,'rgba(255,122,26,0.85)');g.addColorStop(1,'rgba(255,122,26,0)');c.fillStyle=g;c.shadowColor=COL.glow;c.shadowBlur=30;c.fillRect(SX-wch*2,ty,wch*4,wy-ty);c.restore();
+    glowLine(()=>zigzag(SX,ty,SX,wy,wch*0.8,7),2.5,COL.spark,24);
+    if(ph==='plasma'){leader(SX+20,(ty+wy)/2,580,215,'Plasma channel',COL.plasma);txt('> 8 000 °C',588,236,{c:COL.plasma,mono:true,s:13,w:600});}}
+  // molten pools
+  if(ph==='melt'||ph==='bubble'||(ph==='off'&&t<1.0)){const k=ph==='melt'?Math.min(1,t/1.5):1;c.fillStyle=COL.melt;c.save();c.shadowColor=COL.melt;c.shadowBlur=14;c.beginPath();c.ellipse(SX,wy+2,26*k,12*k,0,0,Math.PI);c.fill();c.beginPath();c.ellipse(SX,ty-2,12*k,6*k,0,Math.PI,2*Math.PI);c.fill();c.restore();
+    if(ph==='melt'){leader(SX+26,wy+6,600,262,'Molten pool on work',COL.meltT);leader(SX+12,ty-4,600,196,'Smaller pool on tool',COL.meltT);}}
+  // debris after off
+  if(ph==='off'||ph==='repeat'){const t0=ph==='off'?Math.max(0,t-0.4):t;seed=17;const n=ph==='off'?22:30;for(let i=0;i<n;i++){const ang=-Math.PI*(0.15+0.7*rnd());const v=60+90*rnd();let x=SX+Math.cos(ang)*v*Math.min(t0,1.2),y=wy+Math.sin(ang)*v*Math.min(t0,1.2)+30*Math.max(0,t0-1.2);if(ph==='repeat')x+=t*55;c.fillStyle=i%3?'#AEB9BE':'#E0905A';c.beginPath();c.arc(x%W,Math.min(y,wy+10),2.4,0,7);c.fill();}
+    if(ph==='off')txt('Pulse off: crater left behind',W/2,H/2+4,{a:'center',w:700,s:16,c:COL.ink});}
+  if(ph==='repeat'){for(let y=200;y<=260;y+=30)arrow(40+((t*120)%200),y,100+((t*120)%200),y,'rgba(75,176,204,0.8)',2);txt('Flushing',30,190,{c:COL.accent,w:700,s:14});
+    const k=Math.floor(t/0.8)%CRATERS.length;const [x]=CRATERS[Math.min(CRATERS.length-1,k+1)];const flash=(t%0.8)<0.18;if(flash){const a=surfY(tSurf,x),b=surfY(wSurf,x);glowLine(()=>zigzag(x,a,x,b,8,6),2.5,COL.spark,24);}
+    txt('Thousands of sparks per second',W-20,30,{a:'right',w:700,s:15,c:COL.glow});}
+  // scope inset
+  if(['volt','closest','break','plasma'].includes(ph))scope(ph,t);
+  c.fillStyle='rgba(12,20,22,0.75)';c.fillRect(14,H/2-14,92,24);txt('× ~1000',60,H/2+3,{a:'center',mono:true,s:12,c:COL.muted});
+  badge('Magnified gap');
+}
+function scope(ph,t){const x=560,y=18,w=220,h=110;c.fillStyle='rgba(8,14,16,0.92)';c.fillRect(x,y,w,h);c.strokeStyle=COL.muted;c.lineWidth=1;c.strokeRect(x,y,w,h);
+  txt('V',x+8,y+16,{mono:true,s:11,c:COL.accent,w:600});txt('I',x+24,y+16,{mono:true,s:11,c:COL.glow,w:600});
+  const span=4;const now=ph==='volt'?Math.min(t,span):ph==='closest'?span:ph==='break'?span:span;const bx=x+10,bw=w-20,by=y+h-12,bh=h-30;
+  // voltage: ramps to 0.85, holds, drops to 0.25 at breakdown
+  const brk=ph==='break'?2.6+Math.min(t,0.8)*0+0:ph==='plasma'?2.6:99;
+  c.strokeStyle=COL.accent;c.lineWidth=2;c.beginPath();
+  for(let i=0;i<=100;i++){const tt=i/100*span;if(ph==='volt'&&tt>t)break;let v=Math.min(1,tt/0.3)*0.85;if(ph==='break'&&tt>2.6&&t>0.8)v=0.25;if(ph==='plasma'&&tt>2.6)v=0.25;c.lineTo(bx+bw*tt/span,by-bh*v);}c.stroke();
+  if(ph==='break'&&t>0.8||ph==='plasma'){c.strokeStyle=COL.glow;c.beginPath();c.moveTo(bx,by);c.lineTo(bx+bw*2.6/span,by);c.lineTo(bx+bw*2.65/span,by-bh*0.7);c.lineTo(bx+bw,by-bh*0.7);c.stroke();txt('breakdown',bx+bw*2.6/span-4,y+28,{a:'right',mono:true,s:10,c:COL.muted});}
+}
+
+// --- waveform & crater comparison (scene 4)
+function waveView(ph,t){
+  const x0=60,y0=40,w=680,h=170;
+  c.strokeStyle=COL.muted;c.lineWidth=1;c.beginPath();c.moveTo(x0,y0);c.lineTo(x0,y0+h);c.lineTo(x0+w,y0+h);c.stroke();
+  txt('Current',x0-8,y0+8,{a:'right',s:12,c:COL.muted});txt('time',x0+w,y0+h+16,{a:'right',s:12,c:COL.muted});
+  const big=ph==='compare'&&(t%6)>3;const Ip=big?1:0.5;const ton=110,toff=60;
+  c.save();c.beginPath();c.rect(x0,y0-5,Math.min(w,(RM?w:t*260)),h+10);c.clip();
+  c.strokeStyle=COL.glow;c.lineWidth=2.5;c.beginPath();let x=x0+10;c.moveTo(x0,y0+h);
+  while(x<x0+w){c.lineTo(x,y0+h);c.lineTo(x,y0+h-h*0.85*Ip);c.lineTo(x+ton,y0+h-h*0.85*Ip);c.lineTo(x+ton,y0+h);x+=ton+toff;}c.stroke();
+  if(ph==='energy'){c.fillStyle='rgba(255,176,32,0.18)';c.fillRect(x0+10,y0+h-h*0.85*Ip,ton,h*0.85*Ip);}
+  c.restore();
+  const yI=y0+h-h*0.85*Ip;
+  if(ph==='wave'||ph==='energy'){arrow(x0+10+ton/2,y0+h-4,x0+10+ton/2,yI+4,COL.ink,1.2);txt('Iₚ',x0+18+ton/2,(y0+h+yI)/2,{w:700,s:15});
+    arrow(x0+12,yI-12,x0+8+ton,yI-12,COL.ink,1);txt('tₒₙ',x0+10+ton/2,yI-18,{a:'center',w:700,s:14});
+    arrow(x0+12+ton,y0+h-14,x0+8+ton+toff,y0+h-14,COL.ink,1);txt('tₒff',x0+10+ton+toff/2,y0+h-20,{a:'center',w:700,s:14});}
+  if(ph==='energy'){txt('Energy per spark  E ≈ V × Iₚ × tₒₙ',W/2,y0+h+48,{a:'center',mono:true,s:17,w:600,c:COL.glow});}
+  // surface profiles
+  if(ph==='compare'||ph==='stages'){
+    const prof=(px,py,pw,r,label,sub,on)=>{c.fillStyle=COL.steel;c.beginPath();c.moveTo(px,py+60);let xx=px;c.lineTo(px,py);while(xx<px+pw){c.lineTo(xx,py);c.arc(xx+r,py,r,Math.PI,0,true);xx+=2*r;}c.lineTo(px+pw,py);c.lineTo(px+pw,py+60);c.closePath();c.fill();
+      c.globalAlpha=on?1:0.45;txt(label,px+pw/2,py+86,{a:'center',w:700,s:15});txt(sub,px+pw/2,py+106,{a:'center',s:13,c:COL.muted});c.globalAlpha=1;};
+    const on2=ph==='stages'?true:big;
+    prof(90,300,260,6,'Low current','small craters · fine finish · slow',ph==='stages'||!big);
+    prof(450,300,260,18,'High current','large craters · rough · fast',on2);
+    if(ph==='stages'){arrow(368,330,432,330,COL.accent,2);txt('1. Roughing',580,280,{a:'center',c:COL.accent,w:700,s:14});txt('2. Finishing',220,280,{a:'center',c:COL.accent,w:700,s:14});}
+    else txt(big?'Iₚ doubled →':'Iₚ low',W/2,y0+h+40,{a:'center',mono:true,s:15,c:COL.glow,w:600});}
+  badge('One pulse = one spark');
+}
+
+function draw(si,ph,t){bg();if(si===0||si===4)fullView(ph,t);else if(si===1||si===2)gapView(ph,t);else waveView(ph,t);}
+
+
+return {W,H,draw:(ctx,si,ph,t)=>{c=ctx;draw(si,ph,t);}};
+})();
+// ================= v4.3: explainer player (Theory tab) =================
+// Audio: audio/<id>/x<scene>_<line>.mp3 and audio/<id>/xq<scene>.mp3. Without audio files the player runs on captions and timers.
+report.expl=report.expl||{};
+const XP={pid:null,si:0,li:0,mode:'idle',lineT:0,last:0,voice:true,rate:1,tok:0,timer:null,xs:null,from:null,to:null,raf:0,noAudio:false};
+const xAudio=new Audio();xAudio.preload='auto';if('preservesPitch' in xAudio)xAudio.preservesPitch=true;
+const xEst=s=>(s.split(/\s+/).length/2.6+0.8)/XP.rate;
+function xRes(id){const E=EXPL[id];const R=report.expl[id];const n=E.scenes.length;
+  if(!R||!Array.isArray(R.first)||R.first.length!==n)return report.expl[id]={first:Array(n).fill(null),replays:Array(n).fill(0),done:false,t:null};return R;}
+function xChecks(id){return EXPL[id].scenes.map((S,i)=>S.q?i:-1).filter(i=>i>=0);}
+function xDur(id){let w=0;EXPL[id].scenes.forEach(S=>S.lines.forEach(l=>w+=l[0].split(/\s+/).length));return Math.round(w/2.6/60*10)/10;}
+function xSummary(id){const R=xRes(id),Q=xChecks(id);const ans=Q.filter(i=>R.first[i]!==null);return {n:Q.length,answered:ans.length,right:ans.filter(i=>R.first[i]).length,replays:R.replays.reduce((a,b)=>a+b,0),done:R.done};}
+
+function xCardHTML(P){const E=EXPL[P.id],S=xSummary(P.id);
+  return `<section class="xcard" id="xcard" aria-label="Explainer">
+   <div class="xhead"><div><div class="eyebrow">Watch &amp; check</div><h3>How ${esc(P.abbr)} works</h3><p class="foot" style="margin:2px 0 0">About ${Math.max(1,Math.round(xDur(P.id)))} min · ${E.scenes.length} short scenes · ${S.n} concept checks. A wrong answer replays the scene.</p></div>
+   <div class="xstat" id="xstat">${S.answered?`${S.right} of ${S.answered} right first time`:''}</div></div>
+   <div id="xbody"><button class="btn" type="button" id="xopen">▶ Watch explainer</button></div></section>`;}
+function xOpen(P){const E=EXPL[P.id];XP.pid=P.id;
+  $('#xbody').innerHTML=`<div class="xstage${E.custom?' custom':''}" id="xstage"><canvas id="xcv" role="img" aria-label="Animated explanation of ${esc(P.name)}"></canvas></div><div class="xread" id="xread" aria-live="off"></div>
+   <div id="xbelow"><div class="caption xcap" id="xcap" aria-live="polite"></div></div>
+   <div class="controls xctl"><button class="iconbtn" id="xplay" type="button">Pause</button><button class="iconbtn" id="xback" type="button">◀ Previous line</button><button class="iconbtn" id="xrep" type="button">↺ Replay scene</button><button class="iconbtn" id="xvoice" type="button" aria-pressed="${XP.voice}">${XP.voice?'Voice on':'Voice off'}</button>
+   <label class="foot" for="xrate">Speed <select id="xrate"><option value="0.9">Slow</option><option value="1">Normal</option><option value="1.15">Fast</option></select></label><span class="foot" id="xnote" aria-live="polite"></span></div>
+   <nav class="xchaps" id="xchaps" aria-label="Scenes"></nav>`;
+  $('#xrate').value=String(XP.rate);
+  $('#xplay').onclick=()=>{if(XP.mode==='play'){XP.mode='pause';clearTimeout(XP.timer);xAudio.pause();}else if(XP.mode==='pause'){XP.mode='play';if(XP.voice&&!XP.noAudio&&xAudio.src&&xAudio.currentTime>0&&!xAudio.ended)xAudio.play().catch(()=>xLine());else xLine();}xButtons();};
+  $('#xback').onclick=()=>{if(XP.li>0)XP.li--;else if(XP.si>0){XP.si--;XP.li=EXPL[XP.pid].scenes[XP.si].lines.length-1;}xResume();};
+  $('#xrep').onclick=()=>{if(XP.mode==='end')XP.si=EXPL[XP.pid].scenes.length-1;XP.li=0;xResume();};
+  $('#xvoice').onclick=e=>{XP.voice=!XP.voice;e.target.setAttribute('aria-pressed',XP.voice);e.target.textContent=XP.voice?'Voice on':'Voice off';if(XP.mode==='play')xLine();};
+  $('#xrate').onchange=e=>{XP.rate=+e.target.value;xAudio.playbackRate=XP.rate;};
+  $('#xchaps').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;XP.si=+b.dataset.s;XP.li=0;xResume();});
+  sizeCanvas($('#xcv'));XP.si=0;XP.li=0;XP.mode='play';xLine();xButtons();
+  cancelAnimationFrame(XP.raf);XP.last=0;XP.raf=requestAnimationFrame(xFrame);}
+function xStop(){XP.tok++;clearTimeout(XP.timer);try{xAudio.pause();}catch(e){}if(XP.mode!=='idle')XP.mode='pause';cancelAnimationFrame(XP.raf);}
+function xResume(){XP.mode='play';const st=$('#xstage');if(st)st.classList.remove('dim');$('#xbelow').innerHTML='<div class="caption xcap" id="xcap" aria-live="polite"></div>';xLine();xButtons();}
+function xState(upTo){// simulator state for schematic scenes: defaults + all earlier cues in this scene
+  const P=byId[XP.pid],E=EXPL[XP.pid];const s=defaults(P.id);const L=E.scenes[XP.si].lines;for(let i=0;i<upTo;i++){const cu=L[i][1];if(cu&&cu.set)Object.assign(s,cu.set);}return s;}
+function xPlayClip(src,done,ms){const tok=++XP.tok;clearTimeout(XP.timer);
+  const fb=()=>{XP.timer=setTimeout(()=>{if(tok===XP.tok)done();},ms);};
+  if(!XP.voice||XP.noAudio){fb();return;}
+  xAudio.src=src;xAudio.playbackRate=XP.rate;
+  xAudio.onended=()=>{if(tok===XP.tok)setTimeout(()=>{if(tok===XP.tok)done();},300);};
+  xAudio.onerror=()=>{if(tok!==XP.tok)return;XP.noAudio=true;const n=$('#xnote');if(n)n.textContent='Narration is not available here yet; captions only.';fb();};
+  xAudio.play().catch(err=>{if(tok!==XP.tok)return;if(err&&err.name==='NotAllowedError'){const n=$('#xnote');if(n)n.textContent='Audio was blocked. Press Pause, then Resume.';}fb();});}
+function xLine(){const E=EXPL[XP.pid],S=E.scenes[XP.si],[say,cue]=S.lines[XP.li];
+  const cap=$('#xcap');if(cap)cap.innerHTML=`<span class="who">Scene ${XP.si+1} · ${esc(S.title)}</span>${say}`;
+  XP.lineT=0;if(!E.custom){XP.from=xState(XP.li);XP.to={...XP.from,...(cue&&cue.set||{})};XP.xs={...XP.from};}
+  xPlayClip(`${AUDIO_BASE}${XP.pid}/x${XP.si}_${XP.li}.mp3`,()=>{if(XP.mode==='play')xNext();},xEst(say)*1000);xChaps();}
+function xNext(){const E=EXPL[XP.pid],S=E.scenes[XP.si];if(XP.li<S.lines.length-1){XP.li++;xLine();return;}
+  if(S.q){xAsk();return;}if(XP.si<E.scenes.length-1){XP.si++;XP.li=0;xLine();}else xFinish();}
+function xAsk(){XP.tok++;clearTimeout(XP.timer);XP.mode='q';$('#xstage').classList.add('dim');const Q=EXPL[XP.pid].scenes[XP.si].q,R=xRes(XP.pid);const k=xChecks(XP.pid).indexOf(XP.si)+1;
+  $('#xbelow').innerHTML=`<div class="qcard" role="group" aria-labelledby="xqh"><span class="tag">Check ${k} of ${xChecks(XP.pid).length}${R.first[XP.si]!==null?' · second look':''}</span><h4 id="xqh">${Q.q}</h4><div class="opts">${Q.o.map((o,i)=>`<button class="opt" type="button" data-i="${i}">${o}</button>`).join('')}</div><div class="fb" id="xfb" aria-live="polite"></div></div>`;
+  xPlayClip(`${AUDIO_BASE}${XP.pid}/xq${XP.si}.mp3`,()=>{},100);
+  document.querySelectorAll('#xbelow .opt').forEach(b=>b.onclick=()=>xAnswer(+b.dataset.i,b));xButtons();xChaps();}
+function xAnswer(i,b){const Q=EXPL[XP.pid].scenes[XP.si].q,R=xRes(XP.pid);if(document.querySelector('#xbelow .opt.right'))return;XP.tok++;try{xAudio.pause();}catch(e){}
+  const ok=i===Q.a;if(R.first[XP.si]===null){R.first[XP.si]=ok;}b.classList.add(ok?'right':'wrong');document.querySelectorAll('#xbelow .opt').forEach(x=>x.disabled=true);
+  if(ok){$('#xfb').innerHTML=`<b class="ok">Correct.</b> ${Q.why}<div style="margin-top:10px"><button class="btn" id="xcont" type="button">Continue ▶</button></div>`;$('#xcont').onclick=()=>{const E=EXPL[XP.pid];if(XP.si<E.scenes.length-1){XP.si++;XP.li=0;xResume();}else xFinish();};$('#xcont').focus();}
+  else{$('#xfb').innerHTML=`<b class="bad">Not quite.</b> Watch that part again; the answer is in it.<div style="margin-top:10px"><button class="btn" id="xrew" type="button">↺ Replay scene ${XP.si+1}</button></div>`;$('#xrew').onclick=()=>{R.replays[XP.si]++;save();XP.li=0;xResume();};$('#xrew').focus();}
+  save();xStat();}
+function xFinish(){XP.tok++;clearTimeout(XP.timer);XP.mode='end';const R=xRes(XP.pid);R.done=true;R.t=new Date().toISOString();save();const S=xSummary(XP.pid);
+  $('#xbelow').innerHTML=`<div class="qcard"><span class="tag">Done</span><h4>${S.right} of ${S.n} checks right first time${S.replays?` · ${S.replays} scene replay${S.replays>1?'s':''}`:''}.</h4><p class="foot" style="margin:0">This result is included in your lab report. Use Replay scene or the scene strip to revisit any part.</p></div>`;xChaps();xButtons();xStat();}
+function xButtons(){const p=$('#xplay');if(!p)return;p.disabled=XP.mode==='q'||XP.mode==='end';p.textContent=XP.mode==='pause'?'Resume':'Pause';$('#xback').disabled=!(XP.mode==='play'||XP.mode==='pause');}
+function xChaps(){const E=EXPL[XP.pid],R=xRes(XP.pid);const el=$('#xchaps');if(!el)return;
+  el.innerHTML=E.scenes.map((S,i)=>`<button class="xchap${i<XP.si||XP.mode==='end'?' done':''}${i===XP.si&&XP.mode!=='end'?' on':''}" type="button" data-s="${i}"><b>${i+1}</b> ${esc(S.title)}${S.q?` <span class="q">${R.first[i]===null?'· check':R.first[i]?'· ✓':'· ✗'}</span>`:''}</button>`).join('');}
+function xStat(){const el=$('#xstat');if(!el)return;const S=xSummary(XP.pid);el.textContent=S.answered?`${S.right} of ${S.answered} right first time`:'';}
+function xFrame(now){const cv=$('#xcv');if(!cv||!cv.isConnected){XP.mode=XP.mode==='idle'?'idle':'pause';return;}
+  const dt=Math.min(0.05,(now-(XP.last||now))/1000);XP.last=now;if(XP.mode==='play')XP.lineT+=dt;
+  const E=EXPL[XP.pid],P=byId[XP.pid],c=cv.getContext('2d');const L=E.scenes[XP.si].lines;const li=XP.mode==='q'||XP.mode==='end'?L.length-1:XP.li;const cue=L[li][1];
+  const t=XP.lineT+(XP.mode==='q'?3:0);
+  if(E.custom){c.setTransform(cv.width/EDMX.W,0,0,cv.height/EDMX.H,0,0);EDMX.draw(c,XP.si,cue,t);$('#xread').innerHTML='';}
+  else{if(XP.mode!=='q'&&XP.mode!=='end'){const k=reduce?1:Math.min(1,XP.lineT/2.5),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      for(const key in XP.to){const a=XP.from[key],b=XP.to[key];XP.xs[key]=(typeof a==='number'&&typeof b==='number')?a+(b-a)*e:(k>0.4?b:a);}}
+    const xs=XP.xs||defaults(P.id);const C=getC(now);c.setTransform(1,0,0,1,0,0);c.fillStyle=C.panel;c.fillRect(0,0,cv.width,cv.height);
+    const s=Math.min(cv.width/640,cv.height/400),ox=(cv.width-640*s)/2,oy=(cv.height-400*s)/2;c.setTransform(s,0,0,s,ox,oy);
+    const o=P.compute(xs).o;F=null;try{DRAW[P.id](c,C,reduce?1.5:now/1000,xs,o);}catch(e){}
+    if(cue&&(cue.box||cue.ring)&&XP.mode==='play'){const a=Math.min(1,XP.lineT/0.6);c.save();c.globalAlpha=0.34*a;c.fillStyle='#0b1214';c.beginPath();c.rect(-ox/s,-oy/s,cv.width/s,cv.height/s);
+      if(cue.box){const [x,y,w,h]=cue.box;c.rect(x+w,y,-w,h);}else{const [x,y,r]=cue.ring;c.moveTo(x+r,y);c.arc(x,y,r,0,Math.PI*2,true);}c.fill('evenodd');c.globalAlpha=a;
+      c.strokeStyle=C.accent;c.lineWidth=2.5;const p=reduce?0:2*Math.sin(now/220);if(cue.box){const [x,y,w,h]=cue.box;c.strokeRect(x-p,y-p,w+2*p,h+2*p);}else{const [x,y,r]=cue.ring;c.beginPath();c.arc(x,y,r+p,0,7);c.stroke();}c.restore();}
+    const keys=cue&&cue.show||[];$('#xread').innerHTML=keys.map(k=>{const O=P.outputs.find(z=>z.k===k);return O?`<div><span>${O.label}</span><b>${fmt(o[k])}</b> <small>${O.unit}</small></div>`:'';}).join('');}
+  XP.raf=requestAnimationFrame(xFrame);}
+
+// Theory tab: explainer card at the top, above the Listen bar
+const _renderTheoryX=renderTheory;
+renderTheory=function(P){xStop();_renderTheoryX(P);if(!EXPL[P.id])return;const pr=$('#pane .theory .prose');if(!pr)return;
+  pr.insertAdjacentHTML('afterbegin',xCardHTML(P));XP.pid=P.id;XP.mode='idle';$('#xopen').onclick=()=>{lsnStop();xOpen(P);};
+  const lb=$('#lsn');if(lb){const o=lb.onclick;lb.onclick=()=>{if(XP.mode==='play'){XP.mode='pause';XP.tok++;xAudio.pause();xButtons();}o();};}};
+const _renderPaneX=renderPane;renderPane=function(P){if(tabOf[P.id]!=='th')xStop();_renderPaneX(P);};
+window.addEventListener('hashchange',()=>xStop());
+
+// Report and submission
+const _sheetHTMLX=sheetHTML;
+sheetHTML=function(P){let h=_sheetHTMLX(P);if(!EXPL[P.id])return h;const S=xSummary(P.id);
+  const row=`<tr><td>Explainer concept checks</td><td>${S.answered?`${S.right} / ${S.n}${S.answered<S.n?` (${S.answered} answered)`:''}`:'—'}</td><td>${S.replays} scene replay${S.replays===1?'':'s'}</td></tr>`;
+  return h.replace(/(<tr><td>Numericals \(this session\)<\/td>)/,row+'$1');};
+const _submitPayloadX=submitPayload;
+submitPayload=function(P){const d=_submitPayloadX(P);if(EXPL[P.id]){const S=xSummary(P.id);d.explRight=S.answered?S.right:'';d.explN=S.n;d.explReplays=S.replays;}return d;};
 buildRail();
 window.addEventListener('hashchange',route);
 route();
