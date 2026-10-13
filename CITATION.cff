@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use NTM Virtual Lab in teaching or research, please cite it as below."
+type: software
+title: "NTM Virtual Lab: an open virtual laboratory for non-traditional machining processes"
+abstract: >-
+  Browser-based virtual laboratory for 20 non-traditional, hybrid and nano-finishing
+  machining processes (USM, AJM, WJM, AWJM, CHM, ECM, EDM, WEDM, LBM, EBM, PAM, ECG,
+  ECDM, RUM, LAM, AFM, MAF, MRF, CMP, IBM). Each experiment provides theory with
+  nomenclature, pre- and post-tests, an interactive machine set-up with safety
+  interlocks, parametric simulation with alternative removal-rate models, randomised
+  numericals, validation against published data, and a lab report with uncertainty
+  analysis.
+authors:
+  - family-names: Ullal
+    given-names: Vignesh Nayak
+    affiliation: "Department of Mechanical Engineering, Mangalore Institute of Technology & Engineering (MITE), Moodbidri, India"
+version: "4.2"
+date-released: "2026-10-13"
+license: CC-BY-NC-SA-4.0
+url: "https://nayakvignesh113-bot.github.io/NTM-Virtual-Lab/"
+repository-code: "https://github.com/nayakvignesh113-bot/NTM-Virtual-Lab"
+keywords:
+  - virtual laboratory
+  - non-traditional machining
+  - advanced machining processes
+  - engineering education
+  - electric discharge machining
+  - electrochemical machining
+  - laser beam machining
+  - abrasive water jet machining
+  - nano-finishing
+  - simulation

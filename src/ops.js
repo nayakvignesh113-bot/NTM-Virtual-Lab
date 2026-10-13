@@ -1,0 +1,110 @@
+// ---------- operate-the-machine definitions ----------
+// parts: dragged onto a zone [x,y,w,h] in 640×400 scene coords; sets flag f[id] (work/tool) or x[id]
+// switches: set a flag after optional ramp (s); req = flags that must already be true, else alarm
+// cycle: what one run does; meas: instrument readings + a calculation the student must do
+const nz=(x,r)=>x*(1+(Math.random()*2-1)*r);
+const mmss=min=>{const s=Math.round(min*60);return `${Math.floor(s/60)} min ${String(s%60).padStart(2,'0')} s`;};
+const g4=x=>x.toFixed(4);
+const OPS={
+usm:{intro:'Clamp the glass plate, fit the tool to the horn, start the slurry, then switch on the ultrasonic generator and feed the tool in.',
+ parts:[{id:'work',label:'Workpiece plate',zone:[110,272,420,100]},{id:'tool',label:'Brass tool',zone:[280,180,80,70],req:['work'],alarm:'Clamp the workpiece on the fixture before fitting the tool, so you can set the tool just above it.'}],
+ switches:[{id:'fluid',label:'Slurry pump',req:['work'],alarm:'Place the workpiece first: slurry pumped onto an empty fixture just floods the tray.'},
+  {id:'gen',label:'Ultrasonic generator',req:['tool','fluid'],alarm:'Do not run the generator dry. Fit the tool and start the slurry pump first; without slurry the tool rubs and the horn can crack.',ramp:1}],
+ cycle:(p,o)=>({label:'Sink a 3.0 mm deep cavity',min:3/o.pen}),
+ live:(S,p,o)=>[['Slurry',S.fluid?`${p.C} % flowing`:'off'],['Generator',S.x.gen?`${p.f} kHz · ${p.A0} µm`:'off'],['Static force',`${p.F} N`],['Depth',`${(3*(S.prog||0)).toFixed(2)} mm`]],
+ meas:(p,o)=>{const d=nz(3,0.008),t=nz(3/o.pen,0.01);const ans=p.area*d/t;
+  return {readings:[['Depth gauge',`${d.toFixed(3)} mm`],['Stopwatch',mmss(t)],['Tool face area',`${p.area} mm²`]],
+   ask:{q:'Calculate the material removal rate.',unit:'mm³/min',ans,sol:`MRR = area × depth / time = ${p.area} × ${d.toFixed(3)} / ${t.toFixed(3)} min = ${ans.toFixed(1)} mm³/min.`},model:o.mrr};}},
+ajm:{intro:'Place the glass plate under the nozzle. Start the dust extractor, then the compressor, then the powder feeder, and blast for 2 minutes. Weigh the plate before and after.',
+ parts:[{id:'work',label:'Workpiece plate',zone:[80,320,480,68]}],
+ switches:[{id:'ext',label:'Dust extractor',req:[]},
+  {id:'air',label:'Compressor',req:['ext'],alarm:'Switch on the dust extractor first. Fine abrasive dust is a respiratory hazard.',ramp:1.2},
+  {id:'fluid',label:'Powder feeder (vibrator)',req:['air','work'],alarm:'Powder needs carrier gas flowing and a workpiece in place. Without air it settles and clogs the mixing chamber.'}],
+ cycle:()=>({label:'Blast for 2.0 minutes',min:2}),
+ live:(S,p,o)=>[['Extractor',S.x.ext?'on':'off'],['Line pressure',S.x.air?`${(p.p*(S.x.airR??1)).toFixed(1)} bar`:'0 bar'],['Powder feed',S.fluid?`${p.ma} g/min`:'off'],['SOD',`${p.sod} mm`]],
+ meas:(p,o)=>{const rho={glass:2.5,si:2.33,quartz:2.65,alumina:3.95}[p.mat];const m0=nz(24,0.1),dm=nz(o.mrr*2*rho/1000,0.02),m1=m0-dm;const ans=(m0-m1)/rho*1000/2;
+  return {readings:[['Mass before',`${g4(m0)} g`],['Mass after',`${g4(m1)} g`],['Blasting time','2 min 00 s'],['Work density',`${rho} g/cm³`]],
+   ask:{q:'Calculate the volumetric MRR.',unit:'mm³/min',ans,sol:`Δm = ${g4(m0)} − ${g4(m1)} = ${g4(m0-m1)} g. V = Δm/ρ = ${((m0-m1)/rho).toExponential(3)} cm³ = ${((m0-m1)/rho*1000).toFixed(2)} mm³. MRR = ${((m0-m1)/rho*1000).toFixed(2)} / 2 = ${ans.toFixed(2)} mm³/min.`},model:o.mrr};}},
+wjm:{intro:'Lay the sheet on the slats, close the splash guard, bring the intensifier up to pressure and cut a 200 mm line at the maximum separation speed.',
+ parts:[{id:'work',label:'Sheet',zone:[28,122,584,60]}],
+ switches:[{id:'guard',label:'Splash guard closed',req:['work'],alarm:'Place the sheet before closing the guard.'},
+  {id:'fluid',label:'Intensifier pump',req:['guard'],alarm:'Never pressurise the cutting head with the guard open. A 700–900 m/s jet cuts through skin.',ramp:1.5}],
+ cycle:(p,o)=>({label:'Cut a 200 mm straight line',min:200/o.u}),
+ live:(S,p,o)=>[['Guard',S.x.guard?'closed':'OPEN'],['Pressure',S.fluid?`${p.p} MPa`:(S.x.fluidR?`${(p.p*S.x.fluidR).toFixed(0)} MPa`:'0 MPa')],['Water flow',S.on?`${o.Q.toFixed(2)} L/min`:'0 L/min'],['Cut length',`${(200*(S.prog||0)).toFixed(0)} mm`]],
+ meas:(p,o)=>{const t=nz(200/o.u,0.01);const ans=200/t;
+  return {readings:[['Cut length (steel rule)','200 mm'],['Stopwatch',mmss(t)]],ask:{q:'Calculate the cutting speed.',unit:'mm/min',ans,sol:`u = L/t = 200 / ${t.toFixed(3)} min = ${ans.toFixed(0)} mm/min.`},model:o.u};}},
+awjm:{intro:'Lay the plate on the slats, fill the garnet hopper, close the guard, start the pump, open the abrasive valve and cut 100 mm.',
+ parts:[{id:'work',label:'Plate',zone:[28,202,584,80]},{id:'hopper',label:'Garnet bag',zone:[36,22,78,42],flag:'x'}],
+ switches:[{id:'guard',label:'Splash guard closed',req:['work'],alarm:'Place the plate before closing the guard.'},
+  {id:'fluid',label:'Intensifier pump',req:['guard'],alarm:'Close the splash guard before pressurising the head.',ramp:1.5},
+  {id:'abr',label:'Abrasive valve',req:['fluid','hopper'],alarm:'Open the abrasive valve only with water flowing and garnet in the hopper. Dry garnet packs into the focusing tube and blocks it.'}],
+ cycle:(p,o)=>({label:'Cut a 100 mm straight line',min:100/o.u}),
+ live:(S,p,o)=>[['Pressure',S.fluid?`${p.p} MPa`:'0 MPa'],['Garnet',S.x.abr?`${p.ma} kg/min`:'off'],['Hopper',S.x.hopper?'filled':'empty'],['Cut length',`${(100*(S.prog||0)).toFixed(0)} mm`]],
+ meas:(p,o)=>{const t=nz(100/o.u,0.01);const ans=100/t;
+  return {readings:[['Cut length','100 mm'],['Stopwatch',mmss(t)],['Garnet used',`${(p.ma*t).toFixed(2)} kg`]],ask:{q:'Calculate the separation (cutting) speed.',unit:'mm/min',ans,sol:`u = L/t = 100 / ${t.toFixed(3)} min = ${ans.toFixed(1)} mm/min.`},model:o.u};}},
+chm:{intro:'Switch on the bath heater and wait for the set temperature. Then immerse the masked part, start the agitator and the timer. Measure depth and undercut afterwards.',
+ parts:[{id:'work',label:'Masked part',zone:[60,140,520,160],req:['heat'],alarm:'The bath is still cold. Etch rate depends strongly on temperature, so wait until the heater reaches the set point before immersing.'}],
+ switches:[{id:'heat',label:'Bath heater',req:[],ramp:2.5},
+  {id:'fluid',label:'Agitation / spray',req:['work'],alarm:'Immerse the part first.'}],
+ cycle:(p)=>({label:`Etch for ${p.time} min`,min:p.time}),
+ live:(S,p,o)=>[['Bath temperature',`${(S.x.temp??25).toFixed(0)} °C (set ${p.T})`],['Agitation',S.fluid?{none:'still',mild:'mild',spray:'spray'}[p.ag]:'off'],['Timer',`${(p.time*(S.prog||0)).toFixed(1)} / ${p.time} min`]],
+ meas:(p,o)=>{const d=nz(o.d,0.015),u=nz(o.u,0.03);const ans=d/p.time;
+  return {readings:[['Dial gauge (depth)',`${d.toFixed(3)} mm`],['Microscope (undercut per side)',`${u.toFixed(3)} mm`],['Immersion time',`${p.time} min`]],
+   ask:{q:'Calculate the etch rate.',unit:'mm/min',ans,sol:`r = d/t = ${d.toFixed(3)} / ${p.time} = ${ans.toFixed(4)} mm/min. Etch factor = d/u = ${(d/u).toFixed(2)}.`},model:o.r};}},
+ecm:{intro:'Mount the workpiece (anode) and the tool (cathode). Start the electrolyte pump before the DC supply, then feed for 5 minutes. Weigh the work and read the ammeter.',
+ parts:[{id:'work',label:'Workpiece (anode)',zone:[90,200,470,150]},{id:'tool',label:'Tool (cathode)',zone:[220,40,200,160],req:['work'],alarm:'Mount the workpiece first, then bring the tool down to it.'}],
+ switches:[{id:'fluid',label:'Electrolyte pump',req:['work','tool'],alarm:'Mount the workpiece and tool before starting the electrolyte flow.',ramp:1},
+  {id:'pwr',label:'DC power supply',req:['fluid'],alarm:'No electrolyte flowing. With power on, the gap would boil, spark and short-circuit, damaging tool and work.'}],
+ cycle:()=>({label:'Machine for 5.0 minutes at constant feed',min:5}),
+ live:(S,p,o)=>[['Electrolyte',S.fluid?`${p.Q} L/min`:'off'],['Voltage',S.x.pwr?`${p.V} V`:'0 V'],['Current',S.on?`${o.I.toFixed(0)} A`:'0 A'],['Feed',`${p.f} mm/min`]],
+ meas:(p,o)=>{const m=ECMMAT(p.mat)||{M:+o.Eq.toFixed(2),z:1};const I=nz(o.I,0.01);const dm=nz(o.mg*5,0.015);const m0=nz(180,0.1);const ans=dm*m.z*FARADAY/(I*300*m.M)*100;
+  return {readings:[['Mass before',`${m0.toFixed(3)} g`],['Mass after',`${(m0-dm).toFixed(3)} g`],['Ammeter (mean)',`${I.toFixed(1)} A`],['Time','5 min 00 s'],[m.z===1&&ECMMAT(p.mat)==null?'Alloy chemical equivalent E':'Work: M, z',m.z===1&&ECMMAT(p.mat)==null?`${m.M} g/mol per electron`:`${m.M} g/mol, z = ${m.z}`]],
+   ask:{q:'Calculate the current efficiency η = actual ÷ Faraday mass loss.',unit:'%',ans,sol:`Faraday mass = I·t·M/(zF) = ${I.toFixed(1)} × 300 × ${m.M} / (${m.z} × 96485) = ${(I*300*m.M/(m.z*FARADAY)).toFixed(3)} g. η = ${dm.toFixed(3)} / ${(I*300*m.M/(m.z*FARADAY)).toFixed(3)} = ${ans.toFixed(1)} %.`},model:o.eta};}},
+edm:{intro:'Clamp the work in the tank, mount the electrode, fill the dielectric, then switch on the generator and sink for 10 minutes. Weigh the work and the electrode.',
+ parts:[{id:'work',label:'Workpiece',zone:[110,186,420,98]},{id:'tool',label:'Electrode',zone:[272,64,96,110],req:['work'],alarm:'Clamp the workpiece first so the electrode can be zeroed on it.'}],
+ switches:[{id:'fluid',label:'Dielectric pump (fill tank)',req:['work'],alarm:'Clamp the workpiece before filling the tank.',ramp:2},
+  {id:'gen',label:'Pulse generator',req:['tool','fluid'],alarm:'Fill the tank first. Sparking in air is a fire risk, and without dielectric there is no deionisation or flushing.'}],
+ cycle:()=>({label:'Sink for 10.0 minutes',min:10}),
+ live:(S,p,o)=>[['Dielectric level',S.fluid?'50 mm above work':(S.x.level?`${(S.x.level*100).toFixed(0)} %`:'empty')],['Generator',S.x.gen?`${p.Ip} A · ${p.ton}/${p.toff} µs`:'off'],['Gap voltage',S.on?'25 V (discharge)':(S.x.gen?'≈200 V open':'0 V')],['Elapsed',`${(10*(S.prog||0)).toFixed(1)} min`]],
+ meas:(p,o)=>{const rw=TH[p.mat].rho/1000,rt={cu:8.96,gr:1.81,cuw:15.0}[p.el];const dw=nz(o.mrr*10*rw/1000,0.015),dt=nz(o.mrr*o.twr/100*10*rt/1000,0.03);const m0=nz(320,0.1),e0=nz(60,0.1);const ans=dw/rw*1000/10;
+  return {readings:[['Work mass before',`${m0.toFixed(3)} g`],['Work mass after',`${(m0-dw).toFixed(3)} g`],['Electrode mass before',`${e0.toFixed(4)} g`],['Electrode mass after',`${(e0-dt).toFixed(4)} g`],['Time','10 min 00 s'],['Densities',`work ${rw} · electrode ${rt} g/cm³`]],
+   ask:{q:'Calculate the MRR of the workpiece.',unit:'mm³/min',ans,sol:`MRR = Δm/(ρt) = ${dw.toFixed(3)} g / ${rw} g/cm³ / 10 min = ${ans.toFixed(1)} mm³/min. Tool wear ratio (volume) = ${((dt/rt)/(dw/rw)*100).toFixed(2)} %.`},model:o.mrr};}},
+wedm:{intro:'Clamp the plate, thread the wire through both guides, start the deionised water, switch on the generator and cut a 40 mm profile.',
+ parts:[{id:'work',label:'Die plate',zone:[140,150,380,120]}],
+ switches:[{id:'tool',label:'Auto wire threading',req:['work'],alarm:'Clamp the plate first; the start hole must line up with the guides.',ramp:1.2},
+  {id:'fluid',label:'DI water flushing',req:['tool'],alarm:'Thread the wire before starting the flushing jets.'},
+  {id:'gen',label:'Pulse generator',req:['tool','fluid'],alarm:'No flushing: the wire would overheat and break in the first few seconds.'}],
+ cycle:(p,o)=>({label:'Cut a 40 mm profile',min:40/o.v}),
+ live:(S,p,o)=>[['Wire',S.tool?`ø${p.dw} mm threaded`:'not threaded'],['Flushing',S.fluid?'on':'off'],['Generator',S.x.gen?`${p.Ip} A`:'off'],['Path cut',`${(40*(S.prog||0)).toFixed(1)} / 40 mm`]],
+ meas:(p,o)=>{const t=nz(40/o.v,0.01);const ans=40*p.t/t;
+  return {readings:[['Profile length','40.0 mm'],['Workpiece thickness',`${p.t} mm`],['Cutting time',mmss(t)]],ask:{q:'Calculate the area cutting rate.',unit:'mm²/min',ans,sol:`Area rate = L × t_work / time = 40 × ${p.t} / ${t.toFixed(2)} = ${ans.toFixed(0)} mm²/min.`},model:o.ar};}},
+lbm:{intro:'Load the sheet, close the enclosure door, open the assist gas, switch on the laser and cut a 500 mm line.',
+ parts:[{id:'work',label:'Sheet',zone:[28,232,584,60]}],
+ switches:[{id:'door',label:'Enclosure door closed',req:['work'],alarm:'Load the sheet before closing the door.'},
+  {id:'fluid',label:'Assist gas',req:['work'],alarm:'Load the sheet first.'},
+  {id:'las',label:'Laser source',req:['door','fluid'],alarm:'Interlock: a Class 4 laser cannot fire with the door open or without assist gas. Without gas, melt is not ejected and spatter can damage the lens.'}],
+ cycle:(p,o)=>({label:'Cut a 500 mm straight line',min:0.5/o.u}),
+ live:(S,p,o)=>[['Door',S.x.door?'closed':'OPEN'],['Assist gas',S.fluid?{o2:'O₂',n2:'N₂',air:'air'}[p.gas]:'off'],['Laser',S.x.las?`${p.P} W ready`:'off'],['Cut length',`${(500*(S.prog||0)).toFixed(0)} mm`]],
+ meas:(p,o)=>{const t=nz(0.5/o.u,0.01);const ans=0.5/t;
+  return {readings:[['Cut length','500 mm'],['Cycle time',`${(t*60).toFixed(1)} s`]],ask:{q:'Calculate the cutting speed.',unit:'m/min',ans,sol:`u = 0.5 m / ${t.toFixed(4)} min = ${ans.toFixed(2)} m/min.`},model:o.u};}},
+ebm:{intro:'Place the sheet in the chamber, close the door, pump down to high vacuum, switch on the high voltage and drill 20 holes.',
+ parts:[{id:'work',label:'Sheet',zone:[170,286,300,52]}],
+ switches:[{id:'door',label:'Chamber door closed',req:['work'],alarm:'Load the workpiece before closing the chamber.'},
+  {id:'fluid',label:'Vacuum pumps',req:['door'],alarm:'Close the chamber door before pumping down.',ramp:3},
+  {id:'hv',label:'High voltage',req:['fluid'],alarm:'Chamber not evacuated. Electrons would scatter off gas molecules and the gun would arc. Pump down below 10⁻⁴ torr first.'}],
+ cycle:(p,o)=>({label:'Drill 20 holes',min:20*o.th/60}),
+ live:(S,p,o)=>[['Door',S.x.door?'closed':'open'],['Pressure',S.x.vacTxt||'1 atm'],['High voltage',S.x.hv?`${p.V} kV`:'off'],['Holes',`${Math.floor(20*(S.prog||0))} / 20`]],
+ meas:(p,o)=>{const t=nz(20*o.th,0.01),d=nz(p.ds,0.02);const V=20*Math.PI/4*Math.pow(d/1000,2)*p.t;const ans=V/(t/60);
+  return {readings:[['Holes drilled','20'],['Total drilling time',`${t.toFixed(2)} s`],['Hole diameter (microscope)',`${d.toFixed(0)} µm`],['Sheet thickness',`${p.t} mm`]],
+   ask:{q:'Calculate the MRR.',unit:'mm³/min',ans,sol:`Volume = 20 × π/4 × (${(d/1000).toFixed(3)} mm)² × ${p.t} mm = ${V.toExponential(3)} mm³. MRR = V / (${t.toFixed(2)}/60 min) = ${ans.toFixed(3)} mm³/min.`},model:o.mrr};}},
+pam:{intro:'Lay the plate on the table, connect the work clamp, turn on the plasma gas, switch on the power source and cut 300 mm.',
+ parts:[{id:'work',label:'Plate',zone:[28,236,584,60]}],
+ switches:[{id:'ground',label:'Work clamp connected',req:['work'],alarm:'Place the plate before attaching the work clamp.'},
+  {id:'fluid',label:'Plasma gas',req:[]},
+  {id:'pwr',label:'Power source',req:['ground','fluid'],alarm:'A transferred arc needs the work clamp connected, and gas must flow first or the nozzle and electrode burn out instantly.'}],
+ cycle:(p,o)=>({label:'Cut a 300 mm straight line',min:300/o.u}),
+ live:(S,p,o)=>[['Work clamp',S.x.ground?'connected':'open'],['Gas',S.fluid?{air:'air',o2:'O₂',n2:'N₂',arh:'Ar–H₂'}[p.gas]:'off'],['Arc',S.on?`${o.V.toFixed(0)} V · ${p.I} A`:'off'],['Cut length',`${(300*(S.prog||0)).toFixed(0)} mm`]],
+ meas:(p,o)=>{const t=nz(300/o.u,0.01);const ans=300/t;
+  return {readings:[['Cut length','300 mm'],['Stopwatch',mmss(t)]],ask:{q:'Calculate the cutting speed.',unit:'mm/min',ans,sol:`u = 300 / ${t.toFixed(3)} min = ${ans.toFixed(0)} mm/min.`},model:o.u};}},
+};
+const ECMMAT=k=>({fe:{M:55.85,z:2},u10a:{M:55.85,z:2},ni:{M:58.69,z:2},co:{M:58.93,z:2},cu:{M:63.55,z:2},al:{M:26.98,z:3},ti:{M:47.87,z:4}})[k];

@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Virtual laboratory for non-traditional machining processes: USM, AJM, WJM, AWJM, CHM, ECM, EDM, WEDM, LBM, EBM and PAM. Operate virtual machines, run validated simulators, take tests and print lab reports.">
+<meta name="description" content="Virtual laboratory for 20 non-traditional, hybrid and nano-finishing machining processes, including USM, AJM, WJM, AWJM, CHM, ECM, EDM, WEDM, LBM, EBM, PAM, ECG, ECDM, RUM, LAM, AFM, MAF, MRF, CMP and IBM. Operate virtual machines, run validated simulators, take tests and print lab reports.">
 <style>[hidden]{display:none!important}img{max-width:100%}body{margin:0}</style>
 <title>NTM Virtual Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -310,11 +310,47 @@ details summary{cursor:pointer;font-size:13.5px;color:var(--accent)}
 .nom td.sym{font-family:Georgia,"Times New Roman",serif;font-size:15.5px;white-space:nowrap}
 .nom td:last-child{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
 .nom var{font-style:italic}
+
+/* v4 */
+.subbox{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;cursor:pointer}
+.chk input{accent-color:var(--accent);width:16px;height:16px}
+.safety{margin-bottom:18px;border-left:4px solid var(--bad)}
+.safety summary{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.safegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 22px;margin:10px 0}
+.safegrid h4{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px;font-weight:500}
+.safegrid ul{margin:0}
+.chk.ack{display:flex;border-top:1px solid var(--line);padding-top:10px;margin-top:4px;font-weight:600}
+.console.locked .tray,.console.locked .switches,.console.locked .cyc{opacity:.45}
+.eq.mdl .mname{font-weight:700;font-size:14.5px;margin-bottom:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.eq.mdl.sel{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.eq.mdl .f{white-space:normal}
+table.lib td,table.lib th{white-space:normal;text-align:left}
+.sheet{position:relative;overflow:hidden}
+.sheet>*{position:relative}
+.sheet>svg.wm{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.sheet h4{font-size:15px;margin:12px 0 4px}
+.sheet .sn{color:var(--accent);font-family:var(--f-mono);font-size:.8em;margin-right:4px}
+.sheet .eq .f{white-space:normal}
+.sheet .legend{margin-top:6px}
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin:44px 0 10px;font-size:13px;color:var(--muted);text-align:center}
+.sig span{display:block;border-top:1px solid var(--ink);margin-bottom:4px;height:0}
+.sh-foot{border-top:1px solid var(--line);padding-top:8px;margin-top:16px!important;font-family:var(--f-mono);font-size:11px;color:var(--muted);max-width:none!important}
+.site-foot{border-top:1px solid var(--line);margin-top:40px;padding:18px 20px 28px;font-size:13px;color:var(--muted);text-align:center}
+@media print{
+  .site-foot{display:none}
+  .sheet>svg.wm{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sheet .eq{break-inside:avoid;border:1px solid #ccc}
+  .sig{break-inside:avoid}
+  .sh-img{break-inside:avoid}
+}
 </style>
-</head><body>
+<script src="config.js"></script></head><body>
 <header class="top"><div class="top-in"><a class="brand" href="#home"><b>NTM Virtual Lab</b><span>Non-traditional machining</span></a>
 <nav class="nav" aria-label="Main"><a href="#home">Overview</a><a href="#lab">Experiments</a><a href="#compare">Compare</a><a href="#about">About</a></nav></div></header>
 <div class="shell"><nav class="rail" id="rail" aria-label="Processes"></nav><main id="main"></main></div>
+<footer class="site-foot">© 2026 Dr. Vignesh Nayak Ullal, Department of Mechanical Engineering, Mangalore Institute of Technology &amp; Engineering (MITE), Moodbidri. Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Source: <a href="https://github.com/nayakvignesh113-bot/NTM-Virtual-Lab" target="_blank" rel="noopener">GitHub</a>. Simulation outputs are model estimates for teaching.</footer>
 <script>
 // ---------- shared physical data ----------
 const FARADAY = 96485;
@@ -416,10 +452,11 @@ const PROCESSES = [
   {id:'sod',label:'Stand-off distance',unit:'mm',min:0.5,max:15,step:0.1,val:1},
   {id:'dn',label:'Nozzle bore',unit:'mm',min:0.2,max:1.0,step:0.05,val:0.45},
   {id:'al',label:'Jet divergence half-angle α',unit:'°',min:2,max:15,step:0.5,val:7},
+  {id:'ang',label:'Impact angle θ (90° = normal)',unit:'°',min:10,max:90,step:1,val:90},
   {id:'ab',label:'Abrasive',type:'select',val:'al2o3',options:[['al2o3','Aluminium oxide (ρ 3.95 g/cc)'],['sic','Silicon carbide (ρ 3.21 g/cc)'],['glass','Glass beads (ρ 2.50 g/cc)']]},
-  {id:'mat',label:'Work material',type:'select',val:'glass',options:[['glass','Glass (H ≈ 5.5 GPa)'],['si','Silicon (H ≈ 10 GPa)'],['quartz','Quartz (H ≈ 11 GPa)'],['alumina','Alumina ceramic (H ≈ 15 GPa)']]},
+  {id:'mat',label:'Work material',type:'select',val:'glass',options:[['glass','Glass (H ≈ 5.5 GPa)'],['si','Silicon (H ≈ 10 GPa)'],['quartz','Quartz (H ≈ 11 GPa)'],['alumina','Alumina ceramic (H ≈ 15 GPa)'],['alu','Aluminium alloy, ductile (p ≈ 1.0 GPa)'],['ms','Mild steel, ductile (p ≈ 1.5 GPa)']]},
  ],
- abr:{al2o3:3950,sic:3210,glass:2500}, hard:{glass:5.5e9,si:10e9,quartz:11e9,alumina:15e9},
+ abr:{al2o3:3950,sic:3210,glass:2500}, hard:{glass:5.5e9,si:10e9,quartz:11e9,alumina:15e9,alu:1.0e9,ms:1.5e9},
  outputs:[
   {k:'mrr',label:'MRR',unit:'mm³/min',pri:1},
   {k:'v',label:'Particle velocity',unit:'m/s'},
@@ -435,9 +472,16 @@ const PROCESSES = [
   const mp=rho*Math.PI/6*d*d*d;
   const N=(p.ma/1000/60)/mp;
   const g=Math.exp(-Math.pow(Math.log(p.sod/0.8),2)/(2*1.4*1.4));
-  const mrr=0.25*N*d*d*d*Math.pow(v,1.5)*Math.pow(rho/(12*H),0.75)*g*1e9*60;
+  const th=(p.ang??90)*Math.PI/180;
+  let mrr;
+  if(p.model==='finnie'){const f=Math.tan(th)<=1/3?Math.sin(2*th)-3*Math.pow(Math.sin(th),2):Math.pow(Math.cos(th),2)/3;mrr=0.5*N*mp*v*v/(H*2*2)*Math.max(f,0)*g*1e9*60;}
+  else mrr=0.25*N*d*d*d*Math.pow(v*Math.sin(th),1.5)*Math.pow(rho/(12*H),0.75)*g*1e9*60;
   const kerf=p.dn+2*p.sod*Math.tan(p.al*Math.PI/180);
   const notes=[];
+  const ductile=p.mat==='alu'||p.mat==='ms';
+  if(p.model==='finnie'&&!ductile) notes.push('Finnie\'s model describes ductile micro-cutting. For glass and ceramics the brittle-fracture model applies.');
+  if(p.model!=='finnie'&&ductile) notes.push('The brittle-fracture model does not apply to ductile metals. Select Finnie\'s ductile model.');
+  if(p.model==='finnie'&&(p.ang??90)>=80) notes.push('Finnie\'s model predicts almost no erosion near normal incidence, a known limitation: real ductile metals still erode slowly at 90°.');
   if(p.sod>6) notes.push('Large SOD: the jet has spread and slowed, so MRR drops and the kerf widens with a rounded edge.');
   if(p.ma>15) notes.push('High abrasive loading reduces gas velocity per particle; gains in MRR flatten.');
   if(p.sod<0.6) notes.push('Very small SOD: rebounding grit interferes with incoming grit and the nozzle wears quickly.');
@@ -619,8 +663,8 @@ const PROCESSES = [
  ],
  sweep:{x:'T',y:'d'},
  compute(p){
-  const s=this.sys[p.sys], Ea=s.Ea, Rg=8.314;
-  const r=s.r*this.agit[p.ag]*Math.exp(-Ea/Rg*(1/(p.T+273.15)-1/(323.15)));
+  const s=this.sys[p.sys], mt=p.model==='mt', Ea=mt?18000:s.Ea, Rg=8.314;
+  const r=s.r*(mt?{none:0.4,mild:1,spray:2.0}[p.ag]:this.agit[p.ag])*Math.exp(-Ea/Rg*(1/(p.T+273.15)-1/(323.15)));
   const d=r*p.time;
   const E=s.E*(p.ag==='spray'?1.25:1);
   const u=d/E;
@@ -667,9 +711,9 @@ const PROCESSES = [
   {id:'A',label:'Tool frontal area',unit:'mm²',min:50,max:3000,step:10,val:500},
   {id:'Q',label:'Electrolyte flow',unit:'L/min',min:2,max:60,step:1,val:10},
   {id:'el',label:'Electrolyte',type:'select',val:'nacl',options:[['nacl','NaCl (non-passivating)'],['nano3','NaNO₃ (passivating, efficiency rises with current density)']]},
-  {id:'mat',label:'Work material',type:'select',val:'fe',options:[['fe','Pure iron (Fe²⁺)'],['u10a','High-carbon tool steel U10A'],['ss','Stainless steel 304'],['ni','Nickel (Ni²⁺)'],['co','Cobalt (Co²⁺)'],['cu','Copper (Cu²⁺)'],['al','Aluminium (Al³⁺)'],['ti','Titanium (Ti⁴⁺)']]},
+  {id:'mat',label:'Work material',type:'select',val:'fe',options:[['fe','Pure iron (Fe²⁺)'],['u10a','High-carbon tool steel U10A'],['ss','Stainless steel 304 (alloy)'],['inco','Inconel 718 (alloy)'],['ti64','Ti-6Al-4V (alloy)'],['ni','Nickel (Ni²⁺)'],['co','Cobalt (Co²⁺)'],['cu','Copper (Cu²⁺)'],['al','Aluminium (Al³⁺)'],['ti','Titanium (Ti⁴⁺)']]},
  ],
- mats:{fe:{M:55.85,z:2,rho:7.86,eta:0.95},u10a:{M:55.85,z:2,rho:7.83,eta:0.708},ss:{M:25.58,z:1,rho:8.0,eta:0.75,etaN:0.604},ni:{M:58.69,z:2,rho:8.90,eta:0.90},co:{M:58.93,z:2,rho:8.90,eta:0.90},cu:{M:63.55,z:2,rho:8.96,eta:0.90},al:{M:26.98,z:3,rho:2.70,eta:0.85},ti:{M:47.87,z:4,rho:4.51,eta:0.60}},
+ mats:{fe:{M:55.85,z:2,rho:7.86,eta:0.95},u10a:{M:55.85,z:2,rho:7.83,eta:0.708},ss:{M:25.12,z:1,rho:8.0,eta:0.75,etaN:0.604,comp:{fe:.70,cr:.19,ni:.095,mn:.015}},inco:{M:25.21,z:1,rho:8.19,eta:0.85,comp:{ni:.525,cr:.19,fe:.185,nb:.051,mo:.03,ti:.009,al:.005}},ti64:{M:11.87,z:1,rho:4.43,eta:0.6,comp:{ti:.90,al:.06,v:.04}},ni:{M:58.69,z:2,rho:8.90,eta:0.90},co:{M:58.93,z:2,rho:8.90,eta:0.90},cu:{M:63.55,z:2,rho:8.96,eta:0.90},al:{M:26.98,z:3,rho:2.70,eta:0.85},ti:{M:47.87,z:4,rho:4.51,eta:0.60}},
  outputs:[
   {k:'ge',label:'Equilibrium gap',unit:'mm',pri:1},
   {k:'J',label:'Current density',unit:'A/cm²'},
@@ -680,10 +724,13 @@ const PROCESSES = [
   {k:'Pw',label:'Power',unit:'kW'},
   {k:'se',label:'Specific energy',unit:'J/mm³'},
   {k:'eta',label:'Current efficiency',unit:'%'},
+  {k:'Eq',label:'Chemical equivalent M/z',unit:'g/mol'},
  ],
  sweep:{x:'V',y:'ge'},
  compute(p){
-  const m=this.mats[p.mat], dV=1.5;
+  const m0=this.mats[p.mat], dV=1.5;
+  const EL={fe:[55.85,2],cr:[52.00,3],ni:[58.69,2],mn:[54.94,2],nb:[92.91,5],mo:[95.95,3],ti:[47.87,4],al:[26.98,3],v:[50.94,3]};
+  let m=m0;if(m0.comp){const c=Object.entries(m0.comp);const E=p.model==='weight'?c.reduce((a,[k,w])=>a+w*EL[k][0]/EL[k][1],0):1/c.reduce((a,[k,w])=>a+w/(EL[k][0]/EL[k][1]),0);m={...m0,M:E,z:1};}
   const Veff=Math.max(p.V-dV,0.1);
   const fs=p.f/1000/60;
   const shape=j=>{const T=[[0,0],[12.28,.814],[19.61,1.019],[27.43,1.093],[35.37,1.130],[50.68,1.183],[66.74,1.198],[83.19,1.202]];if(j>=83.19)return 1;for(let i=1;i<T.length;i++)if(j<=T[i][0]){const[a,b]=T[i-1],[c,d]=T[i];return (b+(d-b)*(j-a)/(c-a))/1.202;}return 1;};
@@ -700,9 +747,10 @@ const PROCESSES = [
   if(ge<0.05) notes.push('Gap below about 0.05 mm: high risk of sparking and short circuit. Reduce feed or raise voltage.');
   if(ge>1) notes.push('Gap above 1 mm: dimensional control (shape replication) becomes poor.');
   if(dT>15) notes.push('Large temperature rise along the gap changes conductivity and can boil the electrolyte. Increase flow.');
-  if(p.mat==='ti') notes.push('Titanium forms a passive oxide film; current efficiency is low and NaCl at high voltage is usually needed.');
+  if(m0.comp) notes.push(`Alloy chemical equivalent E = ${m.M.toFixed(2)} g/mol per electron by the ${p.model==='weight'?'weight-averaged':'charge-superposition'} method.`);
+  if(p.mat==='ti'||p.mat==='ti64') notes.push('Titanium forms a passive oxide film; current efficiency is low and NaCl at high voltage is usually needed.');
   if(p.el==='nano3'&&eta<0.8*base) notes.push(`NaNO₃ at this low current density: the passive film limits dissolution, so current efficiency is only ${(eta*100).toFixed(0)} %. Stray dissolution is suppressed, which is why NaNO₃ gives better accuracy.`);
-  return {o:{ge:ge*1000,J:J/1e4,I,mrr,mg:mrr*m.rho/1000,dT,Pw:Pw/1000,se:Pw/(mrr/60),eta:eta*100},notes};
+  return {o:{ge:ge*1000,J:J/1e4,I,mrr,mg:mrr*m.rho/1000,dT,Pw:Pw/1000,se:Pw/(mrr/60),eta:eta*100,Eq:m.M/m.z},notes};
  },
  theory:{
   principle:[
@@ -740,6 +788,10 @@ const PROCESSES = [
   {id:'Ip',label:'Peak current Iₚ',unit:'A',min:1,max:50,step:0.5,val:15},
   {id:'ton',label:'Pulse-on time tₒₙ',unit:'µs',min:2,max:400,step:1,val:100},
   {id:'toff',label:'Pulse-off time tₒff',unit:'µs',min:2,max:400,step:1,val:50},
+  {id:'V0',label:'Supply voltage V₀ (RC model)',unit:'V',min:80,max:300,step:5,val:200},
+  {id:'R',label:'Charging resistance R (RC model)',unit:'Ω',min:2,max:100,step:1,val:20},
+  {id:'Cuf',label:'Capacitance C (RC model)',unit:'µF',min:0.01,max:10,step:0.01,val:1},
+  {id:'rv',label:'Breakdown ratio V_d/V₀ (RC model)',unit:'',min:0.3,max:0.95,step:0.01,val:0.72},
   {id:'el',label:'Electrode',type:'select',val:'gr',options:[['cu','Electrolytic copper'],['gr','Graphite'],['cuw','Copper–tungsten']]},
   {id:'mat',label:'Work material',type:'select',val:'steel',options:[['steel','Tool steel'],['ti','Ti-6Al-4V'],['inco','Inconel 718'],['wc','WC-Co carbide'],['al','Al 6061']]},
  ],
@@ -757,6 +809,10 @@ const PROCESSES = [
  sweep:{x:'Ip',y:'mrr'},
  compute(p){
   const m=TH[p.mat], Vd=25;
+  if(p.model==='rc'){const C=p.Cuf*1e-6,Vb=p.rv*p.V0;const E=0.5*C*Vb*Vb;const tc=p.R*C*Math.log(1/(1-p.rv));const f=1/tc;const P=E*f;const mrr=0.1*P/eMelt(m)*60;const Em=E*1000;
+    const notes=[`RC relaxation generator: each spark discharges the capacitor. Average power ${P.toFixed(0)} W; the maximum possible is V₀²/4R = ${(p.V0*p.V0/(4*p.R)).toFixed(0)} W, reached near V_d/V₀ ≈ 0.72.`];
+    if(f>200000)notes.push('Very high spark frequency: in practice the gap cannot de-ionise this fast and arcing results.');
+    return {o:{mrr,Ra:1.45*Math.cbrt(Em),E:Em,fr:f/1000,D:NaN,twr:clamp(this.elec[p.el].w*0.8,0.3,60),oc:0.01+0.03*Math.cbrt(Em),rl:1.2*Math.sqrt(Em)},notes};}
   const D=p.ton/(p.ton+p.toff);
   const P=Vd*p.Ip*D;
   const eta=0.12*p.ton/(p.ton+10)*Math.exp(-p.ton/800);
@@ -909,6 +965,7 @@ const PROCESSES = [
     const k={co2:{pmma:.20,ply:.15},fiber:{pmma:.01,ply:.06},yag:{pmma:.01,ply:.06}}[p.las][p.mat];
     u=k*p.P/(p.t*kerf*es)*0.06;
   }
+  if(p.model==='vap'&&metal) u*=eMelt(TH[p.mat])/eVap(TH[p.mat]);
   const us=u*1000/60;
   const haz=2*Math.sqrt(this.alpha[p.mat]*(kerf/1000)/(us/1000))*1000;
   const notes=[];
@@ -975,7 +1032,7 @@ const PROCESSES = [
   const m=TH[p.mat];
   const Pk=p.V*1e3*p.I*1e-3;
   const Ep=Pk*p.tp*1e-6;
-  const ev=eVap(m);
+  const ev=p.model==='melt'?eMelt(m):eVap(m);
   const vpp=0.15*Ep/ev;
   const holeV=Math.PI/4*Math.pow(p.ds/1000,2)*p.t;
   const n=Math.ceil(holeV/vpp);
@@ -1040,9 +1097,11 @@ const PROCESSES = [
   const es={steel:eMelt(TH.steel),ss:eMelt(TH.ss),al:eMelt(TH.al)*2.0}[p.mat];
   const kerf=0.8+0.0075*p.I+0.03*p.t;
   const raw=0.3423*gas*P*Math.exp(-p.t/(0.371*p.I))/(p.t*kerf*es)*60;
-  const capped=raw>9000;
-  const us=Math.min(raw,9000)/60;
+  const chartU=p.model==='chart'?PAMCHART(p.I,p.t,p.mat):null;
+  const capped=p.model!=='chart'&&raw>9000;
+  const us=(p.model==='chart'?chartU:Math.min(raw,9000))/60;
   const notes=[];
+  if(p.model==='chart'){notes.push('Chart model: speed interpolated from Hypertherm Powermax125 mechanized charts (air plasma, best quality). Gas setting is ignored.');if(!isFinite(chartU))notes.push('This current or thickness is outside the published charts (45–125 A; listed thicknesses only), so the chart model gives no value.');}
   if(capped) notes.push('Speed limited to 9 m/min, the practical ceiling in Hypertherm\'s charts. Thin sheet at low current cannot be cut faster without losing arc stability.');
   if(p.t>0.18*p.I) notes.push('Thickness exceeds the rule-of-thumb pierce capacity for this current; start from an edge.');
   if(us*60<250) notes.push('Very slow cutting: heavy bottom dross and a wide, bevelled kerf are expected.');
@@ -1299,8 +1358,8 @@ ecm:{intro:'Mount the workpiece (anode) and the tool (cathode). Start the electr
   {id:'pwr',label:'DC power supply',req:['fluid'],alarm:'No electrolyte flowing. With power on, the gap would boil, spark and short-circuit, damaging tool and work.'}],
  cycle:()=>({label:'Machine for 5.0 minutes at constant feed',min:5}),
  live:(S,p,o)=>[['Electrolyte',S.fluid?`${p.Q} L/min`:'off'],['Voltage',S.x.pwr?`${p.V} V`:'0 V'],['Current',S.on?`${o.I.toFixed(0)} A`:'0 A'],['Feed',`${p.f} mm/min`]],
- meas:(p,o)=>{const m=ECMMAT(p.mat);const I=nz(o.I,0.01);const dm=nz(o.mg*5,0.015);const m0=nz(180,0.1);const ans=dm*m.z*FARADAY/(I*300*m.M)*100;
-  return {readings:[['Mass before',`${m0.toFixed(3)} g`],['Mass after',`${(m0-dm).toFixed(3)} g`],['Ammeter (mean)',`${I.toFixed(1)} A`],['Time','5 min 00 s'],['Work: M, z',`${m.M} g/mol, z = ${m.z}`]],
+ meas:(p,o)=>{const m=ECMMAT(p.mat)||{M:+o.Eq.toFixed(2),z:1};const I=nz(o.I,0.01);const dm=nz(o.mg*5,0.015);const m0=nz(180,0.1);const ans=dm*m.z*FARADAY/(I*300*m.M)*100;
+  return {readings:[['Mass before',`${m0.toFixed(3)} g`],['Mass after',`${(m0-dm).toFixed(3)} g`],['Ammeter (mean)',`${I.toFixed(1)} A`],['Time','5 min 00 s'],[m.z===1&&ECMMAT(p.mat)==null?'Alloy chemical equivalent E':'Work: M, z',m.z===1&&ECMMAT(p.mat)==null?`${m.M} g/mol per electron`:`${m.M} g/mol, z = ${m.z}`]],
    ask:{q:'Calculate the current efficiency η = actual ÷ Faraday mass loss.',unit:'%',ans,sol:`Faraday mass = I·t·M/(zF) = ${I.toFixed(1)} × 300 × ${m.M} / (${m.z} × 96485) = ${(I*300*m.M/(m.z*FARADAY)).toFixed(3)} g. η = ${dm.toFixed(3)} / ${(I*300*m.M/(m.z*FARADAY)).toFixed(3)} = ${ans.toFixed(1)} %.`},model:o.eta};}},
 edm:{intro:'Clamp the work in the tank, mount the electrode, fill the dielectric, then switch on the generator and sink for 10 minutes. Weigh the work and the electrode.',
  parts:[{id:'work',label:'Workpiece',zone:[110,186,420,98]},{id:'tool',label:'Electrode',zone:[272,64,96,110],req:['work'],alarm:'Clamp the workpiece first so the electrode can be zeroed on it.'}],
@@ -1349,7 +1408,7 @@ pam:{intro:'Lay the plate on the table, connect the work clamp, turn on the plas
  meas:(p,o)=>{const t=nz(300/o.u,0.01);const ans=300/t;
   return {readings:[['Cut length','300 mm'],['Stopwatch',mmss(t)]],ask:{q:'Calculate the cutting speed.',unit:'mm/min',ans,sol:`u = 300 / ${t.toFixed(3)} min = ${ans.toFixed(0)} mm/min.`},model:o.u};}},
 };
-const ECMMAT=k=>({fe:{M:55.85,z:2},u10a:{M:55.85,z:2},ss:{M:25.58,z:1},ni:{M:58.69,z:2},co:{M:58.93,z:2},cu:{M:63.55,z:2},al:{M:26.98,z:3},ti:{M:47.87,z:4}})[k];
+const ECMMAT=k=>({fe:{M:55.85,z:2},u10a:{M:55.85,z:2},ni:{M:58.69,z:2},co:{M:58.93,z:2},cu:{M:63.55,z:2},al:{M:26.98,z:3},ti:{M:47.87,z:4}})[k];
 // ---------- canvas drawing (logical 640 × 400) ----------
 const rnd=i=>{const s=Math.sin(i*127.1+311.7)*43758.5453;return s-Math.floor(s)};
 function colors(){
@@ -1908,7 +1967,9 @@ PROCESSES.push(
  Cp:{ox:9.8e-14,cu:6e-13,w:1.5e-13,si:1.2e-13},
  outputs:[{k:'rr',label:'Removal rate',unit:'nm/min',pri:1},{k:'tclr',label:'Time to clear film',unit:'s'},{k:'psi',label:'Pressure',unit:'psi'},{k:'Cp',label:'Preston coefficient',unit:'×10⁻¹³ m²/N'}],
  sweep:{x:'P',y:'rr'},
- compute(p){const Cp=this.Cp[p.mat];const rr=Cp*p.P*1000*p.v*60*1e9;const notes=[];
+ compute(p){const Cp=this.Cp[p.mat];const P0=34,v0=1,Pth=7;const ref=Cp*P0*1000*v0;let rrs;
+  if(p.model==='tw')rrs=ref*Math.pow(p.P/P0,5/6)*Math.pow(p.v/v0,0.5);else if(p.model==='zs')rrs=ref*Math.max(0,Math.pow(p.P,2/3)-Math.pow(Pth,2/3))/(Math.pow(P0,2/3)-Math.pow(Pth,2/3))*(p.v/v0);else rrs=Cp*p.P*1000*p.v;
+  const rr=rrs*60*1e9;const notes=[];if(p.model==='zs'&&p.P<=Pth)notes.push('Below the threshold pressure (7 kPa assumed): no removal in the Zhao–Shi model.');
   if(p.mat==='cu'&&p.P>21)notes.push('High pressure on copper with low-k dielectrics risks delamination; modern Cu CMP uses about 1–2 psi.');
   if(p.P<10)notes.push('Very low pressure: pad contact becomes uneven and Preston behaviour breaks down.');
   return {o:{rr,tclr:p.h/rr*60,psi:p.P/6.895,Cp:Cp*1e13},notes};},
@@ -2250,19 +2311,50 @@ ibm:{intro:'Mount the target, close the chamber, pump down, switch on the neutra
   return {readings:[['Profilometer step height',`${h.toFixed(0)} nm`],['Milling time',`${p.t} min`]],
    ask:{q:'Calculate the removal rate.',unit:'nm/min',ans,sol:`rate = ${h.toFixed(0)} nm / ${p.t} min = ${ans.toFixed(1)} nm/min.`},model:o.rr};}},
 });
+// ---------- alternative models: metadata, selector params, chart data ----------
+const PAM_CH={ms:{45:[[0.5,8890],[1,8890],[1.5,8040],[2,6565],[3,3725],[4,2250],[6,1265]],65:[[2,5930],[3,5150],[4,4370],[6,2815],[8,1815],[10,1085],[12,845],[16,565],[20,355],[25,215]],105:[[6,4110],[8,3220],[10,2410],[12,1810],[16,1050],[20,780],[25,540],[30,420],[32,370]],125:[[6,4980],[8,3800],[10,2750],[12,2050],[16,1260],[20,980],[25,610],[30,460],[32,400],[35,340],[40,240]]},
+ ss125:[[6,5910],[8,4060],[10,2540],[12,2170],[16,1140],[20,940],[25,540],[30,430],[32,400],[35,320],[40,180]],
+ al125:[[6,7660],[8,5100],[10,2980],[16,1540],[20,1260],[25,850],[30,540],[32,430],[35,370],[40,270]]};
+function _lint(tab,t){if(t<tab[0][0]||t>tab[tab.length-1][0])return NaN;for(let i=1;i<tab.length;i++)if(t<=tab[i][0]){const[a,b]=tab[i-1],[c,d]=tab[i];if(c===a)return b;const f=(Math.log(t)-Math.log(a))/(Math.log(c)-Math.log(a));return Math.exp(Math.log(b)+f*(Math.log(d)-Math.log(b)));}return NaN;}
+function PAMCHART(I,t,mat){const Is=[45,65,105,125];if(I<45||I>125)return NaN;let i=1;while(i<Is.length&&I>Is[i])i++;const I0=Is[i-1],I1=Is[i];
+  const u0=_lint(PAM_CH.ms[I0],t),u1=_lint(PAM_CH.ms[I1],t);let u;if(I===I0)u=u0;else if(I===I1)u=u1;else{if(!isFinite(u0)||!isFinite(u1))return NaN;u=Math.exp(Math.log(u0)+(I-I0)/(I1-I0)*(Math.log(u1)-Math.log(u0)));}
+  if(mat==='steel')return u;const r=_lint(mat==='ss'?PAM_CH.ss125:PAM_CH.al125,t)/_lint(PAM_CH.ms[125],t);return u*r;}
+const MODELS={
+ ajm:[{id:'sp',name:'Brittle fracture (Sarkar & Pandey form)',eq:'MRR = <var>x</var>·<var>N</var>·<var>d</var><sup>3</sup>·(<var>v</var> sin θ)<sup>3/2</sup>·(ρ<sub>a</sub>/12<var>H</var><sub>w</sub>)<sup>3/4</sup>',w:'For glass and ceramics. Only the normal velocity component v sin θ is assumed to cause fracture.'},
+      {id:'finnie',name:'Ductile micro-cutting (Finnie, 1960)',eq:'MRR = <var>c</var>·<var>N</var>·(<var>m</var><var>v</var><sup>2</sup>/(<var>p</var>ψ<var>K</var>))·<var>f</var>(θ);  <var>f</var> = sin 2θ − 3 sin²θ (tan θ ≤ 1/3),  <var>f</var> = cos²θ/3 (tan θ > 1/3)',w:'For ductile metals. ψ = 2, K = 2, c = 0.5 (fraction of particles cutting ideally); p = flow pressure ≈ hardness. Peak erosion at about 17°; zero at normal incidence.'}],
+ chm:[{id:'rxn',name:'Reaction-controlled (Arrhenius, material-specific E_a)',eq:'<var>r</var> = <var>r</var><sub>ref</sub>·<var>k</var><sub>ag</sub>·exp[−(<var>E</var><sub>a</sub>/<var>R</var>)(1/<var>T</var> − 1/<var>T</var><sub>ref</sub>)]',w:'E_a ≈ 45 kJ/mol except Cu/FeCl₃ (18 kJ/mol). Agitation factors 0.6 / 1.0 / 1.6.'},
+      {id:'mt',name:'Mass-transfer limited',eq:'<var>r</var> = <var>r</var><sub>ref</sub>·<var>k</var><sub>ag</sub>·exp[−(18 000/<var>R</var>)(1/<var>T</var> − 1/<var>T</var><sub>ref</sub>)]',w:'Rate set by diffusion of fresh etchant through the boundary layer: weak temperature dependence (E_a ≈ 18 kJ/mol, typical of diffusion) and strong dependence on agitation (0.4 / 1.0 / 2.0).'}],
+ ecm:[{id:'charge',name:'Alloy equivalent by charge superposition',eq:'1/<var>E</var><sub>alloy</sub> = Σ <var>w</var><sub>i</sub>/<var>E</var><sub>i</sub>,   <var>E</var><sub>i</sub> = <var>M</var><sub>i</sub>/<var>z</var><sub>i</sub>',w:'Each element consumes charge in proportion to its mass fraction w_i divided by its equivalent. This is Faraday\'s law applied element by element.'},
+      {id:'weight',name:'Alloy equivalent by weight average',eq:'<var>E</var><sub>alloy</sub> = Σ <var>w</var><sub>i</sub>·<var>E</var><sub>i</sub>',w:'A simpler weighted average of the elemental equivalents. Slightly overestimates removal compared with charge superposition. Both methods are identical for a pure metal.'}],
+ edm:[{id:'pulse',name:'Transistor pulse generator (thermal model)',eq:'MRR = η·<var>V</var><sub>d</sub><var>I</var><sub>p</sub><var>D</var> / [ρ(<var>c</var>Δ<var>T</var><sub>m</sub> + <var>L</var><sub>m</sub>)]',w:'Uses I_p, t_on and t_off.'},
+      {id:'rc',name:'RC relaxation generator',eq:'<var>E</var> = ½<var>C</var><var>V</var><sub>d</sub><sup>2</sup>,  <var>t</var><sub>c</sub> = <var>R</var><var>C</var> ln[1/(1 − <var>V</var><sub>d</sub>/<var>V</var><sub>0</sub>)],  <var>P</var> = <var>E</var>/<var>t</var><sub>c</sub>,  MRR = η<var>P</var>/[ρ(<var>c</var>Δ<var>T</var><sub>m</sub> + <var>L</var><sub>m</sub>)]',w:'Uses V₀, R, C and V_d/V₀. Power is maximum near V_d/V₀ ≈ 0.72 (from dP/dV_d = 0). η = 0.10 assumed.'}],
+ lbm:[{id:'fit',name:'Melt-and-blow (fitted to cut charts)',eq:'η<sub>c</sub><var>P</var>e<sup>−t/t₀</sup> = <var>u</var><var>t</var><var>w</var>ρ(<var>c</var>Δ<var>T</var><sub>m</sub> + <var>L</var><sub>m</sub>)',w:'The validated model: melt is blown out by assist gas.'},
+      {id:'vap',name:'Vaporisation energy bound',eq:'η<sub>c</sub><var>P</var>e<sup>−t/t₀</sup> = <var>u</var><var>t</var><var>w</var>ρ(<var>c</var>Δ<var>T</var><sub>b</sub> + <var>L</var><sub>m</sub> + <var>L</var><sub>v</sub>)',w:'If all removed metal had to be vaporised (as in drilling or ablation). Shows why melt ejection by gas makes cutting several times faster.'}],
+ ebm:[{id:'vap',name:'Vaporisation',eq:'MRR = η<var>E</var><sub>p</sub><var>f</var> / [ρ(<var>c</var>Δ<var>T</var><sub>b</sub> + <var>L</var><sub>m</sub> + <var>L</var><sub>v</sub>)]',w:'All removed material is vaporised.'},
+      {id:'melt',name:'Melt expulsion',eq:'MRR = η<var>E</var><sub>p</sub><var>f</var> / [ρ(<var>c</var>Δ<var>T</var><sub>m</sub> + <var>L</var><sub>m</sub>)]',w:'Vapour pressure expels molten material (helped by a backing material). Upper bound on removal.'}],
+ pam:[{id:'eb',name:'Energy balance (fitted)',eq:'<var>u</var> = η<sub>th</sub><var>k</var><sub>gas</sub><var>P</var>e<sup>−t/(0.371 I)</sup> / [<var>t</var><var>w</var>ρ(<var>c</var>Δ<var>T</var><sub>m</sub> + <var>L</var><sub>m</sub>)]',w:'Works at any current and gas; validated within about 13 % on held-out charts.'},
+      {id:'chart',name:'Manufacturer chart look-up (Hypertherm)',eq:'<var>u</var>(<var>I</var>,<var>t</var>) interpolated log-linearly from published cut charts',w:'Exact at chart points; valid only for 45–125 A air plasma within the listed thicknesses.'}],
+ cmp:[{id:'preston',name:'Preston (1927)',eq:'MRR = <var>C</var><sub>p</sub>·<var>P</var>·<var>v</var>',w:'Linear in pressure and velocity.'},
+      {id:'tw',name:'Tseng & Wang (1997)',eq:'MRR ∝ <var>P</var><sup>5/6</sup>·<var>v</var><sup>1/2</sup>',w:'Derived from elastic contact of abrasive particles; sub-linear in pressure and velocity. Scaled to equal Preston at 34 kPa and 1 m/s.'},
+      {id:'zs',name:'Zhao & Shi (1999), threshold pressure',eq:'MRR = <var>K</var>(<var>P</var><sup>2/3</sup> − <var>P</var><sub>th</sub><sup>2/3</sup>)·<var>v</var>',w:'No removal below a threshold pressure P_th (7 kPa assumed here). Scaled to equal Preston at 34 kPa and 1 m/s.'}],
+};
+// inject the model selector as the first parameter
+for(const [id,list] of Object.entries(MODELS)){const P=PROCESSES.find(x=>x.id===id);if(!P)continue;P.models=list;
+  P.params.unshift({id:'model',label:'Simulator model',type:'select',val:list[0].id,options:list.map(m=>[m.id,m.name])});}
+// keep default model explicit for runP/validation
 // ---------- nomenclature for governing equations ----------
 // [symbol (HTML), meaning, unit]
 const v_=s=>`<var>${s}</var>`;
 const NOM={
 usm:[[v_('h')+'<sub>w</sub>','Indentation depth of one grit into the work','m (shown in µm)'],[v_('F'),'Static feed force on the tool','N'],[v_('A')+'<sub>0</sub>','Vibration amplitude at the tool face','m (µm)'],[v_('H'),'Hardness of the work surface (glass: 5.5 GPa)','Pa'],[v_('N')+'<sub>g</sub>','Number of active grits under the tool','–'],[v_('d'),'Mean grit diameter','m (µm)'],[v_('C'),'Slurry concentration','% by volume'],[v_('V')+'<sub>g</sub>','Volume of material chipped per grit impact','m³'],['κ','Fraction of grits that impact in each cycle (0.025)','–'],[v_('f'),'Vibration frequency','Hz (kHz)'],['MRR','Material removal rate','mm³/min'],[v_('F')+'<sub>c</sub>','Force above which grits begin to crush','N'],[v_('R'),'Relative USM machinability index (glass = 100)','–']],
-ajm:[['MRR','Material removal rate','m³/s (mm³/min)'],[v_('x'),'Empirical erosion constant (0.25)','–'],[v_('N'),'Number of abrasive particles striking per second','s⁻¹'],[v_('d'),'Abrasive grit diameter','m (µm)'],[v_('v'),'Particle velocity at the work','m/s'],['ρ<sub>a</sub>','Density of abrasive','kg/m³'],[v_('H')+'<sub>w</sub>','Hardness of the work material','Pa'],['ṁ<sub>a</sub>','Abrasive mass flow rate','kg/s (g/min)'],[v_('p'),'Nozzle (carrier gas) pressure','bar'],[v_('w'),'Kerf width at the work surface','mm'],[v_('d')+'<sub>n</sub>','Nozzle bore diameter','mm'],['SOD','Stand-off distance, nozzle tip to work','mm'],['α','Jet divergence half-angle','°']],
+ajm:[['MRR','Material removal rate','m³/s (mm³/min)'],[v_('x'),'Empirical erosion constant (0.25)','–'],[v_('N'),'Number of abrasive particles striking per second','s⁻¹'],[v_('d'),'Abrasive grit diameter','m (µm)'],[v_('v'),'Particle velocity at the work','m/s'],['ρ<sub>a</sub>','Density of abrasive','kg/m³'],[v_('H')+'<sub>w</sub>','Hardness of the work material','Pa'],['ṁ<sub>a</sub>','Abrasive mass flow rate','kg/s (g/min)'],[v_('p'),'Nozzle (carrier gas) pressure','bar'],[v_('w'),'Kerf width at the work surface','mm'],[v_('d')+'<sub>n</sub>','Nozzle bore diameter','mm'],['SOD','Stand-off distance, nozzle tip to work','mm'],['α','Jet divergence half-angle','°'],['θ','Impact angle of the jet on the surface (90° = normal)','°'],[v_('m'),'Mass of one abrasive particle (Finnie)','kg'],[v_('p'),'Plastic flow pressure of the work ≈ hardness (Finnie)','Pa'],['ψ, '+v_('K'),'Finnie constants: depth-to-length ratio of cut (2), force ratio (2)','–'],[v_('c'),'Fraction of particles cutting ideally (0.5, Finnie)','–'],[v_('f')+'(θ)','Finnie angle function','–']],
 wjm:[[v_('v'),'Jet velocity at the orifice exit','m/s'],[v_('C')+'<sub>v</sub>','Velocity coefficient of the orifice (0.95)','–'],[v_('p'),'Water (pump) pressure','Pa (MPa)'],['ρ','Density of water (1000)','kg/m³'],[v_('Q'),'Volumetric flow rate through the orifice','m³/s (L/min)'],[v_('C')+'<sub>d</sub>','Discharge coefficient of the orifice (0.70)','–'],[v_('d')+'<sub>o</sub>','Orifice diameter','mm'],[v_('P')+'<sub>h</sub>','Hydraulic power of the jet','W (kW)'],[v_('u')+'<sub>max</sub>','Maximum separation (cutting) speed','mm/s (mm/min)'],[v_('t'),'Workpiece thickness','mm'],[v_('w'),'Kerf width','mm'],[v_('e')+'<sub>s</sub>','Effective specific cutting energy of the material','J/mm³']],
 awjm:[[v_('v')+'<sub>a</sub>','Abrasive particle velocity leaving the focusing tube','m/s'],[v_('v')+'<sub>w</sub>','Water jet velocity at the orifice','m/s'],['η<sub>m</sub>','Momentum transfer efficiency in the focusing tube (0.8)','–'],[v_('R'),'Loading ratio, ṁ<sub>a</sub>/ṁ<sub>w</sub>','–'],['ṁ<sub>a</sub>','Abrasive (garnet) mass flow rate','kg/s (kg/min)'],['ṁ<sub>w</sub>','Water mass flow rate','kg/s'],[v_('P')+'<sub>a</sub>','Effective kinetic power of the abrasive','W (kW)'],[v_('u')+'<sub>max</sub>','Maximum separation speed','mm/min'],[v_('t'),'Workpiece thickness','mm'],[v_('w'),'Kerf width (≈ focusing tube diameter + 0.1 mm)','mm'],[v_('e')+'<sub>s</sub>','Effective specific cutting energy (= 3220/N<sub>m</sub>)','J/mm³'],[v_('N')+'<sub>m</sub>','Machinability number of the work material','–']],
-chm:[[v_('r'),'Etch rate at temperature T','mm/min'],[v_('r')+'<sub>ref</sub>','Etch rate at the reference temperature','mm/min'],[v_('E')+'<sub>a</sub>','Activation energy of the etching reaction','J/mol'],[v_('R'),'Universal gas constant (8.314)','J/mol·K'],[v_('T'),'Absolute etchant temperature','K'],[v_('T')+'<sub>ref</sub>','Reference temperature (323.15 K = 50 °C)','K'],[v_('d'),'Etch depth','mm'],[v_('t'),'Immersion time','min'],[v_('u'),'Undercut beneath the mask edge (per side)','mm'],[v_('E')+'<sub>f</sub>','Etch factor, depth ÷ undercut','–']],
-ecm:[['MRR','Material removal rate (mass or volume)','g/s or mm³/min'],['η','Current efficiency','–'],[v_('I'),'Machining current','A'],[v_('M'),'Molar (atomic) mass of the work metal','g/mol'],[v_('z'),'Valence of dissolution','–'],[v_('F'),'Faraday constant (96 485)','C/mol'],['ρ','Density of the work material','kg/m³ (g/cm³)'],['κ','Electrolyte conductivity','S/m'],[v_('V'),'Applied voltage','V'],['Δ'+v_('V'),'Electrode over-potential (1.5 V)','V'],[v_('A'),'Tool frontal area','m² (mm²)'],[v_('g'),'Inter-electrode gap','m (mm)'],[v_('g')+'<sub>e</sub>','Equilibrium gap','m (mm)'],[v_('f'),'Tool feed rate','m/s (mm/min)'],[v_('J'),'Current density','A/m² (A/cm²)']],
-edm:[[v_('E')+'<sub>p</sub>','Energy delivered per discharge','J (mJ)'],[v_('V')+'<sub>d</sub>','Discharge (gap) voltage during sparking (≈25 V)','V'],[v_('I')+'<sub>p</sub>','Peak discharge current','A'],[v_('t')+'<sub>on</sub>','Pulse-on time','µs'],[v_('t')+'<sub>off</sub>','Pulse-off time','µs'],[v_('D'),'Duty factor, t<sub>on</sub>/(t<sub>on</sub> + t<sub>off</sub>)','–'],[v_('P'),'Average gap power','W'],['η','Fraction of gap power that melts and ejects work material','–'],['ρ','Density of the work material','kg/m³'],[v_('c'),'Specific heat of the work material','J/kg·K'],['Δ'+v_('T')+'<sub>m</sub>','Temperature rise to melting point, T<sub>m</sub> − T<sub>0</sub>','K'],[v_('L')+'<sub>m</sub>','Latent heat of fusion','J/kg'],['MRR','Material removal rate','mm³/min']],
+chm:[[v_('r'),'Etch rate at temperature T','mm/min'],[v_('r')+'<sub>ref</sub>','Etch rate at the reference temperature','mm/min'],[v_('E')+'<sub>a</sub>','Activation energy of the etching reaction','J/mol'],[v_('R'),'Universal gas constant (8.314)','J/mol·K'],[v_('T'),'Absolute etchant temperature','K'],[v_('T')+'<sub>ref</sub>','Reference temperature (323.15 K = 50 °C)','K'],[v_('d'),'Etch depth','mm'],[v_('t'),'Immersion time','min'],[v_('u'),'Undercut beneath the mask edge (per side)','mm'],[v_('E')+'<sub>f</sub>','Etch factor, depth ÷ undercut','–'],[v_('k')+'<sub>ag</sub>','Agitation factor','–']],
+ecm:[['MRR','Material removal rate (mass or volume)','g/s or mm³/min'],['η','Current efficiency','–'],[v_('I'),'Machining current','A'],[v_('M'),'Molar (atomic) mass of the work metal','g/mol'],[v_('z'),'Valence of dissolution','–'],[v_('F'),'Faraday constant (96 485)','C/mol'],['ρ','Density of the work material','kg/m³ (g/cm³)'],['κ','Electrolyte conductivity','S/m'],[v_('V'),'Applied voltage','V'],['Δ'+v_('V'),'Electrode over-potential (1.5 V)','V'],[v_('A'),'Tool frontal area','m² (mm²)'],[v_('g'),'Inter-electrode gap','m (mm)'],[v_('g')+'<sub>e</sub>','Equilibrium gap','m (mm)'],[v_('f'),'Tool feed rate','m/s (mm/min)'],[v_('J'),'Current density','A/m² (A/cm²)'],[v_('E')+'<sub>alloy</sub>','Chemical equivalent of an alloy (mass per mole of electrons)','g/mol'],[v_('E')+'<sub>i</sub>','Chemical equivalent of element i, M<sub>i</sub>/z<sub>i</sub>','g/mol'],[v_('w')+'<sub>i</sub>','Mass fraction of element i in the alloy','–']],
+edm:[[v_('E')+'<sub>p</sub>','Energy delivered per discharge','J (mJ)'],[v_('V')+'<sub>d</sub>','Discharge (gap) voltage during sparking (≈25 V)','V'],[v_('I')+'<sub>p</sub>','Peak discharge current','A'],[v_('t')+'<sub>on</sub>','Pulse-on time','µs'],[v_('t')+'<sub>off</sub>','Pulse-off time','µs'],[v_('D'),'Duty factor, t<sub>on</sub>/(t<sub>on</sub> + t<sub>off</sub>)','–'],[v_('P'),'Average gap power','W'],['η','Fraction of gap power that melts and ejects work material','–'],['ρ','Density of the work material','kg/m³'],[v_('c'),'Specific heat of the work material','J/kg·K'],['Δ'+v_('T')+'<sub>m</sub>','Temperature rise to melting point, T<sub>m</sub> − T<sub>0</sub>','K'],[v_('L')+'<sub>m</sub>','Latent heat of fusion','J/kg'],['MRR','Material removal rate','mm³/min'],[v_('V')+'<sub>0</sub>','Supply voltage (RC generator)','V'],[v_('R'),'Charging resistance (RC generator)','Ω'],[v_('C'),'Capacitance (RC generator)','F (µF)'],[v_('t')+'<sub>c</sub>','Capacitor charging time per spark','s'],[v_('E'),'Spark energy ½CV<sub>d</sub>² (RC generator)','J']],
 wedm:[[v_('w'),'Kerf width','mm'],[v_('d')+'<sub>w</sub>','Wire diameter','mm'],[v_('s'),'Spark gap on each side of the wire (0.025 mm)','mm'],['MRR','Volumetric material removal rate','mm³/min'],['Area rate','Cut area per unit time, MRR/w','mm²/min'],[v_('t'),'Workpiece thickness','mm'],[v_('I')+'<sub>p</sub>','Peak current','A'],[v_('t')+'<sub>on</sub>, '+v_('t')+'<sub>off</sub>','Pulse-on and pulse-off times','µs'],[v_('V')+'<sub>d</sub>','Discharge voltage (≈30 V)','V']],
-lbm:[[v_('d')+'<sub>0</sub>','Focused spot diameter','m (µm)'],[v_('M')+'<sup>2</sup>','Beam quality factor (1 = ideal Gaussian beam)','–'],['λ','Laser wavelength','m (µm)'],[v_('F'),'Focal length of the focusing lens','m (mm)'],[v_('D'),'Beam diameter at the lens','m (mm)'],['η<sub>c</sub>','Effective coupling: absorbed fraction minus conduction loss','–'],[v_('P'),'Laser power','W'],[v_('u'),'Cutting speed','m/s (m/min)'],[v_('t'),'Sheet thickness','m (mm)'],[v_('t')+'<sub>0</sub>','Loss length; thickness over which losses reduce speed by e','mm'],[v_('w'),'Kerf width','m (mm)'],['ρ, '+v_('c'),'Density and specific heat of the work','kg/m³, J/kg·K'],['Δ'+v_('T')+'<sub>m</sub>, '+v_('L')+'<sub>m</sub>','Temperature rise to melting; latent heat of fusion','K, J/kg'],['α','Thermal diffusivity of the work','m²/s'],['HAZ','Width of heat-affected zone','mm']],
+lbm:[[v_('d')+'<sub>0</sub>','Focused spot diameter','m (µm)'],[v_('M')+'<sup>2</sup>','Beam quality factor (1 = ideal Gaussian beam)','–'],['λ','Laser wavelength','m (µm)'],[v_('F'),'Focal length of the focusing lens','m (mm)'],[v_('D'),'Beam diameter at the lens','m (mm)'],['η<sub>c</sub>','Effective coupling: absorbed fraction minus conduction loss','–'],[v_('P'),'Laser power','W'],[v_('u'),'Cutting speed','m/s (m/min)'],[v_('t'),'Sheet thickness','m (mm)'],[v_('t')+'<sub>0</sub>','Loss length; thickness over which losses reduce speed by e','mm'],[v_('w'),'Kerf width','m (mm)'],['ρ, '+v_('c'),'Density and specific heat of the work','kg/m³, J/kg·K'],['Δ'+v_('T')+'<sub>m</sub>, '+v_('L')+'<sub>m</sub>','Temperature rise to melting; latent heat of fusion','K, J/kg'],['α','Thermal diffusivity of the work','m²/s'],['HAZ','Width of heat-affected zone','mm'],['Δ'+v_('T')+'<sub>b</sub>, '+v_('L')+'<sub>v</sub>','Temperature rise to boiling point; latent heat of vaporisation (vaporisation model)','K, J/kg']],
 ebm:[['δ','Electron penetration depth (range)','cm (shown in µm)'],[v_('V'),'Accelerating voltage','V (kV)'],['ρ','Density of the work (in Whiddington\'s rule)','g/cm³'],[v_('E')+'<sub>p</sub>','Energy per pulse','J'],[v_('I'),'Beam current','A (mA)'],[v_('t')+'<sub>p</sub>','Pulse duration','s (µs)'],[v_('f'),'Pulse frequency','Hz'],['η','Fraction of pulse energy used to vaporise material (0.15)','–'],[v_('c'),'Specific heat','J/kg·K'],['Δ'+v_('T')+'<sub>b</sub>','Temperature rise to boiling point','K'],[v_('L')+'<sub>m</sub>, '+v_('L')+'<sub>v</sub>','Latent heats of fusion and vaporisation','J/kg'],['MRR','Material removal rate','mm³/min']],
 pam:[[v_('P'),'Arc power','W (kW)'],[v_('V')+'<sub>arc</sub>','Arc voltage','V'],[v_('I'),'Arc current','A'],[v_('t'),'Plate thickness','mm'],[v_('u'),'Cutting speed','mm/s (mm/min)'],['η<sub>th</sub>','Fraction of arc power used to melt the kerf (0.342)','–'],[v_('k')+'<sub>gas</sub>','Gas factor (exothermic oxidation, heat transfer)','–'],[v_('w'),'Kerf width','mm'],['ρ, '+v_('c'),'Density and specific heat of the work','kg/m³, J/kg·K'],['Δ'+v_('T')+'<sub>m</sub>, '+v_('L')+'<sub>m</sub>','Temperature rise to melting; latent heat of fusion','K, J/kg'],['0.371 '+v_('I'),'Loss length; usable thickness scales with current','mm (I in A)']],
 ecg:[[v_('J'),'Current density in the gap','A/m² (A/cm²)'],['κ','Electrolyte conductivity','S/m'],[v_('V'),'Applied voltage','V'],['Δ'+v_('V'),'Electrode over-potential (1.5 V)','V'],[v_('g'),'Gap set by abrasive protrusion','m (mm)'],[v_('I'),'Current','A'],[v_('A'),'Wheel–work contact area','m² (mm²)'],['MRR<sub>e</sub>','Electrolytic removal rate','mm³/min'],['η','Current efficiency','–'],[v_('M'),'Molar mass (WC: 195.85 g/mol)','g/mol'],[v_('z'),'Electrons per formula unit dissolved (WC: 10)','–'],[v_('F'),'Faraday constant (96 485)','C/mol'],['ρ','Density of the work','kg/m³'],[v_('f')+'<sub>m</sub>','Mechanical (abrasive) share of removal','–']],
@@ -2272,23 +2364,120 @@ lam:[['Δ'+v_('T'),'Average temperature rise at the cutting zone','K'],[v_('q'),
 afm:[[v_('R')+'<sub>a</sub>('+v_('n')+')','Surface roughness after n cycles','µm'],[v_('R')+'<sub>a0</sub>','Initial surface roughness','µm'],[v_('R')+'<sub>a,min</sub>','Limiting roughness for the grit used','µm'],[v_('n'),'Number of extrusion cycles','–'],[v_('n')+'<sub>0</sub>','Characteristic number of cycles','–'],[v_('p'),'Extrusion pressure','MPa'],[v_('C'),'Abrasive concentration in the media','wt %'],[v_('H'),'Hardness of the work','GPa']],
 maf:[[v_('P')+'<sub>m</sub>','Magnetic finishing pressure','Pa (kPa)'],[v_('B'),'Magnetic flux density in the working gap','T'],['μ<sub>0</sub>','Permeability of free space (4π × 10⁻⁷)','H/m'],['μ<sub>r</sub>','Relative permeability of the magnetic abrasive brush','–'],[v_('R')+'<sub>a</sub>('+v_('t')+')','Roughness after finishing time t','µm'],[v_('R')+'<sub>a0</sub>, '+v_('R')+'<sub>a,min</sub>','Initial and limiting roughness','µm'],['τ','Finishing time constant','min'],[v_('v'),'Work surface speed','m/s']],
 mrf:[['d'+v_('h')+'/d'+v_('t'),'Material removal rate (depth per unit time)','m/s (µm/min)'],[v_('C')+'<sub>p</sub>','Preston coefficient of the material–fluid pair','m²/N'],[v_('P'),'Polishing pressure in the spot','Pa (kPa)'],[v_('v'),'Relative velocity (wheel surface speed)','m/s'],[v_('B'),'Magnetic flux density','T'],['δ','Penetration depth of the optic into the ribbon','mm']],
-cmp:[['MRR','Material removal rate','m/s (nm/min)'],[v_('C')+'<sub>p</sub>','Preston coefficient of the film–slurry pair','m²/N'],[v_('P'),'Down pressure on the wafer','Pa (kPa; 1 psi = 6.895 kPa)'],[v_('v'),'Relative velocity between pad and wafer','m/s'],[v_('t')+'<sub>clear</sub>','Time to remove the film','s'],[v_('h'),'Film thickness to be removed','nm']],
+cmp:[['MRR','Material removal rate','m/s (nm/min)'],[v_('C')+'<sub>p</sub>','Preston coefficient of the film–slurry pair','m²/N'],[v_('P'),'Down pressure on the wafer','Pa (kPa; 1 psi = 6.895 kPa)'],[v_('v'),'Relative velocity between pad and wafer','m/s'],[v_('t')+'<sub>clear</sub>','Time to remove the film','s'],[v_('h'),'Film thickness to be removed','nm'],[v_('P')+'<sub>th</sub>','Threshold pressure below which no removal occurs (Zhao & Shi)','Pa (kPa)'],[v_('K'),'Removal coefficient of the Zhao & Shi model','m^(4/3)/N^(2/3)']],
 ibm:[[v_('v'),'Removal (erosion) velocity','m/s (nm/min)'],[v_('J'),'Ion current density','A/m² (mA/cm²)'],[v_('Y'),'Sputter yield','atoms/ion'],[v_('M'),'Molar mass of the target','kg/mol'],[v_('e'),'Elementary charge (1.602 × 10⁻¹⁹)','C'],[v_('N')+'<sub>A</sub>','Avogadro constant (6.022 × 10²³)','mol⁻¹'],['ρ','Density of the target','kg/m³'],[v_('E'),'Ion energy','eV'],[v_('Y')+'<sub>600</sub>','Sputter yield at 600 eV, normal incidence','atoms/ion'],['θ','Angle of incidence from the surface normal','°']],
 };
+// ---------- safety briefings, tool & consumable libraries, error sources, discussion, references ----------
+// SAFETY[id] = {haz:[hazards], ppe:[PPE], rules:[safe practice], emerg:[emergency actions]}
+const PPE_EYE='Safety glasses with side shields', PPE_SHOE='Safety shoes', PPE_COAT='Lab coat or overall, sleeves buttoned';
+const SAFETY={
+usm:{haz:['High-frequency noise from the transducer and horn','Abrasive slurry splash (B₄C, SiC) into eyes','Fingers trapped under the vibrating tool','Fine abrasive dust when handling dry powder'],ppe:[PPE_EYE,'Ear protection (plugs or muffs)','Nitrile gloves when handling slurry',PPE_COAT],rules:['Never touch the horn or tool while the generator is on','Clamp the workpiece firmly before switching on','Keep slurry flowing whenever the generator is on','Mix dry abrasive under extraction or wear a dust mask'],emerg:['Press the emergency stop, then switch off the generator','Rinse slurry from eyes with the eyewash for 15 minutes']},
+ajm:{haz:['Respirable abrasive dust','High-velocity particle stream that can injure skin and eyes','Compressed-air hose whip','Noise from the nozzle'],ppe:['Safety glasses or face shield','Dust mask (FFP2/N95) if the cabinet is opened','Gloves through cabinet ports only','Ear protection'],rules:['Work only inside the closed blasting cabinet with the extractor running','Never use oxygen as carrier gas: fire and explosion risk with fine powder','Never point the nozzle at a person','Check hose couplings and the pressure regulator before use'],emerg:['Release the foot pedal or close the air valve','If dust is inhaled, move to fresh air; report any breathing difficulty']},
+wjm:{haz:['Water jet at 700–900 m/s can cut through skin and inject water into tissue','Very high-pressure lines and fittings (up to 400 MPa)','Noise above 90 dB(A)','Slipping on wet floors'],ppe:['Face shield over safety glasses','Ear protection','Waterproof apron',PPE_SHOE],rules:['Close the splash guard before pressurising','Never place any part of the body in the jet path','Bleed pressure before touching the cutting head or lines','Keep the catcher tank filled to dissipate jet energy'],emerg:['Press the emergency stop to dump pressure','Any water-jet injection injury needs hospital treatment at once, even if the wound looks small']},
+awjm:{haz:['Abrasive jet that cuts metal, stone and skin','High-pressure lines (up to 600 MPa)','Garnet dust and wet sludge','Noise and flying debris'],ppe:['Face shield over safety glasses','Ear protection','Waterproof apron and gloves',PPE_SHOE],rules:['Close the guard and verify the catcher water level before cutting','Fill the garnet hopper with the pump off','Never open the abrasive valve without water flow (tube blockage)','Clear sludge from the catcher with the machine locked out'],emerg:['Press the emergency stop to dump pressure','Treat any jet injury as an injection injury: hospital at once']},
+chm:{haz:['Corrosive etchants (NaOH, FeCl₃, HF–HNO₃) cause severe burns','Hydrofluoric acid penetrates skin and attacks bone; burns may not hurt at first','Hydrogen gas from aluminium in NaOH: fire risk','Toxic fumes from hot acid baths'],ppe:['Chemical splash goggles and face shield','Acid-resistant gauntlet gloves (neoprene or butyl)','Chemical-resistant apron','Fume hood or local exhaust'],rules:['Always add acid or caustic to water, never water to acid','Keep calcium gluconate gel available wherever HF is used','Lower parts into the bath slowly with a hook or basket','Neutralise and collect spent etchant; do not pour into drains'],emerg:['Flush skin or eyes with water for at least 15 minutes','For HF exposure apply calcium gluconate gel and get medical help immediately']},
+ecm:{haz:['Very high DC currents (hundreds to thousands of amperes)','Hydrogen gas evolved at the cathode: explosion risk if not ventilated','Hot, corrosive electrolyte under pressure','Metal hydroxide sludge (Cr⁶⁺ possible from stainless and nickel alloys)'],ppe:[PPE_EYE,'Chemical-resistant gloves',PPE_COAT,PPE_SHOE],rules:['Start electrolyte flow before applying voltage','Run the hydrogen extraction fan whenever machining','Never touch tool or work while the supply is on','Dispose of sludge as hazardous waste'],emerg:['Press the emergency stop; it cuts power and flow together','Flush electrolyte splashes with water for 15 minutes']},
+edm:{haz:['Fire: hydrocarbon dielectric ignited by sparks above the oil surface','Electric shock from open-circuit voltage (80–300 V)','Fumes and vapours from heated dielectric','Hot workpiece and electrode after machining'],ppe:[PPE_EYE,'Oil-resistant gloves when handling parts',PPE_COAT,PPE_SHOE],rules:['Keep dielectric at least 50 mm above the machining point','Keep the fire extinguisher (CO₂ or powder) and the automatic fire suppressor ready','Never touch the electrode or work while the generator is on','Run the fume extractor and never leave the machine unattended'],emerg:['Press the emergency stop; smother small fires with the CO₂ extinguisher, never water','Evacuate if fire spreads beyond the tank']},
+wedm:{haz:['Electric shock from the generator','Moving wire and wire-feed rollers that can trap fingers','Sharp wire ends and scrap wire','Deionising resin and water near electrics'],ppe:[PPE_EYE,'Cut-resistant gloves when handling wire',PPE_COAT],rules:['Switch off the generator before threading or touching the wire','Keep hands clear of the wire drive and take-up','Collect scrap wire in the bin; never leave loose ends','Keep the water level and conductivity within limits'],emerg:['Press the emergency stop','Isolate power before attending to any water leak']},
+lbm:{haz:['Class 4 laser: direct and scattered beams cause permanent eye damage and burns','Fire from flammable materials in the beam path','Toxic fumes (e.g. HCl from PVC, metal oxides)','High-pressure assist-gas cylinders'],ppe:['Laser safety eyewear rated for the wavelength (10.6 µm or 1.06 µm) when the enclosure is open',PPE_COAT,'Gloves for handling hot parts'],rules:['Never defeat the door interlock','Never cut PVC or unknown plastics (chlorine gas)','Run fume extraction and never leave the machine unattended','Secure gas cylinders upright with chains'],emerg:['Press the emergency stop and close the shutter','Use the CO₂ extinguisher on small fires; report any suspected eye exposure for an eye examination']},
+ebm:{haz:['X-rays generated when electrons strike metal','High voltage (50–150 kV)','Vacuum chamber implosion and pressure hazards','Hot parts and vapour deposits'],ppe:['Personal radiation dosimeter if required by the facility',PPE_EYE,'Heat-resistant gloves for unloading'],rules:['Operate only with all lead shielding panels and interlocks in place','Never open the chamber until high voltage is off and grounded','Vent the chamber fully before opening','Only trained operators may run the gun'],emerg:['Press the emergency stop to cut high voltage','Report any interlock fault immediately; do not restart']},
+pam:{haz:['Intense UV and visible light from the arc (eye flash and skin burns)','Electric shock from high open-circuit voltage (≈250–300 V DC)','Fumes, ozone and nitrogen oxides','Noise, hot spatter and molten dross'],ppe:['Welding helmet or goggles with shade 8–12 filter (by current)','Leather gloves and apron, flame-resistant clothing','Ear protection',PPE_SHOE],rules:['Connect the work clamp to clean metal close to the cut','Never touch the torch tip or change consumables with power on','Cut over a water table or downdraft extraction','Remove flammables from at least 10 m around the cutting area'],emerg:['Release the trigger or press the emergency stop','Treat arc-eye with cold compresses and seek medical advice']},
+ecg:{haz:['Rotating grinding wheel: entanglement and wheel burst','High DC current through the wheel','Corrosive electrolyte spray','Hydrogen gas at the wheel (cathode)'],ppe:['Face shield over safety glasses','Chemical-resistant gloves when handling parts',PPE_COAT,PPE_SHOE],rules:['Check the wheel speed rating against the spindle speed','Keep guards in place and stand to the side when starting','Start electrolyte and spindle before applying voltage','Ventilate to remove hydrogen and mist'],emerg:['Press the emergency stop','Flush electrolyte splashes with water for 15 minutes']},
+ecdm:{haz:['Hot, concentrated NaOH or KOH causes severe alkali burns','Electrical discharges and DC voltage up to 60 V','Hydrogen gas and caustic mist','Glass splinters'],ppe:['Chemical splash goggles','Alkali-resistant gloves (nitrile or neoprene)','Chemical-resistant apron'],rules:['Prepare electrolyte by adding NaOH pellets slowly to cold water','Work in a fume hood or with local exhaust','Never touch electrodes or electrolyte while voltage is on','Handle machined glass with gloves'],emerg:['Flush skin or eyes with water for at least 15 minutes; alkali burns need medical attention','Switch off the supply before attending to any spill']},
+rum:{haz:['Rotating diamond tool: entanglement and cuts','Ultrasonic noise','Coolant mist and ceramic dust','Sharp edges and chips on ceramic parts'],ppe:[PPE_EYE,'Ear protection','Cut-resistant gloves when handling parts (not while the spindle runs)'],rules:['Clamp the work securely; brittle parts can shatter','Start coolant before the spindle','Keep hands away from the rotating tool; tie back long hair','Stop the spindle before measuring or clearing chips'],emerg:['Press the emergency stop','Treat ceramic cuts promptly; they can be deep']},
+lam:{haz:['Class 4 laser beam reflected from the workpiece and chips','Rotating chuck and workpiece','Very hot chips and work (several hundred °C)','Fumes from heated alloys'],ppe:['Laser safety eyewear for the wavelength',PPE_EYE,'Heat-resistant gloves for unloading'],rules:['Run only inside the closed laser enclosure with interlocks active','Never fire the laser on a stationary workpiece','Use chip guards; never clear chips by hand','Allow parts to cool before handling'],emerg:['Press the emergency stop to cut laser and spindle','Report any suspected eye exposure for an eye examination']},
+afm:{haz:['High hydraulic pressure (up to 10 MPa or more)','Pinch points at the fixture and cylinders','Abrasive media on skin and floor (slip hazard)','Hydraulic oil leaks'],ppe:[PPE_EYE,'Nitrile gloves when handling media',PPE_COAT,PPE_SHOE],rules:['Lock the fixture before pressurising','Keep hands out of the clamping area during cycles','Release pressure before opening the fixture','Clean media spills immediately'],emerg:['Press the emergency stop to dump hydraulic pressure','Report any high-pressure fluid injection injury: hospital at once']},
+maf:{haz:['Strong magnetic field: risk to pacemakers and implants','Steel tools pulled violently into the poles','Rotating workpiece','Fine iron and abrasive powder'],ppe:[PPE_EYE,'Dust mask when handling dry powder','Gloves when handling powder (not near rotating parts)'],rules:['Persons with pacemakers or implants must stay at least 1 m away','Keep loose steel tools and phones away from the magnets','Switch the magnet off before loading abrasive or work','Do not start rotation with loose powder and no field'],emerg:['Press the emergency stop','Switch off the electromagnet before freeing any trapped object']},
+mrf:{haz:['Strong magnetic field near the electromagnet','Rotating wheel','MR fluid (fine iron in water) on skin and optics','Electrical power to the electromagnet'],ppe:[PPE_EYE,'Nitrile gloves',PPE_COAT],rules:['Persons with pacemakers or implants keep clear of the magnet','Mount the optic securely before lowering','Keep the fluid circulating whenever the magnet is on','Clean fluid spills immediately; it stains and slips'],emerg:['Press the emergency stop','Switch off the magnet before removing a stuck part']},
+cmp:{haz:['Chemical slurries (high pH, oxidisers such as H₂O₂)','Rotating platen and carrier head: entanglement','Nano-abrasive particles in dried slurry','Slippery floors from slurry spills'],ppe:['Chemical splash goggles','Nitrile gloves',PPE_COAT,PPE_SHOE],rules:['Never reach onto the platen while it rotates','Store oxidiser slurries away from organics','Wet-clean dried slurry; do not dry-sweep','Dispose of spent slurry as chemical waste'],emerg:['Press the emergency stop','Flush slurry splashes with water for 15 minutes']},
+ibm:{haz:['High voltage on the ion source and grids','Vacuum chamber and gas cylinders','Toxic sputtered deposits (e.g. beryllium, arsenic compounds) inside the chamber','Hot filament and neutraliser'],ppe:[PPE_EYE,'Clean-room gloves; chemical gloves when cleaning chamber deposits',PPE_COAT],rules:['Never open the chamber with high voltage on','Vent fully to atmosphere before opening','Clean chamber deposits wet, under extraction','Secure gas cylinders and check regulators'],emerg:['Press the emergency stop to cut high voltage','Report any interlock fault; do not restart until checked']},
+};
+
+// LIB[id] = {cols:[], rows:[[...]], note}
+const LIB={
+usm:{cols:['Abrasive','Hardness (Knoop, approx.)','Typical use'],rows:[['Boron carbide (B₄C)','≈ 2800 HK','Fastest cutting of hard ceramics, carbides, gems'],['Silicon carbide (SiC)','≈ 2500 HK','General-purpose; glass, ceramics, germanium'],['Aluminium oxide (Al₂O₃)','≈ 2000 HK','Glass and softer brittle materials; lower cost'],['Diamond','≈ 7000–8000 HK','Very hard materials such as sapphire and PCD; costly']],extra:{cols:['Tool material','Notes'],rows:[['Low-carbon / stainless steel','Tough; good wear resistance; common choice'],['Brass','Easy to machine into shapes; wears faster'],['Monel','Tough and corrosion-resistant; long tool life']]},note:'Grit typically 200–800 mesh. Slurry 20–60 % abrasive by weight in water.'},
+ajm:{cols:['Abrasive','Typical size','Typical use'],rows:[['Aluminium oxide','10–50 µm','Cutting, drilling, deburring glass and ceramics'],['Silicon carbide','25–50 µm','Faster cutting of harder materials'],['Glass beads','0.6–1.0 mm','Matt finish, peening, light cleaning'],['Sodium bicarbonate','≈ 27 µm','Soft cleaning, coating removal'],['Dolomite','≈ 200 mesh','Light etching and cleaning']],extra:{cols:['Nozzle material','Notes'],rows:[['Tungsten carbide','Common; life of tens of hours'],['Sapphire','Several times longer life than WC; brittle']]},note:'Carrier gas: dry air, nitrogen or CO₂ at 2–10 bar. Never oxygen.'},
+wjm:{cols:['Orifice material','Relative life','Notes'],rows:[['Sapphire','1× (baseline)','Lowest cost; standard for most work'],['Ruby','Similar to sapphire','Slightly tougher'],['Diamond','Many times sapphire','High cost; for continuous production']],extra:{cols:['Item','Typical range'],rows:[['Orifice diameter','0.08–0.40 mm'],['Pressure','200–400 MPa (up to 600 MPa)'],['Additive','Long-chain polymers (e.g. polyethylene oxide) for coherence']]},note:'Water should be filtered and softened; hard water shortens orifice and seal life.'},
+awjm:{cols:['Abrasive','Hardness (Knoop, approx.)','Notes'],rows:[['Garnet (almandine), 80 mesh','≈ 1300 HK','Industry standard; good balance of cost and speed'],['Olivine','Softer than garnet','Lower cost; slower cutting'],['Aluminium oxide','≈ 2000 HK','Faster cutting; wears the focusing tube quickly'],['Silicon carbide','≈ 2500 HK','For very hard materials; high tube wear']],extra:{cols:['Component','Typical specification'],rows:[['Focusing (mixing) tube','WC or B₄C composite, 0.76–1.27 mm bore, 50–100 mm long'],['Orifice : tube ratio','≈ 1 : 3'],['Abrasive rate','0.2–1.0 kg/min']]},note:'Garnet mesh 80 is most common; 120 mesh for finer finish, 50 mesh for faster rough cuts.'},
+chm:{cols:['Work material','Etchant','Typical temperature'],rows:[['Aluminium alloys','Sodium hydroxide (NaOH)','≈ 70–90 °C'],['Steels','Ferric chloride or nitric acid','≈ 40–60 °C'],['Copper','Ferric chloride, cupric chloride, ammonium persulfate','≈ 40–55 °C'],['Stainless steel','Ferric chloride','≈ 50 °C'],['Titanium','Hydrofluoric + nitric acid','≈ 20–50 °C']],extra:{cols:['Maskant','Use'],rows:[['Neoprene / butyl rubber','Deep chemical milling, scribed and peeled'],['Vinyl','General chemical milling'],['Photoresist','Photochemical machining of fine features']]},note:'Temperatures are typical ranges; follow the etchant supplier\'s data sheet.'},
+ecm:{cols:['Electrolyte','Behaviour','Typical use'],rows:[['NaCl (10–20 %)','Non-passivating; high efficiency; more stray cutting','Steels, general ECM'],['NaNO₃ (15–30 %)','Passivating; efficiency rises with current density; better accuracy','Precision shaping, superalloys'],['NaClO₃','Very good accuracy; strong oxidiser (fire hazard when dry)','High-precision work'],['Dilute acids (HCl, H₂SO₄)','Keep dissolved metal in solution (no sludge)','Shaped tube electrolytic drilling (STEM)']],extra:{cols:['Tool material','Notes'],rows:[['Copper / brass','Good conductivity, easy to shape'],['Stainless steel','Corrosion-resistant; common for production tools'],['Titanium','For acid electrolytes']]},note:'Side faces of tools are insulated (epoxy, PTFE coating) to limit stray dissolution.'},
+edm:{cols:['Electrode','Wear','Machinability','Typical use'],rows:[['Graphite','Low in roughing','Excellent; light; dusty to machine','Large cavities, roughing'],['Electrolytic copper','Moderate','Good','Fine finishing, mirror finishes'],['Copper–tungsten','Very low','Hard to machine; costly','Carbide work, fine detail'],['Brass','High','Excellent; cheap','Small-hole drilling tubes'],['Tungsten','Low','Wire/rod only','Micro-holes']],extra:{cols:['Dielectric','Use'],rows:[['Hydrocarbon (EDM) oil','Die-sinking; high flash point grades'],['Deionised water','Wire EDM and EDM drilling']]},note:'Polarity is chosen so the workpiece erodes faster than the electrode; graphite roughing is usually electrode-positive.'},
+wedm:{cols:['Wire','Diameter range','Notes'],rows:[['Plain brass (CuZn35)','0.10–0.33 mm','General purpose, lowest cost'],['Zinc-coated (diffusion-annealed) brass','0.15–0.33 mm','20–40 % faster cutting, better flushing'],['Steel-core coated','0.20–0.30 mm','High tensile strength for tall parts and tapers'],['Molybdenum','0.10–0.20 mm','Fast-wire machines; wire reused'],['Tungsten','0.02–0.05 mm','Micro-WEDM']],note:'Deionised water conductivity is held low (typically a few to tens of µS/cm) with ion-exchange resin.'},
+lbm:{cols:['Laser','Wavelength','Mode','Typical use'],rows:[['CO₂','10.6 µm','CW / pulsed','Non-metals; thick steel cutting'],['Fiber (Yb)','1.07 µm','CW / pulsed','Metals incl. reflective Al, Cu; high efficiency'],['Disk','1.03 µm','CW','High-power cutting and welding'],['Nd:YAG','1.064 µm','Pulsed','Drilling, spot welding, marking'],['Excimer','193 / 248 nm','Pulsed UV','Micromachining of polymers, ceramics'],['Ultrafast (ps / fs)','0.3–1.06 µm','Pulsed','Cold ablation, micro-holes with minimal HAZ']],extra:{cols:['Assist gas','Effect'],rows:[['Oxygen','Exothermic; fast on mild steel; oxidised edge'],['Nitrogen','Inert; clean oxide-free edge on SS and Al'],['Compressed air','Low cost; slight oxidation'],['Argon','Inert; for titanium']]}},
+ebm:{cols:['Item','Options','Notes'],rows:[['Cathode','Tungsten filament; LaB₆','LaB₆ gives higher brightness and longer life'],['Accelerating voltage','50–150 kV','Higher voltage gives deeper penetration (∝ V²)'],['Chamber vacuum','10⁻⁴–10⁻⁶ torr','Needed to avoid electron scattering'],['Backing material','Epoxy/brass or silicone-based compound','Placed under the work; vaporises and blows melt out of the hole']],note:'Pulse duration typically µs to ms; hole diameters about 25–1000 µm.'},
+pam:{cols:['Plasma gas','Best for','Notes'],rows:[['Air','Mild steel, stainless, aluminium (thin–medium)','Low cost, general purpose'],['Oxygen (air shield)','Mild steel','Best edge quality and speed on carbon steel'],['Nitrogen (water / air shield)','Stainless and aluminium','Clean edge; less dross'],['Argon–hydrogen (H35)','Thick stainless and aluminium','Hot, high-energy arc'],['N₂–H₂ (F5)','Thin–medium stainless','Bright, oxide-free edge']],extra:{cols:['Consumable','Material'],rows:[['Electrode','Copper with hafnium insert (air/O₂); tungsten (inert gases)'],['Nozzle','Copper'],['Swirl ring','Ceramic or polymer'],['Shield','Copper / ceramic']]}},
+ecg:{cols:['Wheel','Typical work'],rows:[['Metal-bonded diamond','Cemented carbide, PCD-backed tools'],['Metal-bonded aluminium oxide','Steels, superalloys'],['Metal-bonded CBN','Hardened steels']],extra:{cols:['Electrolyte','Notes'],rows:[['Sodium nitrate','Common; passivating'],['Sodium nitrite / borax mixtures','Corrosion inhibited']]},note:'Wheel speed about 20–30 m/s; gap set by abrasive protrusion ≈ 0.025 mm.'},
+ecdm:{cols:['Item','Options','Notes'],rows:[['Electrolyte','NaOH, KOH (10–40 wt %)','Higher concentration lowers critical voltage'],['Tool','Tungsten, stainless steel, platinum wire','Small diameter (0.1–1 mm)'],['Counter-electrode','Large graphite or stainless plate','Area much larger than tool'],['Work','Glass, quartz, alumina, sapphire','Non-conductive brittle materials']]},
+rum:{cols:['Tool parameter','Typical range','Notes'],rows:[['Bond','Bronze or nickel metal bond','Holds diamond in the tool wall'],['Diamond grit','60–600 mesh','Coarse for speed, fine for finish'],['Diamond concentration','50–100','Higher concentration for harder work'],['Coolant','Water-soluble, through-tool','Flushes debris from the annular cut']]},
+lam:{cols:['Item','Options'],rows:[['Laser','CO₂, Nd:YAG / fiber, high-power diode'],['Cutting tool','Carbide, PCBN, ceramic inserts'],['Temperature sensing','Pyrometer focused on the laser spot'],['Spot position','Ahead of the tool along the cutting direction (lead distance)']]},
+afm:{cols:['Media component','Options','Notes'],rows:[['Carrier','Polyborosiloxane / silicone polymer','Low, medium or high viscosity'],['Abrasive','SiC, Al₂O₃, B₄C, diamond','36–800 mesh'],['Concentration','20–65 wt %','Higher = faster, stiffer media'],['Additive','Lubricating oil','Adjusts viscosity']]},
+maf:{cols:['Magnetic abrasive','Type','Notes'],rows:[['Iron powder + Al₂O₃/SiC','Unbonded (mechanical mix)','Simple and cheap; abrasive can separate'],['Sintered Fe–Al₂O₃','Bonded','Uniform, longer life'],['Iron + diamond paste','Unbonded','For very hard surfaces']],extra:{cols:['Field source','Notes'],rows:[['Electromagnet','Adjustable field'],['NdFeB permanent magnet','Compact, no power; fixed field']]}},
+mrf:{cols:['MR fluid component','Typical choice','Notes'],rows:[['Magnetic particles','Carbonyl iron, ≈ 36 vol %','Micron-sized, soft magnetic'],['Abrasive','Cerium oxide (glass); nanodiamond (SiC, sapphire)','Small fraction by volume'],['Carrier','Water with stabilisers','Viscosity monitored and controlled']]},
+cmp:{cols:['Film','Slurry','Notes'],rows:[['SiO₂ (ILD)','Fumed or colloidal silica, pH ≈ 10–11','Standard oxide CMP'],['SiO₂ (STI)','Ceria slurry','High oxide:nitride selectivity'],['Copper','Alumina or silica + H₂O₂ + BTA inhibitor','Low down-force'],['Tungsten','Alumina + ferric nitrate or H₂O₂','Plug formation']],extra:{cols:['Pad','Notes'],rows:[['Hard polyurethane (e.g. IC1000 type)','Planarisation'],['Soft poromeric (e.g. Suba type)','Final polishing'],['Stacked hard-on-soft','Planarity with uniformity']]}},
+ibm:{cols:['Item','Options','Notes'],rows:[['Ion source','Kaufman gridded, RF ion source','Broad, uniform beam'],['Ion species','Ar (most common); Kr, Xe','Heavier ions give higher yields'],['Reactive gases','O₂, CHF₃ (reactive ion beam etching)','Chemical enhancement and selectivity'],['Neutraliser','Hot filament or plasma bridge','Prevents charge build-up']]},
+};
+
+const ERRS={
+usm:['Slurry concentration changes as abrasive settles or is lost','Grit wears and fractures, so the effective size falls during the run','Tool wear changes the tool area and cavity shape','Depth gauge zero error and burr at the cavity edge'],
+ajm:['Powder flow fluctuates with moisture and vibrator settings','Nozzle wear enlarges the bore over time','SOD drift if the work is not flat','Balance resolution relative to the small mass removed'],
+wjm:['Pressure fluctuation from the intensifier stroke','Orifice wear increasing flow and reducing coherence','Judging "through-cut" visually at the separation speed','Stopwatch reaction time on short cuts'],
+awjm:['Garnet flow variation and moisture','Focusing tube wear enlarging the jet','Jet lag making the bottom of the cut slower than the top','Quality level judged by eye'],
+chm:['Etchant concentration falls as metal dissolves','Temperature drift of the bath','Maskant lifting at the edges, increasing undercut','Depth measured at one point on an uneven floor'],
+ecm:['Conductivity changes as the electrolyte heats along the gap','Current efficiency depends on current density and passivation','Sludge and hydrogen bubbles reduce effective conductivity','Mass loss includes any corrosion during rinsing'],
+edm:['Debris and poor flushing causing arcing and short circuits','Electrode wear changes the gap and area','Recast material left on the surface affects weighing','Balance resolution and dielectric left on the part'],
+wedm:['Wire vibration and lag in thick work','Flushing pressure changes with nozzle distance','Wire diameter tolerance changing the kerf','Timing start and end of the cut'],
+lbm:['Focus position drift relative to the sheet','Absorptivity changes with surface condition','Assist-gas pressure variations','Judging the maximum speed before loss of cut'],
+ebm:['Beam focus and current drift','Variation in backing-material performance','Hole diameter measurement at entry vs exit (taper)','Timing of pulses at high frequency'],
+pam:['Electrode and nozzle wear changing arc constriction','Torch height (arc voltage) variation','Plate flatness and surface scale','Judging speed for "dross-free" cut quality'],
+ecg:['Wheel bond wear changing the effective gap','Electrolyte temperature and concentration drift','Uneven electrolyte supply into the gap','Mechanical share varying with wheel condition'],
+ecdm:['Gas film instability causing irregular discharges','Electrolyte heating and evaporation changing concentration','Tool wear and bending at depth','Measuring depth of a small hole optically'],
+rum:['Amplitude drop under load','Diamond wear and loading of the tool','Coolant flow variation','Dynamometer drift and noise'],
+lam:['Pyrometer emissivity uncertainty','Laser spot position relative to the tool (lead distance)','Tool wear during the cut','Dynamometer cross-talk between force components'],
+afm:['Media viscosity changes with temperature and use','Abrasive wear and dilution of the media','Roughness varying along the passage length','Profilometer cut-off and stylus position'],
+maf:['Abrasive loss and wear during finishing','Field strength variation with gap','Roughness measured at different locations','Lubricant quantity affecting brush behaviour'],
+mrf:['MR fluid viscosity and water content drift','Ribbon height variation','Spot measurement uncertainty in interferometry','Temperature effects on the optic'],
+cmp:['Pad glazing and wear changing removal rate','Slurry flow and temperature changes','Film thickness non-uniformity across the wafer','Ellipsometer model and spot location'],
+ibm:['Beam current density non-uniformity','Redeposition of sputtered material','Surface contamination changing the initial yield','Step-height measurement on a rough surface'],
+};
+
+const DISC={
+usm:['Why does MRR rise with static force at first and then fall?','Why is USM unsuitable for ductile metals such as mild steel?','How would you reduce taper in a deep USM hole?'],
+ajm:['Why does MRR peak at a particular stand-off distance?','Compare the effect of impact angle on brittle and ductile materials.','Why should the abrasive not be reused?'],
+wjm:['Why does cutting speed scale roughly with p^1.5 in pure water-jet cutting?','Which materials can and cannot be cut by pure water jets, and why?','How do polymer additives improve the jet?'],
+awjm:['Why does increasing garnet flow give diminishing returns?','Explain the origin of striation marks and taper in thick cuts.','Compare AWJM with laser cutting for a 20 mm titanium plate.'],
+chm:['Explain the difference between reaction-controlled and mass-transfer-controlled etching.','Why does undercut limit the minimum feature size?','How is depth controlled in chemical milling?'],
+ecm:['Why does the equilibrium gap increase with voltage and decrease with feed?','Why is NaNO₃ preferred over NaCl for accurate work?','Compare the charge-superposition and weight-average equivalents for an alloy.'],
+edm:['Why do surface roughness and MRR both increase with peak current?','What is the purpose of pulse-off time?','Compare transistor-pulse and RC-relaxation generators.'],
+wedm:['Why does cutting speed fall with workpiece thickness?','What causes wire breakage and how is it avoided?','How is a taper cut produced in WEDM?'],
+lbm:['Why is oxygen-assisted cutting of mild steel faster than nitrogen cutting?','Why is aluminium harder to cut than steel with a CO₂ laser?','Explain why melt-and-blow cutting is much faster than vaporisation.'],
+ebm:['Why must EBM be done in vacuum?','How does accelerating voltage affect the penetration depth?','What is the role of the backing material in EBM drilling?'],
+pam:['Why does the plasma arc reach much higher temperatures than a free arc?','Why are plasma-cut edges bevelled?','When would you choose plasma cutting over laser cutting?'],
+ecg:['Why does ECG remove about 90 % of material electrochemically?','Why is wheel wear in ECG much lower than in conventional grinding?','What limits the accuracy of ECG?'],
+ecdm:['Explain the critical voltage in ECDM.','Why does drilling rate fall sharply with depth?','How could you improve electrolyte supply to the tool tip?'],
+rum:['Why does ultrasonic vibration reduce cutting force?','How does edge chipping relate to cutting force?','Compare RUM with conventional USM.'],
+lam:['Why must the laser spot be placed ahead of the tool?','Why does higher cutting speed reduce the cutting-zone temperature?','What risks does LAM pose to surface integrity?'],
+afm:['Why does Ra approach a limiting value with more cycles?','How do media viscosity and extrusion pressure interact?','Why is AFM suitable for internal passages?'],
+maf:['Derive how finishing pressure scales with flux density.','Why can MAF finish curved and internal surfaces?','What limits the final Ra in MAF?'],
+mrf:['Explain Preston\'s law and its constants.','Why does MRF produce no subsurface damage?','How is form error corrected in MRF?'],
+cmp:['Compare the Preston, Tseng–Wang and Zhao–Shi models.','What causes dishing and erosion in copper CMP?','Why are both chemistry and abrasion needed in CMP?'],
+ibm:['Define sputter yield and how it depends on ion energy and angle.','Why is IBM so slow compared with other processes?','What is the purpose of the neutraliser?'],
+};
+
+const REFS_COMMON=['V.K. Jain, Advanced Machining Processes, Allied Publishers.','A. Ghosh and A.K. Mallik, Manufacturing Science, East-West Press.','P.C. Pandey and H.S. Shan, Modern Machining Processes, Tata McGraw-Hill.','G.F. Benedict, Nontraditional Manufacturing Processes, Marcel Dekker.'];
 // ---------- app ----------
-const VERSION='3.1', VDATE='12 Oct 2026';
+const VERSION='4.2', VDATE='12 Oct 2026';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const byId=Object.fromEntries(PROCESSES.map(p=>[p.id,p]));
 const state={}, records={}, tabOf={}, sweepSel={}, held={}, mine={}, tests={}, numS={};
-let report={name:'',usn:'',batch:'',inst:'',date:new Date().toISOString().slice(0,10),concl:{}};
+let report={name:'',usn:'',batch:'',inst:'',date:(d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10))(new Date()),concl:{}};
 let current=null;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const defaults=id=>Object.fromEntries(byId[id].params.map(q=>[q.id,q.val]));
 function runP(id,over){return byId[id].compute({...defaults(id),...over}).o;}
 
-PROCESSES.forEach(P=>{state[P.id]=defaults(P.id);records[P.id]=[];tabOf[P.id]='exp';sweepSel[P.id]={...P.sweep};held[P.id]=[];mine[P.id]={x:P.sweep.x,y:P.sweep.y,txt:''};tests[P.id]={pre:{},post:{}};});
+PROCESSES.forEach(P=>{state[P.id]=defaults(P.id);records[P.id]=[];tabOf[P.id]='th';sweepSel[P.id]={...P.sweep};held[P.id]=[];mine[P.id]={x:P.sweep.x,y:P.sweep.y,txt:''};tests[P.id]={pre:{},post:{}};});
 (function restore(){const s=store.get('ntm-lab-v2')||store.get('ntm-lab-v1');if(!s)return;
   for(const id in s.state||{}) if(state[id]) for(const k in s.state[id]) if(k in state[id]) state[id][k]=s.state[id][k];
   for(const id in s.records||{}) if(records[id]&&Array.isArray(s.records[id])) records[id]=s.records[id];
@@ -2404,6 +2593,9 @@ function renderAbout(){
   <section class="sec"><h2>How to cite</h2><div class="eq"><div class="f" style="white-space:normal;font-size:13.5px" id="cite">Ullal, V. N. (2026). NTM Virtual Lab: an open virtual laboratory for non-traditional machining processes (Version ${VERSION}). Department of Mechanical Engineering, MITE Moodbidri. https://nayakvignesh113-bot.github.io/NTM-Virtual-Lab/</div></div>
   <button class="iconbtn" id="copycite" type="button">Copy citation</button> <span class="foot" id="citemsg" aria-live="polite"></span></section>
   <section class="sec"><h2>Version history</h2><ul class="ticks">
+  <li><b>4.2</b> (13 Oct 2026): Students can submit report summaries (scores, conclusions, discussion answers, Report ID) to the faculty's Google Sheet with a class code. Source code released under CC BY-NC-SA 4.0 with citation metadata.</li>
+  <li><b>4.1</b> (13 Oct 2026): Tabs reordered to the Virtual Labs sequence: Theory, Pre-test, Operate, Experiment, Numericals, Post-test, Validation, Report. Processes open on Theory. Validation tab explains what validation means.</li>
+  <li><b>4.0</b> (${VDATE}): Alternative removal-rate models with a model selector and a compare-all-models overlay (AJM, CHM, ECM, EDM, LBM, EBM, PAM, CMP). Safety briefing with acknowledgement before operating each machine. Tool and consumable libraries. Comprehensive watermarked lab report with report ID, uncertainty budget, error sources, discussion questions, normalised learning gain and signatures; downloadable as HTML.</li>
   <li><b>3.1</b> (${VDATE}): Nomenclature tables for the governing equations of every process (Theory tab and lab report). Jet divergence half-angle α made a parameter in AJM. Laser beam quality, citation and rounding corrections.</li>
   <li><b>3.0</b> (${VDATE}): Added hybrid processes (ECG, ECDM, RUM, LAM) and nano-finishing processes (AFM, MAF, MRF, CMP, IBM), each with simulator, Operate tab, theory, tests and numericals.</li>
   <li><b>2.1</b> (${VDATE}): Operate tab: set up each machine by dragging parts into place, switch on pumps, gas, vacuum and power with safety interlocks, run the cycle, take instrument readings and calculate results. Runs are logged and included in the lab report.</li>
@@ -2415,7 +2607,7 @@ function renderAbout(){
 }
 
 // ---------- process page ----------
-const TABS=[['pre','Pre-test'],['op','Operate'],['exp','Experiment'],['th','Theory'],['val','Validation'],['num','Numericals'],['post','Post-test'],['rep','Report']];
+const TABS=[['th','Theory'],['pre','Pre-test'],['op','Operate'],['exp','Experiment'],['num','Numericals'],['post','Post-test'],['val','Validation'],['rep','Report']];
 function renderProcess(P){
   current=P;
   const c=catCol(P.cat);
@@ -2601,6 +2793,7 @@ function renderTheory(P){
 function renderVal(P){
   const V=VALID[P.id]||{status:'none',summary:''};
   const srcRef=k=>{const s=SRC[k];return s?(s.u?`<a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a>`:esc(s.t)):'';};
+  const intro=`<p class="aim"><b>What is validation?</b> A simulator is only useful if its numbers resemble a real machine. Here the model's predictions are compared with measured data published by machine makers and researchers (cut charts, etch-rate tables, papers). Some data sets were used to tune the model's constants (<i>calibration</i>); others were kept aside and used only to test it (<i>held-out test</i>). The mean error on the held-out data tells you how far to trust the simulator's numbers; a process marked "not yet validated" shows correct trends but its absolute values are unverified. You can also enter readings from your own lab's machine below.</p>`;
   let h=`<div class="valhead">${chip(V.status)}<p>${esc(V.summary)}</p></div>`;
   if(V.sets){
     const allVal=[];
@@ -2633,7 +2826,7 @@ function renderVal(P){
     <div class="mygrid"><textarea id="mtxt" rows="7" spellcheck="false" placeholder="e.g.\n10, 120\n20, 210\n30, 290">${esc(M.txt)}</textarea>
     <div><canvas class="chart" id="mcv" role="img" aria-label="Your measurements vs model"></canvas><div class="vstat" id="mstat"></div></div></div></div>`;
   h+=`<p class="foot">Mean error is the mean of |model ÷ published − 1|. "Calibration" sets were used to fit model constants, so their error shows fit quality, not predictive accuracy. Only "held-out test" sets show predictive accuracy.</p>`;
-  $('#pane').innerHTML=h;
+  $('#pane').innerHTML=intro+h;
   const accent=tok(PAL[0]),dot=tok('--therm');
   (V.sets||[]).forEach((s,i)=>{const cv=$('#vc'+i);sizeCanvas(cv);const q=P.params.find(z=>z.id===s.x),o=P.outputs.find(z=>z.k===s.y);
     const xs=s.pts.map(p=>p[0]);const lo=Math.max(q.min,Math.min(...xs)*0.9),hi=Math.min(q.max,Math.max(...xs)*1.05);
@@ -2849,7 +3042,7 @@ function opMeas(P){const el=$('#omeas');if(!el)return;const M=OP.meas;
    <form class="numrow" id="omform" onsubmit="return false"><label class="sr" for="omans">Your answer in ${M.ask.unit}</label><input id="omans" inputmode="decimal" autocomplete="off" placeholder="Your answer" ${M.solved||M.shown?'disabled':''}><span class="mono">${M.ask.unit}</span>
    <button class="btn" type="submit" ${M.solved||M.shown?'disabled':''}>Check</button><button class="btn ghost" type="button" id="omshow">${M.solved||M.shown?'Run again':'Show solution'}</button></form>
    <div id="omfb">${M.fb||''}</div>`;
-  const log=(student)=>{runlog[P.id].push({settings:M.settings,readings:M.readings,student,ans:M.ask.ans,unit:M.ask.unit,model:M.model});saveAll();opLog(P);};
+  const log=(student)=>{runlog[P.id].push({settings:M.settings,readings:M.readings,student,ans:M.ask.ans,unit:M.ask.unit,model:M.model,q:M.ask.q,sol:M.ask.sol,t:new Date().toISOString()});saveAll();opLog(P);};
   $('#omform').onsubmit=()=>{const v=parseFloat($('#omans').value.replace(/,/g,''));if(!isFinite(v)){$('#omfb').innerHTML='<div class="why">Enter a number.</div>';return false;}
     if(M.ask.ans===0?Math.abs(v)<1e-9:Math.abs(v/M.ask.ans-1)<=0.02){M.solved=true;M.fb=`<div class="why"><b class="ok">Correct.</b> ${M.ask.sol}<br>Simulator model value: ${fmt(M.model)} ${M.ask.unit}. The difference is measurement scatter.</div>`;log(v);opUI(P);}
     else $('#omfb').innerHTML=`<div class="why"><b class="bad">Not yet.</b> Your answer is ${((v/M.ask.ans-1)*100).toFixed(0)} % ${v>M.ask.ans?'high':'low'}. Check units.</div>`;return false;};
@@ -2871,6 +3064,183 @@ function drawOp(P,now){const cv=$('#ocv');if(!cv)return;const c=cv.getContext('2
   if(showZone&&OP.phase!=='run'){const z=showZone.zone;const a=0.5+0.5*Math.sin(now/250);c.save();c.setLineDash([6,5]);c.lineDashOffset=-now/40;c.strokeStyle=C.accent;c.lineWidth=2;c.globalAlpha=0.5+0.5*a;c.strokeRect(z[0],z[1],z[2],z[3]);c.globalAlpha=0.08;c.fillStyle=C.accent;c.fillRect(z[0],z[1],z[2],z[3]);c.restore();
     T(c,C,(OP.drag?'Drop ':'Place ')+showZone.label.replace(/^([A-Z])(?![A-Z0-9])/,m=>m.toLowerCase())+' here',z[0]+z[2]/2,Math.max(12,z[1]-10),{a:'center',c:C.accent,w:600});}
 }
+// ================= v4.0: models overlay, safety gate, libraries, comprehensive report =================
+report.ack=report.ack||{};report.disc=report.disc||{};report.first=report.first||{};
+if(report.faculty==null)report.faculty='';if(report.sec==null)report.sec='';
+const cmpAll={};
+const modelOf=P=>P.models?P.models.find(m=>m.id===state[P.id].model)||P.models[0]:null;
+const tblH=(cols,rows,cls='lib')=>`<div class="tablewrap" style="max-height:none"><table class="${cls}"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+function libHTML(P,h='h3'){const L=LIB[P.id];if(!L)return '';
+  return `<${h}>Tools and consumables</${h}>${tblH(L.cols,L.rows,'lib')}${L.extra?tblH(L.extra.cols,L.extra.rows,'lib'):''}${L.note?`<p class="foot">${L.note}</p>`:''}`;}
+function modelsHTML(P){if(!P.models)return '';const cur=modelOf(P);
+  return `<h3>Simulator models</h3><p class="foot" style="margin-top:0">This process has ${P.models.length} removal models. Choose one under <i>Simulator model</i> on the Experiment tab, and tick <i>Compare all models</i> to draw them together.</p>
+  ${P.models.map(m=>`<div class="eq mdl${m===cur?' sel':''}"><div class="mname">${esc(m.name)}${m===cur?' <span class="chip" style="--cc:var(--accent)">In use</span>':''}</div><div class="f">${m.eq}</div><div class="w">${m.w}</div></div>`).join('')}`;}
+
+// ---- theory: models + library ----
+const _renderTheory=renderTheory;
+renderTheory=function(P){_renderTheory(P);const pr=$('#pane .theory .prose');if(!pr)return;
+  const mdl=pr.querySelector('.model');const html=modelsHTML(P)+libHTML(P);
+  if(mdl)mdl.insertAdjacentHTML('beforebegin',html);else pr.insertAdjacentHTML('beforeend',html);};
+
+// ---- experiment: compare-all-models overlay ----
+const _renderExp=renderExp;
+renderExp=function(P){_renderExp(P);if(!P.models)return;const r=$('#clrhold');if(!r)return;
+  r.insertAdjacentHTML('afterend',`<label class="chk"><input type="checkbox" id="cmpall"${cmpAll[P.id]?' checked':''}> Compare all models</label>`);
+  $('#cmpall').onchange=e=>{cmpAll[P.id]=e.target.checked;drawChart(P);};drawChart(P);};
+drawChart=function(P,cvOverride){
+  const cv=cvOverride||$('#chart');if(!cv)return;
+  const ss=sweepSel[P.id];const q=P.params.find(x=>x.id===ss.x);const o=P.outputs.find(x=>x.k===ss.y);
+  const accent=getComputedStyle(document.querySelector('article')||document.documentElement).getPropertyValue('--c').trim()||tok('--accent');
+  const series=held[P.id].map((h,i)=>({xs:h.xs,ys:h.ys,color:tok(PAL[i%PAL.length]),width:1.6,dash:[5,4]}));
+  const others=[];
+  if(cmpAll[P.id]&&P.models){const cur=modelOf(P);P.models.forEach(m=>{if(m===cur)return;const k=others.length;const col=tok(PAL[(k+held[P.id].length+1)%PAL.length]);
+    others.push({m,col:PAL[(k+held[P.id].length+1)%PAL.length]});series.push({...curve(P,{...state[P.id],model:m.id}),color:col,width:2,dash:[2,3]});});}
+  const cur=curve(P,state[P.id]);series.push({...cur,color:accent,fill:held[P.id].length===0&&!others.length,width:2.2});
+  const cy=P.compute(state[P.id]).o[o.k];
+  plotXY(cv,{xmin:q.min,xmax:q.max,xlabel:`${q.label} (${q.unit})`,ylabel:`${o.label}${o.unit?' ('+o.unit+')':''}`,series,marker:isFinite(cy)?{x:state[P.id][q.id],y:cy,color:accent,text:`${fmt(cy)} ${o.unit}`}:null});
+  cv._legend=[...held[P.id].map((h,i)=>[`var(${PAL[i%PAL.length]})`,'dashed',h.label]),...others.map(x=>[`var(${x.col})`,'dotted','Model: '+x.m.name]),[accent,'solid',(others.length?'Model in use: '+modelOf(P).name:'Current')+(held[P.id].length?': '+diffLabel(P):'')]];
+  const lg=$('#legend');if(lg&&!cvOverride)lg.innerHTML=(held[P.id].length||others.length)?cv._legend.map(([c,st,l])=>`<span><i style="border-color:${c};border-top-style:${st}"></i>${esc(l)}</span>`).join(''):''+(others.length?'<span class="muted">A flat line means that model does not use this parameter.</span>':'');
+};
+
+// ---- tests: keep first-attempt scores ----
+const _renderTest=renderTest;
+renderTest=function(P,kind){const s=score(P,kind);const F=report.first[P.id]||(report.first[P.id]={});
+  if(s.n&&s.a===s.n&&F[kind]==null){F[kind]=s.r;F[kind+'n']=s.n;save();}_renderTest(P,kind);};
+
+// ---- operate: safety briefing and acknowledgement gate ----
+function safetyHTML(P,forReport){const S=SAFETY[P.id];if(!S)return '';
+  const col=(t,a)=>`<div><h4>${t}</h4><ul class="ticks">${a.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  return `<div class="safegrid">${col('Hazards',S.haz)}${col('Personal protective equipment',S.ppe)}${col('Safe working practice',S.rules)}${col('In an emergency',S.emerg)}</div>`;}
+const _renderOp=renderOp;
+renderOp=function(P){_renderOp(P);const ok=!!report.ack[P.id];
+  $('#pane').insertAdjacentHTML('afterbegin',`<details class="card safety" id="osafe"${ok?'':' open'}><summary><b>Safety briefing</b> · ${P.abbr} ${ok?'<span class="chip" style="--cc:var(--ok)">Acknowledged</span>':'<span class="chip" style="--cc:var(--bad)">Read before operating</span>'}</summary>
+    ${safetyHTML(P)}<label class="chk ack"><input type="checkbox" id="oack"${ok?' checked':''}> I have read this safety briefing and will follow it on the real machine.</label></details>`);
+  $('#oack').onchange=e=>{if(e.target.checked)report.ack[P.id]=new Date().toISOString();else delete report.ack[P.id];save();renderOp(P);};
+  safeGate(P);};
+function safeGate(P){const c=$('.console');if(c)c.classList.toggle('locked',!report.ack[P.id]);}
+const needAck=P=>{if(report.ack[P.id])return false;opAlarm('Read the safety briefing above and tick the acknowledgement before setting up the machine.');const d=$('#osafe');if(d){d.open=true;d.scrollIntoView({block:'nearest'});}return true;};
+const _opPlace=opPlace,_opSwitch=opSwitch,_opStart=opStart;
+opPlace=function(P,id){if(needAck(P))return;_opPlace(P,id);};
+opSwitch=function(P,id){if(needAck(P))return;_opSwitch(P,id);};
+opStart=function(P){if(needAck(P))return;_opStart(P);};
+
+// ---- report helpers ----
+function fnv(s){let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).toUpperCase().padStart(8,'0');}
+const reportId=P=>`NTM-${P.abbr.replace(/[^A-Z0-9]/gi,'')}-${fnv([P.id,report.usn.trim().toUpperCase(),report.name.trim(),report.date].join('|'))}`;
+function wmSVG(txt){const t=esc(txt.toUpperCase());const w=Math.max(300,t.length*11+80);
+  return `<svg class="wm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><pattern id="wmp" width="${w}" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><text x="10" y="45" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="2" fill="#0B6A86" fill-opacity=".085">${t}</text><text x="${10+w/2}" y="120" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="2" fill="#0B6A86" fill-opacity=".085">${t}</text><text x="${10-w/2}" y="120" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="2" fill="#0B6A86" fill-opacity=".085">${t}</text></pattern></defs><rect width="100%" height="100%" fill="url(#wmp)"/></svg>`;}
+function heldOutMAPE(id){const V=VALID[id];if(!V||!V.sets)return null;const pr=[];V.sets.forEach(s=>{if(s.role!=='val')return;s.pts.forEach(([x,y])=>pr.push([runP(id,{...s.fix,[s.x]:x})[s.y],y]));});return pr.length?{m:mape(pr),n:pr.length}:null;}
+function valRefs(id){const V=VALID[id]||{};const k=new Set();(V.sets||[]).forEach(s=>s.src&&k.add(s.src));(V.checks||[]).forEach(c=>c.src&&k.add(c.src));if(V.bands&&V.bands.src)k.add(V.bands.src);
+  return [...k].map(x=>SRC[x]).filter(Boolean).map(s=>s.u?`${esc(s.t)} <span class="mono small">${esc(s.u)}</span>`:esc(s.t));}
+// GUM uncertainty: Type B from parameter-setting resolution (rectangular, u = step/√12) propagated by numerical sensitivity; Type A from repeated machine runs.
+function gum(P){const ss=sweepSel[P.id],o=P.outputs.find(x=>x.k===ss.y),s=state[P.id];const f=v=>P.compute(v).o[o.k];const y=f(s);if(!isFinite(y))return null;
+  const rows=[];P.params.filter(q=>q.type!=='select').forEach(q=>{const x=s[q.id],u=q.step/Math.sqrt(12);let h=Math.max(q.step,Math.abs(x)*1e-3);
+    let a=Math.max(q.min,x-h),b=Math.min(q.max,x+h);if(b<=a)return;const ya=f({...s,[q.id]:a}),yb=f({...s,[q.id]:b});if(!isFinite(ya)||!isFinite(yb))return;
+    const c=(yb-ya)/(b-a);if(Math.abs(c*u)<=Math.abs(y)*1e-9)return;rows.push({q,x,u,c,ci:Math.abs(c*u)});});
+  const L=runlog[P.id].filter(r=>r.settings===diffLabel(P)).map(r=>r.ans).filter(isFinite);let A=null;
+  if(L.length>=2){const m=L.reduce((a,b)=>a+b,0)/L.length;const sd=Math.sqrt(L.reduce((a,b)=>a+(b-m)**2,0)/(L.length-1));A={n:L.length,rel:sd/Math.sqrt(L.length)/Math.abs(m)};A.ci=A.rel*Math.abs(y);}
+  const uc=Math.sqrt(rows.reduce((a,r)=>a+r.ci**2,0)+(A?A.ci**2:0));return {o,y,rows,A,uc,U:2*uc};}
+
+// ---- comprehensive report ----
+renderReport=function(P){
+  const D=report.disc[P.id]||(report.disc[P.id]=[]);const Q=DISC[P.id]||[];
+  $('#pane').innerHTML=`<div class="no-print"><p class="aim"><b>Lab report.</b> Fill in your details, conclusions and discussion answers. The report collects your safety acknowledgement, machine runs, observations, graph, uncertainty budget and test scores. Use <b>Print / Save as PDF</b> or <b>Download report</b>.</p>
+  <form class="panel repform" id="rform" onsubmit="return false">
+    <div class="ctrl"><label for="rn">Student name</label><input id="rn" value="${esc(report.name)}"></div>
+    <div class="ctrl"><label for="ru">USN / roll number</label><input id="ru" value="${esc(report.usn)}"></div>
+    <div class="ctrl"><label for="rs">Semester / section</label><input id="rs" value="${esc(report.sec)}"></div>
+    <div class="ctrl"><label for="rb">Batch</label><input id="rb" value="${esc(report.batch)}"></div>
+    <div class="ctrl"><label for="rf">Faculty in charge</label><input id="rf" value="${esc(report.faculty)}"></div>
+    <div class="ctrl"><label for="ri">Institution</label><input id="ri" value="${esc(report.inst)}" placeholder="e.g. MITE Moodbidri"></div>
+    <div class="ctrl"><label for="rd">Date</label><input id="rd" type="date" value="${esc(report.date)}"></div>
+    <div class="ctrl wide"><label for="rc">Results and conclusions</label><textarea id="rc" rows="5" placeholder="State the trends you observed, with numbers from your table, and explain them using the theory.">${esc(report.concl[P.id]||'')}</textarea></div>
+    ${Q.map((q,i)=>`<div class="ctrl wide"><label for="rq${i}">Discussion ${i+1}. ${q}</label><textarea id="rq${i}" data-i="${i}" rows="3">${esc(D[i]||'')}</textarea></div>`).join('')}
+    ${submitHTML(P)}<div class="btnrow wide"><button class="btn" type="button" id="rprint">Print / Save as PDF</button><button class="btn ghost" type="button" id="rdl">Download report (.html)</button><span class="foot" id="rmsg" aria-live="polite"></span></div>
+  </form></div>
+  <section class="sheet" id="sheet"></section>`;
+  const fill=()=>{$('#sheet').innerHTML=sheetHTML(P);};
+  const bind=(id,k)=>$('#'+id).oninput=e=>{report[k]=e.target.value;save();fill();};
+  bind('rn','name');bind('ru','usn');bind('rs','sec');bind('rb','batch');bind('rf','faculty');bind('ri','inst');bind('rd','date');
+  $('#rc').oninput=e=>{report.concl[P.id]=e.target.value;save();fill();};
+  $('#rform').querySelectorAll('[data-i]').forEach(t=>t.oninput=e=>{D[+t.dataset.i]=e.target.value;save();fill();});
+  bindSubmit(P);
+  $('#rprint').onclick=()=>{try{window.print();}catch(e){}setTimeout(()=>{$('#rmsg').textContent='If no print dialog opened, this preview blocks printing. Open the lab from its website address to print.';},800);};
+  $('#rdl').onclick=()=>{try{const css=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');const id=reportId(P);
+    const html=`<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${id} · ${esc(P.name)}</title><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>${css}</style></head><body style="background:#fff"><main style="padding:24px;max-width:960px;margin:0 auto">${$('#sheet').outerHTML}</main></body></html>`;
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download=id+'.html';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+    $('#rmsg').textContent='Report downloaded as '+id+'.html. (Downloads are blocked inside the chat preview; use the website.)';}catch(e){$('#rmsg').textContent='Download is not available here. Open the lab from its website address.';}};
+  fill();
+};
+function sheetHTML(P){
+  const id=reportId(P),ss=sweepSel[P.id],q=P.params.find(x=>x.id===ss.x),o=P.outputs.find(x=>x.k===ss.y),s=state[P.id],rows=records[P.id],L=runlog[P.id];
+  const img=(()=>{const cv=document.createElement('canvas');cv.style.width='720px';cv.style.height='405px';document.body.appendChild(cv);cv.width=1440;cv.height=810;cv._dpr=2;drawChart(P,cv);const u=cv.toDataURL('image/png');const lg=cv._legend;cv.remove();return {u,lg};})();
+  const inst=report.inst||'NTM Virtual Lab';const ack=report.ack[P.id];const M=modelOf(P);
+  let n=0;const H=t=>`<h3><span class="sn">${++n}.</span> ${t}</h3>`;
+  const pre=score(P,'pre'),post=score(P,'post'),F=report.first[P.id]||{};
+  const pct=(r,k)=>k?r/k*100:NaN;const fp=pct(F.pre??NaN,F.pren),fq=pct(F.post??NaN,F.postn);
+  const g=isFinite(fp)&&isFinite(fq)&&fp<100?(fq-fp)/(100-fp):NaN;const gTxt=!isFinite(g)?'—':`${g.toFixed(2)} (${g<0.3?'low':g<0.7?'medium':'high'} gain)`;
+  const N=numS[P.id];const corr=L.filter(r=>r.student!=null&&(r.ans===0?Math.abs(r.student)<1e-9:Math.abs(r.student/r.ans-1)<=0.02)).length;
+  const G=gum(P);const V=VALID[P.id]||{};const ho=heldOutMAPE(P.id);
+  const items=opItems(OPS[P.id]).map(it=>(it.kind==='part'?'Placed the ':'Switched on the ')+it.label.replace(/^([A-Z])(?![A-Z0-9])/,m=>m.toLowerCase())+'.');
+  const lastSol=[...L].reverse().find(r=>r.sol);
+  const objectives=[`Set up and operate the virtual ${P.abbr} machine in the correct sequence, observing the safety interlocks.`,`Study the effect of ${q.label} on ${o.label} and explain the trend with the governing relations.`,`Take instrument readings and calculate the result for each machine run.`,`Compare the simulator with published data and estimate the uncertainty of the result.`];
+  return `${wmSVG(`NTM Virtual Lab · ${inst}${report.usn?' · '+report.usn:''}`)}
+  <header class="sh-head"><div><div class="eyebrow">${esc(inst)} · Virtual laboratory record</div><h2>${P.name} (${P.abbr})</h2><div class="mono small">Report ID ${id}</div></div>
+    <dl class="sh-meta"><dt>Name</dt><dd>${esc(report.name)||'—'}</dd><dt>USN</dt><dd>${esc(report.usn)||'—'}</dd><dt>Sem / sec</dt><dd>${esc(report.sec)||'—'}</dd><dt>Batch</dt><dd>${esc(report.batch)||'—'}</dd><dt>Faculty</dt><dd>${esc(report.faculty)||'—'}</dd><dt>Date</dt><dd>${esc(report.date)||'—'}</dd></dl></header>
+  ${H('Aim and objectives')}<p>${P.aim}</p><ol>${objectives.map(x=>`<li>${x}</li>`).join('')}</ol>
+  ${H('Machine, tools and consumables')}<p><b>Energy:</b> ${P.facts.energy} · <b>Mechanism:</b> ${P.facts.mech} · <b>Medium:</b> ${P.facts.medium} · <b>Tool:</b> ${P.facts.tool}</p>${libHTML(P,'h4')}
+  ${H('Safety precautions')}${safetyHTML(P,true)}<p class="${ack?'':'bad'}">${ack?`Safety briefing acknowledged on ${new Date(ack).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}.`:'Safety briefing not acknowledged.'}</p>
+  ${H('Theory')}${P.theory.principle.map(p=>`<p>${p}</p>`).join('')}<h4>Governing relations</h4>${P.theory.eq.map(e=>`<div class="eq"><div class="f">${e.f}</div><div class="w">${e.w}</div></div>`).join('')}
+  ${H('Nomenclature')}${nomHTML(P).replace(/<h3>Nomenclature<\/h3>/,'')}
+  ${H('Simulator model used')}${M?`<div class="eq"><div class="mname">${esc(M.name)}</div><div class="f">${M.eq}</div><div class="w">${M.w}</div></div>`:''}<div class="model">${P.theory.model}</div>
+  ${H('Process parameters')}${tblH(['Parameter','Setting','Unit'],P.params.map(p=>[p.label,p.type==='select'?(p.options.find(x=>x[0]===s[p.id])||[,s[p.id]])[1]:s[p.id],p.unit||'']))}
+  ${H('Procedure')}<h4>Machine set-up (Operate tab)</h4><ol>${items.map(x=>`<li>${x}</li>`).join('')}<li>Started the cycle, waited for it to finish and took instrument readings.</li></ol><h4>Experiment</h4><ol>${P.procedure.map(x=>`<li>${x}</li>`).join('')}</ol>
+  ${H('Observations')}${rows.length?`<div class="tablewrap" style="max-height:none">${tableHTML(P)}</div>`:'<p class="muted">No observations recorded. Record readings on the Experiment tab.</p>'}
+  ${H('Machine runs and measurements')}${L.length?tblH(['Run','Settings','Readings'],L.map((r,i)=>[i+1,esc(r.settings),r.readings.map(x=>esc(x.join(': '))).join('<br>')])):'<p class="muted">No machine runs. Complete a cycle on the Operate tab.</p>'}
+  ${H(`Graph: ${o.label} against ${q.label}`)}<img class="sh-img" src="${img.u}" alt="Plot of ${o.label} against ${q.label}">${img.lg&&img.lg.length>1?`<div class="legend">${img.lg.map(([c,st,l])=>`<span><i style="border-color:${c};border-top-style:${st}"></i>${esc(l)}</span>`).join('')}</div>`:''}
+  ${H('Sample calculation')}${lastSol?`<p>${lastSol.q}</p><div class="why">${lastSol.sol}</div>`:'<p class="muted">Complete a machine run on the Operate tab to include a worked calculation.</p>'}
+  ${H('Results')}${L.length?tblH(['Run','Your answer','Correct value','Deviation','Result'],L.map((r,i)=>{const d=r.student==null?NaN:(r.ans===0?0:(r.student/r.ans-1)*100);const ok=r.student!=null&&Math.abs(d)<=2;return [i+1,r.student==null?'—':fmt(r.student),`${fmt(r.ans)} ${r.unit}`,isFinite(d)?`${d>=0?'+':''}${d.toFixed(1)} %`:'—',r.student==null?'Solution viewed':ok?'<span class="ok">Correct (±2 %)</span>':'<span class="bad">Outside ±2 %</span>'];})):'<p class="muted">No results yet.</p>'}
+  <p>Simulator value at the current settings: <b>${fmt(G?G.y:P.compute(s).o[o.k])} ${o.unit}</b> (${o.label}).</p>
+  ${H('Validation of the simulator')}<p>Status: <b>${(STATUS[V.status]||STATUS.none)[0]}</b>${ho?` · held-out mean error <b>${ho.m.toFixed(1)} %</b> over ${ho.n} published points`:''}.</p><p>${esc(V.summary||'')}</p>
+  ${H('Uncertainty analysis')}${G?`<p>Following the GUM: each setting is read to the resolution of its control (rectangular distribution, <i>u</i> = resolution/√12) and propagated through the simulator by numerical sensitivity coefficients <i>c</i> = ∂<i>y</i>/∂<i>x</i>. Settings that do not affect the result are omitted.${G.A?` Repeatability (Type A) is taken from ${G.A.n} machine runs at the same settings.`:' Repeat a machine run at the same settings to add a Type A repeatability term.'}</p>
+    ${tblH(['Source','Value','Resolution','u(x)','Sensitivity c','|c|·u (' +esc(G.o.unit)+')','Share'],[...G.rows.map(r=>[esc(r.q.label),`${r.x} ${r.q.unit}`,`${r.q.step} ${r.q.unit}`,fmt(r.u),fmt(r.c),fmt(r.ci),G.uc?((r.ci/G.uc)**2*100).toFixed(1)+' %':'—']),...(G.A?[[`Repeatability (Type A, n = ${G.A.n})`,'—','—','—','—',fmt(G.A.ci),G.uc?((G.A.ci/G.uc)**2*100).toFixed(1)+' %':'—']]:[])])}
+    <p><b>${esc(G.o.label)} = ${fmt(G.y)} ± ${fmt(G.U)} ${esc(G.o.unit)}</b> (combined standard uncertainty ${fmt(G.uc)} ${esc(G.o.unit)}; expanded with <i>k</i> = 2, about 95 % confidence; ${(G.U/Math.abs(G.y)*100).toFixed(1)} %). This covers setting resolution and repeatability only, not model error; see section ${n-1} for model error.</p>`:'<p class="muted">The selected output is not defined at these settings.</p>'}
+  ${H('Sources of error')}<ul class="ticks">${(ERRS[P.id]||[]).map(x=>`<li>${x}</li>`).join('')}<li>Model error: the simulator is an idealised model (see the validation status above).</li></ul>
+  ${H('Discussion')}${(DISC[P.id]||[]).map((d,i)=>`<p><b>Q${i+1}. ${d}</b></p><p class="sh-concl">${esc((report.disc[P.id]||[])[i]||'—').replace(/\n/g,'<br>')}</p>`).join('')}
+  ${H('Conclusions')}<p class="sh-concl">${esc(report.concl[P.id]||'—').replace(/\n/g,'<br>')}</p>
+  ${H('Assessment summary')}${tblH(['Item','First attempt','Current'],[['Pre-test',F.pre!=null?`${F.pre} / ${F.pren} (${fp.toFixed(0)} %)`:'—',`${pre.r} / ${pre.n}${pre.a<pre.n?` (${pre.a} answered)`:''}`],['Post-test',F.post!=null?`${F.post} / ${F.postn} (${fq.toFixed(0)} %)`:'—',`${post.r} / ${post.n}${post.a<post.n?` (${post.a} answered)`:''}`],['Normalised gain g = (post − pre)/(100 − pre); pre-test taken after Theory, so g measures learning from the experiment',gTxt,'—'],['Numericals (this session)','—',N?`${N.solved} solved of ${N.attempted}`:'—'],['Machine-run calculations','—',`${corr} correct of ${L.length}`]])}
+  ${H('Applications')}<ul class="ticks">${P.theory.apps.map(x=>`<li>${x}</li>`).join('')}</ul>
+  ${H('References')}<ol>${[...REFS_COMMON.map(esc),...valRefs(P.id)].map(x=>`<li>${x}</li>`).join('')}</ol>
+  <div class="sig"><div><span></span>Student</div><div><span></span>Faculty in charge</div><div><span></span>Date</div></div>
+  <p class="sh-foot">Generated by NTM Virtual Lab v${VERSION} · Report ID ${id} · ${new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}<br>Simulation record for teaching. Not a certified test report. Values are model estimates.</p>`;
+}
+
+// ---- submission to the faculty's Google Sheet (configured in config.js on the website) ----
+const CFG=window.NTM_CONFIG||{};
+report.sub=report.sub||{};if(report.code==null)report.code='';
+function submitPayload(P){const pre=score(P,'pre'),post=score(P,'post'),F=report.first[P.id]||{},L=runlog[P.id],N=numS[P.id];
+  const pct=(r,k)=>k?r/k*100:NaN;const fp=pct(F.pre??NaN,F.pren),fq=pct(F.post??NaN,F.postn);const g=isFinite(fp)&&isFinite(fq)&&fp<100?(fq-fp)/(100-fp):null;
+  const corr=L.filter(r=>r.student!=null&&(r.ans===0?Math.abs(r.student)<1e-9:Math.abs(r.student/r.ans-1)<=0.02)).length;const M=modelOf(P);const D=report.disc[P.id]||[];
+  return {version:VERSION,reportId:reportId(P),process:P.abbr,processName:P.name,name:report.name.trim(),usn:report.usn.trim().toUpperCase(),section:report.sec,batch:report.batch,faculty:report.faculty,institution:report.inst,reportDate:report.date,classCode:report.code.trim(),
+    safetyAck:report.ack[P.id]||'',preFirst:F.pre??'',preN:F.pren??'',postFirst:F.post??'',postN:F.postn??'',preNow:pre.r,postNow:post.r,gain:g==null?'':+g.toFixed(3),
+    runsCorrect:corr,runsTotal:L.length,numSolved:N?N.solved:0,numAttempted:N?N.attempted:0,observations:records[P.id].length,model:M?M.name:'',
+    conclusion:report.concl[P.id]||'',disc1:D[0]||'',disc2:D[1]||'',disc3:D[2]||'',clientTime:new Date().toISOString()};}
+function submitHTML(P){const S=report.sub[P.id];
+  return `<div class="ctrl"><label for="rk">Class code (from your faculty)</label><input id="rk" value="${esc(report.code)}" autocomplete="off"></div>
+  <div class="ctrl wide subbox"><button class="btn" type="button" id="rsub"${CFG.submitUrl?'':' disabled'}>Submit to faculty</button>
+  <span class="foot" id="rsubmsg" aria-live="polite">${!CFG.submitUrl?'Submission is not set up for this copy of the lab. Print or download the report instead.':S?`Last submitted ${new Date(S.t).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})} (Report ID ${esc(S.id)}). You can submit again; your faculty sees every submission.`:'Submitting sends your name, USN, scores, conclusions and discussion answers to your faculty\'s Google Sheet.'}</span></div>`;}
+function bindSubmit(P){const k=$('#rk');if(k)k.oninput=e=>{report.code=e.target.value;save();};
+  const b=$('#rsub');if(!b||!CFG.submitUrl)return;
+  b.onclick=async()=>{const m=$('#rsubmsg');const d=submitPayload(P);
+    if(!d.name||!d.usn){m.innerHTML='<span class="bad">Enter your name and USN first.</span>';return;}
+    if(!d.classCode){m.innerHTML='<span class="bad">Enter the class code your faculty gave you.</span>';return;}
+    b.disabled=true;m.textContent='Submitting…';
+    let res=null;try{const r=await fetch(CFG.submitUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});res=await r.json();}catch(e){res={unconfirmed:true};}
+    b.disabled=false;
+    if(res&&res.ok){report.sub[P.id]={t:new Date().toISOString(),id:d.reportId};save();m.innerHTML=`<span class="ok">Submitted.</span> Report ID ${esc(d.reportId)}. Keep this ID; your faculty will match it to the printed report.`;}
+    else if(res&&res.error==='class code')m.innerHTML='<span class="bad">Class code not accepted.</span> Check it with your faculty.';
+    else if(res&&res.unconfirmed)m.innerHTML='Sent, but the server reply could not be read (network or browser restriction). Ask your faculty to confirm it arrived before submitting again.';
+    else m.innerHTML='<span class="bad">Submission failed.</span> '+esc(res&&res.error||'Try again later.');};}
 buildRail();
 window.addEventListener('hashchange',route);
 route();
