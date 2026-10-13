@@ -1,0 +1,50 @@
+# Setting up report submissions (about 10 minutes, once)
+
+Students press **Submit to faculty** on the Report tab. Each submission becomes one row in a Google Sheet that you own: server time, Report ID, process, name, USN, section, safety acknowledgement time, pre- and post-test scores (first attempt and current), normalised gain, machine-run calculations, numericals, conclusions and the three discussion answers.
+
+## 1. Create the sheet and script
+
+1. Sign in to Google with the account that should own the data.
+   * Use **nayak.vignesh113@gmail.com** if in doubt. College Google Workspace accounts (such as @mite.co.in) are often set by the administrator so that web apps cannot be opened by "Anyone"; if the option *Anyone* is missing in step 3, switch to the Gmail account.
+2. Open <https://sheets.new>. Name the sheet, e.g. *NTM Virtual Lab submissions*.
+3. Menu **Extensions → Apps Script**. Delete the sample code, paste the whole of `Code.gs` from this folder, and press **Save** (disk icon).
+
+## 2. Set the class code
+
+4. In Apps Script, click **Project Settings** (gear icon, left) → **Script properties** → **Add script property**.
+   * Property: `CLASS_CODE`  Value: a short code, e.g. `ME5A-NTM`.
+   * Change it each semester or section. Submissions with a wrong code go to a separate *Rejected* sheet.
+   * If you leave the property out, every submission is accepted.
+
+## 3. Publish the script as a web app
+
+5. **Deploy → New deployment** → gear next to *Select type* → **Web app**.
+   * Description: `NTM submissions`
+   * Execute as: **Me**
+   * Who has access: **Anyone**
+6. Press **Deploy**, then **Authorize access**. Google warns that the app is unverified, because you wrote it yourself. Click **Advanced → Go to (project name) (unsafe) → Allow**. The script can only write to this one spreadsheet.
+7. Copy the **Web app URL** (it ends in `/exec`).
+8. Check it: open the URL in a browser. You should see `{"ok":true,"service":"NTM Virtual Lab submissions"}`.
+
+## 4. Connect the website
+
+9. In the GitHub repository, open `config.js` → pencil icon (Edit) → paste the URL between the quotes:
+
+   ```js
+   window.NTM_CONFIG={submitUrl:'https://script.google.com/macros/s/XXXXXXXX/exec'};
+   ```
+10. **Commit changes**. GitHub Pages updates in 1–2 minutes. The Submit button is now active on every Report tab.
+11. Give students the class code in class.
+
+## Changing the script later
+
+**Deploy → Manage deployments → pencil → Version: New version → Deploy.** This keeps the same URL. Creating a *new deployment* instead gives a new URL, which you would then have to put in `config.js` again.
+
+## What this does and does not prove
+
+* The **Received** column is Google's server time, so late submissions are visible.
+* Students can submit more than once; every submission is kept, so judge by the latest row or the first, as you prefer.
+* The Report ID links a sheet row to the printed or downloaded report.
+* This is not tamper-proof. A determined student with browser developer tools could send made-up scores. Treat the sheet as a record of work, and spot-check by asking a student to repeat a calculation.
+* Data stays in your Google account. Tell students that submitting sends their name, USN, scores and written answers to you.
+* Capacity: Google allows about 30 submissions to be processed at the same moment. A class of 60 pressing Submit together will be fine; the script queues them.
