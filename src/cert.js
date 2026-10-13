@@ -15,6 +15,7 @@ function certElig(P){const post=score(P,'post');const pct=post.n?post.r/post.n*1
 
 // ---- certificate drawing (A4 landscape, 1754 × 1240 px ≈ 150 dpi) ----
 function certFit(c,txt,font,size,maxW){let s=size;do{c.font=font.replace('{s}',s);if(c.measureText(txt).width<=maxW)break;s-=2;}while(s>14);return s;}
+function certSpaced(c,t,cx,y,sp){const al=c.textAlign;c.textAlign='left';const ws=[...t].map(ch=>c.measureText(ch).width);let x=cx-(ws.reduce((a,b)=>a+b,0)+sp*(ws.length-1))/2;[...t].forEach((ch,i)=>{c.fillText(ch,x,y);x+=ws[i]+sp;});c.textAlign=al;}
 function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.getContext('2d');
   const ink='#14201E',acc='#0B6A86',gold='#9A6B12',mut='#56635F';
   c.fillStyle='#FCFBF7';c.fillRect(0,0,W,H);
@@ -24,9 +25,9 @@ function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.ge
   c.strokeStyle=acc;c.lineWidth=8;c.strokeRect(46,46,W-92,H-92);c.strokeStyle=gold;c.lineWidth=2;c.strokeRect(70,70,W-140,H-140);c.strokeRect(80,80,W-160,H-160);
   [[70,70],[W-70,70],[70,H-70],[W-70,H-70]].forEach(([x,y])=>{c.fillStyle=gold;c.save();c.translate(x,y);c.rotate(Math.PI/4);c.fillRect(-11,-11,22,22);c.restore();});
   // watermark seal
-  c.save();c.globalAlpha=0.06;c.fillStyle=acc;c.font='700 300px "Barlow Condensed",Arial Narrow,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('NTM',W/2,H/2+40);c.restore();
+  c.save();c.globalAlpha=0.06;c.fillStyle=acc;c.font='700 300px "Barlow Condensed",Arial Narrow,sans-serif';c.textAlign='center';c.textBaseline='middle';c.font='700 150px "Barlow Condensed",Arial Narrow,sans-serif';c.fillText('NON-TRADITIONAL',W/2,H/2-30);c.fillText('MACHINING',W/2,H/2+120);c.restore();
   c.textAlign='center';c.textBaseline='alphabetic';
-  c.fillStyle=acc;c.font='600 26px "JetBrains Mono",monospace';c.fillText('N T M   V I R T U A L   L A B',W/2,185);
+  c.fillStyle=acc;c.font='600 24px "JetBrains Mono",monospace';certSpaced(c,'NON-TRADITIONAL MACHINING VIRTUAL LAB',W/2,185,5);
   c.fillStyle=ink;certFit(c,CERT.inst,'600 {s}px "Source Sans 3",Arial,sans-serif',34,1400);c.fillText(CERT.inst,W/2,238);
   c.fillStyle=mut;c.font='400 28px "Source Sans 3",Arial,sans-serif';c.fillText(CERT.dept,W/2,278);
   c.fillStyle=ink;c.font='700 108px "Barlow Condensed",Arial Narrow,sans-serif';c.fillText('Certificate of Completion',W/2,420);
@@ -41,7 +42,7 @@ function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.ge
   const fy=1040;c.textAlign='left';c.fillStyle=ink;c.font='600 28px "Source Sans 3",Arial,sans-serif';c.fillText(d.approvedOn||'',210,fy-12);
   c.strokeStyle=ink;c.lineWidth=1.5;c.beginPath();c.moveTo(210,fy);c.lineTo(560,fy);c.stroke();c.fillStyle=mut;c.font='400 24px "Source Sans 3",Arial,sans-serif';c.fillText('Date of approval',210,fy+34);
   c.textAlign='right';c.fillStyle=ink;c.font='italic 600 34px Georgia,"Times New Roman",serif';c.fillText(CERT.fac,W-210,fy-12);
-  c.beginPath();c.moveTo(W-600,fy);c.lineTo(W-210,fy);c.stroke();c.fillStyle=mut;c.font='400 24px "Source Sans 3",Arial,sans-serif';c.fillText('Faculty in charge',W-210,fy+34);
+  c.beginPath();c.moveTo(W-600,fy);c.lineTo(W-210,fy);c.stroke();c.fillStyle=mut;c.font='400 24px "Source Sans 3",Arial,sans-serif';c.fillText('Faculty convener',W-210,fy+34);
   c.textAlign='center';c.fillStyle=mut;c.font='500 21px "JetBrains Mono",monospace';c.fillText(`Certificate ID ${d.certId}   ·   verify at ${CERT.site}#verify-${d.certId}`,W/2,1118);
   return cv;}
 async function certCanvas(d){try{await document.fonts.ready;}catch(e){}return drawCert(document.createElement('canvas'),d);}
