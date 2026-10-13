@@ -70,7 +70,7 @@ Students who have completed the post-test (60 % or more by default), given feedb
 * In the sheet: tick **Approved** in the Certificates tab. The approval date fills in automatically. Untick to withdraw.
 * Or on the website: open the **Faculty** link at the bottom of any page (`…/NTM-Virtual-Lab/#faculty`), enter your faculty key, then **Approve** one request or **Approve all shown**. **Preview** shows the certificate before approving.
 
-**Downloading as faculty**: on the Faculty page, **PDF** downloads one certificate; **Download … certificates (one PDF)** gives every approved certificate shown, one per page.
+**Downloading as faculty**: on the Faculty page, **PDF** downloads one approved certificate; **Draft PDF** on a pending request downloads a copy stamped "DRAFT — NOT APPROVED" for review; **Download … certificates (one PDF)** gives every approved certificate shown, one per page.
 
 **Verification**: every certificate carries an ID and the link `…/NTM-Virtual-Lab/#verify-<ID>`. Anyone opening it sees whether the certificate is valid and approved. Withdrawn approvals show as not valid.
 

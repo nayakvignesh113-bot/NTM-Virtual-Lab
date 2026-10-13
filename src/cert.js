@@ -44,6 +44,7 @@ function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.ge
   c.textAlign='right';c.fillStyle=ink;c.font='italic 600 34px Georgia,"Times New Roman",serif';c.fillText(CERT.fac,W-210,fy-12);
   c.beginPath();c.moveTo(W-600,fy);c.lineTo(W-210,fy);c.stroke();c.fillStyle=mut;c.font='400 24px "Source Sans 3",Arial,sans-serif';c.fillText('Faculty convener',W-210,fy+34);
   c.textAlign='center';c.fillStyle=mut;c.font='500 21px "JetBrains Mono",monospace';c.fillText(`Certificate ID ${d.certId}   ·   verify at ${CERT.site}#verify-${d.certId}`,W/2,1118);
+  if(d.draft){c.save();c.translate(W/2,H/2);c.rotate(-Math.PI/7);c.textAlign='center';c.textBaseline='middle';certFit(c,'DRAFT — NOT APPROVED','800 {s}px "Barlow Condensed",Arial Narrow,sans-serif',150,1300);c.lineWidth=5;c.strokeStyle='rgba(180,35,24,0.55)';c.fillStyle='rgba(180,35,24,0.16)';c.fillText('DRAFT — NOT APPROVED',0,0);c.strokeText('DRAFT — NOT APPROVED',0,0);c.font='600 34px "Source Sans 3",Arial,sans-serif';c.fillStyle='rgba(180,35,24,0.75)';c.fillText('Not valid until approved by the faculty convener',0,120);c.restore();}
   return cv;}
 async function certCanvas(d){try{await document.fonts.ready;}catch(e){}return drawCert(document.createElement('canvas'),d);}
 // Minimal PDF writer: one full-page JPEG per A4-landscape page (no external library needed).
@@ -121,7 +122,7 @@ function facTable(){const q=FAC.q.toLowerCase();const rows=FAC.rows.filter(r=>(F
     <span class="btnrow">${pend.length?`<button class="btn" type="button" id="fapall">${FAC.arm?`Confirm: approve ${pend.length}`:`Approve all ${pend.length} shown`}</button>`:''}${appr.length?`<button class="btn ghost" type="button" id="fdlall">Download ${appr.length} certificate${appr.length>1?'s':''} (one PDF)</button>`:''}<button class="iconbtn" type="button" id="frel">Refresh</button></span></div>
    <div class="tablewrap" style="max-height:none"><table class="lib"><thead><tr><th>Requested</th><th>Name</th><th>USN</th><th>Process</th><th>Post-test</th><th>Status</th><th></th></tr></thead><tbody>
    ${rows.length?rows.map(r=>`<tr><td>${esc(r.requested)}</td><td>${esc(r.name)}</td><td class="mono">${esc(r.usn)}</td><td>${esc(r.process)}</td><td>${esc(r.postScore)}</td><td>${r.approved?`<span class="ok">Approved ${esc(r.approvedOn)}</span>`:'<span class="muted">Pending</span>'}</td>
-    <td><span class="btnrow">${r.approved?`<button class="iconbtn" data-dl="${esc(r.certId)}" type="button">PDF</button><button class="iconbtn" data-rv="${esc(r.certId)}" type="button">Revoke</button>`:`<button class="iconbtn" data-ap="${esc(r.certId)}" type="button">Approve</button><button class="iconbtn" data-pv="${esc(r.certId)}" type="button">Preview</button>`}</span></td></tr>`).join(''):'<tr><td colspan="7" class="muted">Nothing to show.</td></tr>'}
+    <td><span class="btnrow">${r.approved?`<button class="iconbtn" data-dl="${esc(r.certId)}" type="button">PDF</button><button class="iconbtn" data-rv="${esc(r.certId)}" type="button">Revoke</button>`:`<button class="iconbtn" data-ap="${esc(r.certId)}" type="button">Approve</button><button class="iconbtn" data-pv="${esc(r.certId)}" type="button">Preview</button><button class="iconbtn" data-dr="${esc(r.certId)}" type="button">Draft PDF</button>`}</span></td></tr>`).join(''):'<tr><td colspan="7" class="muted">Nothing to show.</td></tr>'}
    </tbody></table></div><div id="fprev"></div>`;
   $('#ffil').onchange=e=>{FAC.filter=e.target.value;FAC.arm=false;facTable();};
   $('#fq').oninput=e=>{FAC.q=e.target.value;FAC.arm=false;const p=e.target.selectionStart;facTable();const i=$('#fq');i.focus();i.setSelectionRange(p,p);};
@@ -131,7 +132,8 @@ function facTable(){const q=FAC.q.toLowerCase();const rows=FAC.rows.filter(r=>(F
   $('#ftable').querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>facSet('approve',[b.dataset.ap]));
   $('#ftable').querySelectorAll('[data-rv]').forEach(b=>b.onclick=()=>facSet('revoke',[b.dataset.rv]));
   $('#ftable').querySelectorAll('[data-dl]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dl);try{await certPDF([r],certFile(r,'pdf'));}catch(e){certPNG(r);}});
-  $('#ftable').querySelectorAll('[data-pv]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.pv);const d={...r,approvedOn:'(pending approval)'};
+  $('#ftable').querySelectorAll('[data-dr]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dr);await certPDF([{...r,approvedOn:'(pending approval)',draft:true}],certFile(r,'pdf').replace('Certificate-','DRAFT-Certificate-'));});
+  $('#ftable').querySelectorAll('[data-pv]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.pv);const d={...r,approvedOn:'(pending approval)',draft:true};
     $('#fprev').innerHTML=`<h3>Preview: ${esc(r.name)}</h3><canvas class="certprev" id="fpcv" role="img" aria-label="Certificate preview"></canvas>`;try{await document.fonts.ready;}catch(e){}drawCert($('#fpcv'),d);$('#fprev').scrollIntoView({block:'nearest'});});}
 async function facSet(action,ids){const m=$('#fmsg');m.textContent=action==='approve'?'Approving…':'Revoking…';
   try{const r=await certPost({action,key:FAC.key,certIds:ids});if(!r.ok){m.innerHTML='<span class="bad">'+esc(r.error)+'</span>';return;}await facLoad();}
