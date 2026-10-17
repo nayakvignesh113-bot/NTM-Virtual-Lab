@@ -75,3 +75,11 @@ Students who have completed the post-test (60 % or more by default), given feedb
 **Verification**: every certificate carries an ID and the link `…/NTM-Virtual-Lab/#verify-<ID>`. Anyone opening it sees whether the certificate is valid and approved. Withdrawn approvals show as not valid.
 
 **Changing the wording**: the pass mark, faculty name, institution and department can be set in `config.js` (see the commented lines there).
+
+## Full reports, issuing without a request, downloads from the link (version 4.5)
+
+* **Full reports.** Each *Submit to faculty* now also saves the student's complete report (observations, graph, machine runs, uncertainty, discussion) as an HTML file in a Drive folder named **NTM Virtual Lab reports**. The *Full report (Drive)* column of the Submissions sheet links to it. On the Faculty page, **Submissions & reports → Download** fetches one report; **Download … reports (one file)** puts all shown reports in a single file that prints one report per page. Reports submitted before this version have only the sheet summary.
+* **Issue certificate.** In **Submissions & reports**, students without a certificate have an **Issue certificate** button. It creates an approved certificate from their submission, even if they never requested one.
+* **Download from the link.** The verification link of an approved certificate (`…/#verify-<ID>`) now has **Download certificate** buttons, so a student can download it on any computer. In **Certificate requests**, **Copy link** copies a student's link to send them.
+
+**After updating `Code.gs`**: deploy a new version as usual. Google will ask you to authorise again, because the script now saves files to your Drive. Choose your account, then *Advanced → Go to … (unsafe) → Allow*.

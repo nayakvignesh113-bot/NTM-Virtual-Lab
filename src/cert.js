@@ -104,14 +104,16 @@ renderReport=function(P){_renderReportC(P);const a=$('#rform .subbox');if(!a)ret
 // ---- faculty page (#faculty) ----
 let FAC={rows:[],key:'',filter:'pending',q:'',arm:false};
 try{FAC.key=sessionStorage.getItem('ntm-fac')||'';}catch(e){}
-function renderFaculty(){current=null;
-  $('#main').innerHTML=`<section><div class="eyebrow">Faculty</div><h1 style="font-size:clamp(32px,4vw,46px)">Certificates</h1>
-   <p class="lede">Approve certificate requests and download certificates. You can also approve by ticking <b>Approved</b> in the <i>Certificates</i> tab of your Google Sheet.</p>
-   ${CFG.submitUrl?`<form class="panel facform" id="facf" onsubmit="return false"><div class="ctrl"><label for="fkey">Faculty key</label><input id="fkey" type="password" autocomplete="current-password" value="${esc(FAC.key)}"></div><div class="btnrow"><button class="btn" type="submit">Load requests</button><span class="foot" id="fmsg" aria-live="polite"></span></div></form>
+function renderFaculty(){current=null;FAC.view=FAC.view||'certs';
+  $('#main').innerHTML=`<section><div class="eyebrow">Faculty</div><h1 style="font-size:clamp(32px,4vw,46px)">Certificates and reports</h1>
+   <p class="lede">Approve certificate requests, issue certificates for students who never requested one, and download certificates and full lab reports.</p>
+   ${CFG.submitUrl?`<form class="panel facform" id="facf" onsubmit="return false"><div class="ctrl"><label for="fkey">Faculty key</label><input id="fkey" type="password" autocomplete="current-password" value="${esc(FAC.key)}"></div><div class="btnrow"><button class="btn" type="submit">Load</button><span class="foot" id="fmsg" aria-live="polite"></span></div></form>
+   <div class="factabs" role="tablist"><button type="button" role="tab" data-v="certs" aria-selected="${FAC.view==='certs'}">Certificate requests</button><button type="button" role="tab" data-v="subs" aria-selected="${FAC.view==='subs'}">Submissions &amp; reports</button></div>
    <div id="ftable"></div>`:'<p class="bad">The Google Sheet is not connected (config.js has no submitUrl).</p>'}</section>`;
   const f=$('#facf');if(!f)return;f.onsubmit=()=>{FAC.key=$('#fkey').value.trim();try{sessionStorage.setItem('ntm-fac',FAC.key);}catch(e){}facLoad();return false;};
+  document.querySelectorAll('.factabs [data-v]').forEach(b=>b.onclick=()=>{FAC.view=b.dataset.v;FAC.arm=false;document.querySelectorAll('.factabs [data-v]').forEach(x=>x.setAttribute('aria-selected',x===b));facLoad();});
   if(FAC.key)facLoad();}
-async function facLoad(){const m=$('#fmsg');m.textContent='Loading…';
+async function facLoad(){const m=$('#fmsg');m.textContent='Loading…';if(FAC.view==='subs')return subsLoad();
   try{const r=await certGet({action:'list',key:FAC.key});if(!r.ok){m.innerHTML=r.error==='faculty key'?'<span class="bad">Faculty key not accepted.</span> Check the FACULTY_KEY script property.':'<span class="bad">'+esc(r.error)+'</span>';$('#ftable').innerHTML='';return;}
     FAC.rows=r.rows;m.textContent=`${r.rows.length} request${r.rows.length===1?'':'s'} · ${r.rows.filter(x=>!x.approved).length} pending`;facTable();}
   catch(e){m.innerHTML='<span class="bad">Could not reach the Google Sheet.</span>';}}
@@ -122,7 +124,7 @@ function facTable(){const q=FAC.q.toLowerCase();const rows=FAC.rows.filter(r=>(F
     <span class="btnrow">${pend.length?`<button class="btn" type="button" id="fapall">${FAC.arm?`Confirm: approve ${pend.length}`:`Approve all ${pend.length} shown`}</button>`:''}${appr.length?`<button class="btn ghost" type="button" id="fdlall">Download ${appr.length} certificate${appr.length>1?'s':''} (one PDF)</button>`:''}<button class="iconbtn" type="button" id="frel">Refresh</button></span></div>
    <div class="tablewrap" style="max-height:none"><table class="lib"><thead><tr><th>Requested</th><th>Name</th><th>USN</th><th>Process</th><th>Post-test</th><th>Status</th><th></th></tr></thead><tbody>
    ${rows.length?rows.map(r=>`<tr><td>${esc(r.requested)}</td><td>${esc(r.name)}</td><td class="mono">${esc(r.usn)}</td><td>${esc(r.process)}</td><td>${esc(r.postScore)}</td><td>${r.approved?`<span class="ok">Approved ${esc(r.approvedOn)}</span>`:'<span class="muted">Pending</span>'}</td>
-    <td><span class="btnrow">${r.approved?`<button class="iconbtn" data-dl="${esc(r.certId)}" type="button">PDF</button><button class="iconbtn" data-rv="${esc(r.certId)}" type="button">Revoke</button>`:`<button class="iconbtn" data-ap="${esc(r.certId)}" type="button">Approve</button><button class="iconbtn" data-pv="${esc(r.certId)}" type="button">Preview</button><button class="iconbtn" data-dr="${esc(r.certId)}" type="button">Draft PDF</button>`}</span></td></tr>`).join(''):'<tr><td colspan="7" class="muted">Nothing to show.</td></tr>'}
+    <td><span class="btnrow">${r.approved?`<button class="iconbtn" data-dl="${esc(r.certId)}" type="button">PDF</button><button class="iconbtn" data-ln="${esc(r.certId)}" type="button">Copy link</button><button class="iconbtn" data-rv="${esc(r.certId)}" type="button">Revoke</button>`:`<button class="iconbtn" data-ap="${esc(r.certId)}" type="button">Approve</button><button class="iconbtn" data-pv="${esc(r.certId)}" type="button">Preview</button><button class="iconbtn" data-dr="${esc(r.certId)}" type="button">Draft PDF</button>`}</span></td></tr>`).join(''):'<tr><td colspan="7" class="muted">Nothing to show.</td></tr>'}
    </tbody></table></div><div id="fprev"></div>`;
   $('#ffil').onchange=e=>{FAC.filter=e.target.value;FAC.arm=false;facTable();};
   $('#fq').oninput=e=>{FAC.q=e.target.value;FAC.arm=false;const p=e.target.selectionStart;facTable();const i=$('#fq');i.focus();i.setSelectionRange(p,p);};
@@ -130,6 +132,8 @@ function facTable(){const q=FAC.q.toLowerCase();const rows=FAC.rows.filter(r=>(F
   const aa=$('#fapall');if(aa)aa.onclick=()=>{if(!FAC.arm){FAC.arm=true;facTable();return;}FAC.arm=false;facSet('approve',pend.map(r=>r.certId));};
   const da=$('#fdlall');if(da)da.onclick=async()=>{da.disabled=true;da.textContent='Preparing…';try{await certPDF(appr,`Certificates-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){$('#fmsg').textContent='Could not make the PDF.';}facTable();};
   $('#ftable').querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>facSet('approve',[b.dataset.ap]));
+  $('#ftable').querySelectorAll('[data-ln]').forEach(b=>b.onclick=()=>{const u=CERT.site+'#verify-'+b.dataset.ln;const ok=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy link',1500);};
+    try{navigator.clipboard.writeText(u).then(ok,()=>{$('#fmsg').textContent=u;});}catch(e){$('#fmsg').textContent=u;}});
   $('#ftable').querySelectorAll('[data-rv]').forEach(b=>b.onclick=()=>facSet('revoke',[b.dataset.rv]));
   $('#ftable').querySelectorAll('[data-dl]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dl);try{await certPDF([r],certFile(r,'pdf'));}catch(e){certPNG(r);}});
   $('#ftable').querySelectorAll('[data-dr]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dr);await certPDF([{...r,approvedOn:'(pending approval)',draft:true}],certFile(r,'pdf').replace('Certificate-','DRAFT-Certificate-'));});
@@ -144,11 +148,53 @@ async function renderVerify(id){current=null;
   $('#main').innerHTML=`<section><div class="eyebrow">Certificate verification</div><h1 style="font-size:clamp(30px,4vw,44px)">${esc(id)}</h1><div class="card" id="vres"><p class="muted">Checking…</p></div></section>`;
   if(!CFG.submitUrl){$('#vres').innerHTML='<p class="bad">Verification is not available on this copy of the lab.</p>';return;}
   try{const r=await certGet({action:'verify',id});const v=$('#vres');if(!v)return;
-    v.innerHTML=r.valid?`<p class="ok" style="font-size:20px;margin:0 0 8px"><b>✓ Valid certificate</b></p><dl class="sh-meta"><dt>Name</dt><dd>${esc(r.cert.name)}</dd><dt>USN</dt><dd>${esc(r.cert.usn)}</dd><dt>Experiment</dt><dd>${esc(r.cert.processName)} (${esc(r.cert.process)})</dd><dt>Post-test</dt><dd>${esc(r.cert.postScore)}</dd><dt>Approved</dt><dd>${esc(r.cert.approvedOn)}</dd></dl><p class="foot">Issued by ${esc(CERT.fac)}, ${esc(CERT.dept)}, ${esc(CERT.inst)}.</p>`
-      :`<p class="bad" style="font-size:20px;margin:0"><b>✗ Not a valid certificate</b></p><p class="foot">${r.reason==='not approved'?'This ID exists but has not been approved, or approval was withdrawn.':'No certificate with this ID was issued.'}</p>`;}
+    v.innerHTML=r.valid?`<p class="ok" style="font-size:20px;margin:0 0 8px"><b>✓ Valid certificate</b></p><dl class="sh-meta"><dt>Name</dt><dd>${esc(r.cert.name)}</dd><dt>USN</dt><dd>${esc(r.cert.usn)}</dd><dt>Experiment</dt><dd>${esc(r.cert.processName)} (${esc(r.cert.process)})</dd><dt>Post-test</dt><dd>${esc(r.cert.postScore)}</dd><dt>Approved</dt><dd>${esc(r.cert.approvedOn)}</dd></dl><p class="foot">Issued by ${esc(CERT.fac)}, ${esc(CERT.dept)}, ${esc(CERT.inst)}.</p><div class="btnrow"><button class="btn" type="button" id="vpdf">Download certificate (PDF)</button><button class="btn ghost" type="button" id="vpng">Download image (PNG)</button><span class="foot" id="vmsg" aria-live="polite"></span></div>`
+      :`<p class="bad" style="font-size:20px;margin:0"><b>✗ Not a valid certificate</b></p><p class="foot">${r.reason==='not approved'?'This ID exists but has not been approved, or approval was withdrawn.':'No certificate with this ID was issued.'}</p>`;
+    if(r.valid){$('#vpdf').onclick=async()=>{$('#vmsg').textContent='Preparing PDF…';try{await certPDF([r.cert],certFile(r.cert,'pdf'));$('#vmsg').textContent='Downloaded.';}catch(e){$('#vmsg').textContent='Could not make the PDF; use the PNG button.';}};$('#vpng').onclick=()=>certPNG(r.cert);}}
   catch(e){$('#vres').innerHTML='<p class="bad">Could not reach the verification service. Try again later.</p>';}}
 const _routeC=route;
 route=function(){const h=(location.hash||'').slice(1);
   if(h==='faculty'){renderFaculty();markRail('none');window.scrollTo(0,0);return;}
   if(h.startsWith('verify-')){renderVerify(decodeURIComponent(h.slice(7)));markRail('none');window.scrollTo(0,0);return;}
   _routeC();};
+
+// ---- faculty: submissions, full reports, issuing without a request ----
+FAC.subs=[];FAC.sq='';FAC.sfil='all';
+async function subsLoad(){const m=$('#fmsg');
+  try{const r=await certPost({action:'subs',key:FAC.key});if(!r.ok){m.innerHTML=r.error==='faculty key'?'<span class="bad">Faculty key not accepted.</span> Check the FACULTY_KEY script property.':'<span class="bad">'+esc(r.error)+'</span> (Update Code.gs to the latest version and deploy a new version.)';$('#ftable').innerHTML='';return;}
+    FAC.subs=r.rows.sort((a,b)=>String(a.usn).localeCompare(String(b.usn)));m.textContent=`${r.rows.length} submission${r.rows.length===1?'':'s'} (latest per student and process) · ${r.rows.filter(x=>x.hasReport).length} with full report`;subsTable();}
+  catch(e){m.innerHTML='<span class="bad">Could not reach the Google Sheet.</span>';}}
+function subsTable(){const q=FAC.sq.toLowerCase();
+  const rows=FAC.subs.filter(r=>(FAC.sfil==='all'||(FAC.sfil==='nocert'&&r.cert==='none')||(FAC.sfil==='report'&&r.hasReport))&&(!q||(r.name+' '+r.usn+' '+r.process).toLowerCase().includes(q)));
+  const withRep=rows.filter(r=>r.hasReport);
+  $('#ftable').innerHTML=`<div class="sel facbar"><label for="sfil">Show</label><select id="sfil">${[['all','All submissions'],['nocert','Without certificate'],['report','With full report']].map(([v,l])=>`<option value="${v}"${FAC.sfil===v?' selected':''}>${l}</option>`).join('')}</select>
+    <label for="sq">Search</label><input id="sq" value="${esc(FAC.sq)}" placeholder="Name, USN or process">
+    <span class="btnrow">${withRep.length?`<button class="btn ghost" type="button" id="srepall">Download ${withRep.length} report${withRep.length>1?'s':''} (one file)</button>`:''}<button class="iconbtn" type="button" id="srel">Refresh</button></span></div>
+   <div class="tablewrap" style="max-height:none"><table class="lib"><thead><tr><th>Submitted</th><th>Name</th><th>USN</th><th>Process</th><th>Post-test</th><th>Report</th><th>Certificate</th></tr></thead><tbody>
+   ${rows.length?rows.map((r,k)=>`<tr><td>${esc(r.received)}</td><td>${esc(r.name)}</td><td class="mono">${esc(r.usn)}</td><td>${esc(r.process)}</td><td>${esc(r.post)}</td>
+     <td>${r.hasReport?`<button class="iconbtn" data-rep="${k}" type="button">Download</button>`:'<span class="muted" title="Submitted before reports were stored, or not saved">Summary only</span>'}</td>
+     <td>${r.cert==='approved'?'<span class="ok">Issued</span>':r.cert==='pending'?`<button class="iconbtn" data-apc="${esc(r.certId)}" type="button">Approve request</button>`:`<button class="iconbtn" data-iss="${k}" type="button">Issue certificate</button>`}</td></tr>`).join(''):'<tr><td colspan="7" class="muted">Nothing to show.</td></tr>'}
+   </tbody></table></div><p class="foot">"Issue certificate" creates an approved certificate from the student's submission, even if they never requested one. Then send them the link from the Certificate requests view (Copy link); they can download it on any computer.</p>`;
+  $('#sfil').onchange=e=>{FAC.sfil=e.target.value;subsTable();};
+  $('#sq').oninput=e=>{FAC.sq=e.target.value;const p=e.target.selectionStart;subsTable();const i=$('#sq');i.focus();i.setSelectionRange(p,p);};
+  $('#srel').onclick=()=>subsLoad();
+  $('#ftable').querySelectorAll('[data-rep]').forEach(b=>b.onclick=async()=>{const r=rows[+b.dataset.rep];b.disabled=true;b.textContent='…';
+    try{const x=await certPost({action:'report',key:FAC.key,reportId:r.reportId});if(!x.ok)throw new Error(x.error);saveBlob(new Blob([x.html],{type:'text/html'}),`${r.reportId}-${r.usn}.html`);b.textContent='Download';}
+    catch(e){b.textContent='Failed';$('#fmsg').textContent='Could not fetch that report: '+(e.message||'');}b.disabled=false;});
+  $('#ftable').querySelectorAll('[data-iss]').forEach(b=>b.onclick=async()=>{const r=rows[+b.dataset.iss];const P=PROCESSES.find(p=>p.abbr===r.process);b.disabled=true;b.textContent='Issuing…';
+    try{const x=await certPost({action:'issue',key:FAC.key,usn:r.usn,process:r.process,processName:P?P.name:r.process});if(!x.ok)throw new Error(x.error);await subsLoad();}
+    catch(e){b.disabled=false;b.textContent='Issue certificate';$('#fmsg').textContent='Could not issue: '+(e.message||'');}});
+  $('#ftable').querySelectorAll('[data-apc]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{const x=await certPost({action:'approve',key:FAC.key,certIds:[b.dataset.apc]});if(!x.ok)throw new Error(x.error);await subsLoad();}catch(e){b.disabled=false;$('#fmsg').textContent='Could not approve.';}});
+  const ra=$('#srepall');if(ra)ra.onclick=async()=>{ra.disabled=true;let css='',parts=[],n=0;
+    for(const r of withRep){ra.textContent=`Fetching ${++n} of ${withRep.length}…`;
+      try{const x=await certPost({action:'report',key:FAC.key,reportId:r.reportId});if(!x.ok)continue;const doc=new DOMParser().parseFromString(x.html,'text/html');
+        if(!css){const st=doc.querySelector('style');css=st?st.textContent:'';}const mn=doc.querySelector('main');parts.push(`<div class="rpage">${mn?mn.innerHTML:doc.body.innerHTML}</div>`);}catch(e){}}
+    const html=`<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NTM lab reports (${parts.length})</title><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>${css}
+.rpage{padding:24px;max-width:960px;margin:0 auto 32px}@media print{.rpage{break-after:page;padding:0;margin:0}}</style></head><body style="background:#fff">${parts.join('')}</body></html>`;
+    saveBlob(new Blob([html],{type:'text/html'}),`NTM-lab-reports-${new Date().toISOString().slice(0,10)}.html`);subsTable();};}
+
+// ---- the full report goes to the faculty's Drive with each submission ----
+function reportDoc(P){const css=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');const id=reportId(P);
+  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${id} · ${esc(P.name)}</title><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>${css}</style></head><body style="background:#fff"><main style="padding:24px;max-width:960px;margin:0 auto"><section class="sheet">${sheetHTML(P)}</section></main></body></html>`;}
+const _submitPayloadR=submitPayload;
+submitPayload=function(P){const d=_submitPayloadR(P);try{d.reportHtml=reportDoc(P);}catch(e){}return d;};
