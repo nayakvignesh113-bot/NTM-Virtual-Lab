@@ -4,6 +4,7 @@ const CERT={min:CFG.certMinPost??60,inst:CFG.certInstitution||'Mangalore Institu
   dept:CFG.certDepartment||'Department of Mechanical Engineering',fac:CFG.certFaculty||'Dr. Vignesh Nayak Ullal',
   site:'https://nayakvignesh113-bot.github.io/NTM-Virtual-Lab/'};
 report.cert=report.cert||{};
+const LOGO_IMG=new Image();LOGO_IMG.src=MITE_LOGO;const LOGO_READY=(LOGO_IMG.decode?LOGO_IMG.decode():Promise.resolve()).catch(()=>{});
 const certTok=()=>{const a=new Uint8Array(12);(window.crypto||{getRandomValues:x=>x.map(()=>Math.random()*256|0)}).getRandomValues(a);return [...a].map(b=>b.toString(16).padStart(2,'0')).join('');};
 async function certGet(params){const u=CFG.submitUrl+'?'+new URLSearchParams(params).toString();const r=await fetch(u);return r.json();}
 async function certPost(body){const r=await fetch(CFG.submitUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});return r.json();}
@@ -28,7 +29,8 @@ function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.ge
   c.save();c.globalAlpha=0.06;c.fillStyle=acc;c.font='700 300px "Barlow Condensed",Arial Narrow,sans-serif';c.textAlign='center';c.textBaseline='middle';c.font='700 150px "Barlow Condensed",Arial Narrow,sans-serif';c.fillText('NON-TRADITIONAL',W/2,H/2-30);c.fillText('MACHINING',W/2,H/2+120);c.restore();
   c.textAlign='center';c.textBaseline='alphabetic';
   c.fillStyle=acc;c.font='600 24px "JetBrains Mono",monospace';certSpaced(c,'NON-TRADITIONAL MACHINING VIRTUAL LAB',W/2,185,5);
-  c.fillStyle=ink;certFit(c,CERT.inst,'600 {s}px "Source Sans 3",Arial,sans-serif',34,1400);c.fillText(CERT.inst,W/2,238);
+  if(LOGO_IMG.complete&&LOGO_IMG.naturalWidth){const lh=170,lw=lh*LOGO_IMG.naturalWidth/LOGO_IMG.naturalHeight;c.drawImage(LOGO_IMG,150,125,lw,lh);}
+  c.fillStyle=ink;certFit(c,CERT.inst,'600 {s}px "Source Sans 3",Arial,sans-serif',34,1180);c.fillText(CERT.inst,W/2,238);
   c.fillStyle=mut;c.font='400 28px "Source Sans 3",Arial,sans-serif';c.fillText(CERT.dept,W/2,278);
   c.fillStyle=ink;c.font='700 108px "Barlow Condensed",Arial Narrow,sans-serif';c.fillText('Certificate of Completion',W/2,420);
   c.strokeStyle=gold;c.lineWidth=2;c.beginPath();c.moveTo(W/2-260,452);c.lineTo(W/2+260,452);c.stroke();
@@ -46,7 +48,7 @@ function drawCert(cv,d){const W=1754,H=1240;cv.width=W;cv.height=H;const c=cv.ge
   c.textAlign='center';c.fillStyle=mut;c.font='500 21px "JetBrains Mono",monospace';c.fillText(`Certificate ID ${d.certId}   ·   verify at ${CERT.site}#verify-${d.certId}`,W/2,1118);
   if(d.draft){c.save();c.translate(W/2,H/2);c.rotate(-Math.PI/7);c.textAlign='center';c.textBaseline='middle';certFit(c,'DRAFT — NOT APPROVED','800 {s}px "Barlow Condensed",Arial Narrow,sans-serif',150,1300);c.lineWidth=5;c.strokeStyle='rgba(180,35,24,0.55)';c.fillStyle='rgba(180,35,24,0.16)';c.fillText('DRAFT — NOT APPROVED',0,0);c.strokeText('DRAFT — NOT APPROVED',0,0);c.font='600 34px "Source Sans 3",Arial,sans-serif';c.fillStyle='rgba(180,35,24,0.75)';c.fillText('Not valid until approved by the faculty convener',0,120);c.restore();}
   return cv;}
-async function certCanvas(d){try{await document.fonts.ready;}catch(e){}return drawCert(document.createElement('canvas'),d);}
+async function certCanvas(d){try{await document.fonts.ready;}catch(e){}await LOGO_READY;return drawCert(document.createElement('canvas'),d);}
 // Minimal PDF writer: one full-page JPEG per A4-landscape page (no external library needed).
 function pdfFromJpegs(imgs){const enc=new TextEncoder();const parts=[];let len=0;const offs=[];
   const put=x=>{const b=typeof x==='string'?enc.encode(x):x;parts.push(b);len+=b.length;};
@@ -78,7 +80,7 @@ function certCardHTML(P){const E=certElig(P),ok=E.every(x=>x.ok),C=report.cert[P
    <div id="certview"></div></div>`;}
 function certShow(P,d){const v=$('#certview');if(!v)return;
   v.innerHTML=`<canvas class="certprev" id="certcv" role="img" aria-label="Certificate of completion for ${esc(d.name)}"></canvas><div class="btnrow"><button class="btn" type="button" id="certpdf">Download PDF</button><button class="btn ghost" type="button" id="certpng">Download image (PNG)</button><span class="foot" id="certdl" aria-live="polite"></span></div>`;
-  (async()=>{try{await document.fonts.ready;}catch(e){}drawCert($('#certcv'),d);})();
+  (async()=>{try{await document.fonts.ready;}catch(e){}await LOGO_READY;drawCert($('#certcv'),d);})();
   $('#certpdf').onclick=async()=>{$('#certdl').textContent='Preparing PDF…';try{await certPDF([d],certFile(d,'pdf'));$('#certdl').textContent='Downloaded.';}catch(e){$('#certdl').textContent='Could not make the PDF; use the PNG button.';}};
   $('#certpng').onclick=()=>certPNG(d);}
 function certBind(P){const C=report.cert[P.id]||(report.cert[P.id]={});const m=()=>$('#certmsg');
@@ -138,7 +140,7 @@ function facTable(){const q=FAC.q.toLowerCase();const rows=FAC.rows.filter(r=>(F
   $('#ftable').querySelectorAll('[data-dl]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dl);try{await certPDF([r],certFile(r,'pdf'));}catch(e){certPNG(r);}});
   $('#ftable').querySelectorAll('[data-dr]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.dr);await certPDF([{...r,approvedOn:'(pending approval)',draft:true}],certFile(r,'pdf').replace('Certificate-','DRAFT-Certificate-'));});
   $('#ftable').querySelectorAll('[data-pv]').forEach(b=>b.onclick=async()=>{const r=FAC.rows.find(x=>x.certId===b.dataset.pv);const d={...r,approvedOn:'(pending approval)',draft:true};
-    $('#fprev').innerHTML=`<h3>Preview: ${esc(r.name)}</h3><canvas class="certprev" id="fpcv" role="img" aria-label="Certificate preview"></canvas>`;try{await document.fonts.ready;}catch(e){}drawCert($('#fpcv'),d);$('#fprev').scrollIntoView({block:'nearest'});});}
+    $('#fprev').innerHTML=`<h3>Preview: ${esc(r.name)}</h3><canvas class="certprev" id="fpcv" role="img" aria-label="Certificate preview"></canvas>`;try{await document.fonts.ready;}catch(e){}await LOGO_READY;drawCert($('#fpcv'),d);$('#fprev').scrollIntoView({block:'nearest'});});}
 async function facSet(action,ids){const m=$('#fmsg');m.textContent=action==='approve'?'Approving…':'Revoking…';
   try{const r=await certPost({action,key:FAC.key,certIds:ids});if(!r.ok){m.innerHTML='<span class="bad">'+esc(r.error)+'</span>';return;}await facLoad();}
   catch(e){m.innerHTML='<span class="bad">Could not reach the Google Sheet.</span>';}}
@@ -198,3 +200,7 @@ function reportDoc(P){const css=[...document.querySelectorAll('style')].map(s=>s
   return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${id} · ${esc(P.name)}</title><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>${css}</style></head><body style="background:#fff"><main style="padding:24px;max-width:960px;margin:0 auto"><section class="sheet">${sheetHTML(P)}</section></main></body></html>`;}
 const _submitPayloadR=submitPayload;
 submitPayload=function(P){const d=_submitPayloadR(P);try{d.reportHtml=reportDoc(P);}catch(e){}return d;};
+
+// MITE logo in the lab report header
+const _sheetHTMLL=sheetHTML;
+sheetHTML=function(P){return _sheetHTMLL(P).replace('<header class="sh-head"><div>','<header class="sh-head"><img class="sh-logo" src="'+MITE_LOGO+'" alt="MITE logo"><div class="sh-title">');};
